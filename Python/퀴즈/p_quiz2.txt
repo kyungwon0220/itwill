@@ -1,0 +1,200 @@
+
+# 1. 다음 코드의 실행 결과는? 
+x = 4
+y = 2
+z = 3
+print((x ** y) // z)  
+
+
+
+
+# 2. 다음 코드의 실행 결과는? 
+
+x = True
+y = False
+result = x and y
+print(result)
+
+
+
+
+# 3. 다음 코드의 실행 결과는? 
+ a = 7
+ b = 10
+ result = a != b
+ print(result)
+
+
+
+
+
+
+# 4. 문자열 포맷팅 문제 (f-string)로 다음 코드의 실행 결과는? 
+name = "John"
+age = 25
+height = 175.5
+print(f"Name: {name}, Age: {age}, Height: {height:.1f} cm")  
+
+
+
+
+
+
+# 5. 문자열 포맷팅 문제 (format() 함수)로 다음 코드의 실행 결과는? 
+name = "Bob"
+score = 95.6789
+print("Name: {}, Score: {:.2f}".format(name, score)) 
+
+
+
+
+# 6. 문자열 함수 문제로 다음 코드의 실행 결과는? 
+s = "hello world"
+print(s.title())  
+
+
+
+
+# 7. 문자열 슬라이싱 문제로 다음 코드의 실행 결과는? 
+
+s = "Data Science"
+print(s[::3])  
+
+
+
+
+# 8. 문자열 슬라이싱 문제로 다음 코드의 실행 결과는? 
+
+s = "Machine Learning"
+print(s[1:10:2])  
+
+
+
+
+
+# 9. 문자열 인덱싱 문제로 다음 코드의 실행 결과는? 
+s = "Artificial Intelligence"
+print(s[-5])  
+
+
+
+# 10. 문자열 인덱싱 문제로 다음 코드의 실행 결과는? 
+s = "Deep Learning"
+print(s[-3:])  
+
+
+
+
+# 11. 문자열 함수 문제로 다음 코드의 실행 결과는? 
+s = "Artificial Intelligence"
+print(s.count('i'))  
+
+	a. 3
+	b. 4
+	c. 5
+
+
+
+
+
+# 12. 문자열 함수 문제로 다음 코드의 실행 결과는? 
+
+text = "   Hello, World!   "
+result = text.strip()
+print(f"'{result}'")
+
+	a. 'Hello,World! '
+	b. 'Hello, World!'
+	c. '    Hello, World!'
+
+
+
+
+
+# 13. 사용자가 두 숫자를 입력하고, 두 값이 둘 다 10보다 크면 True를 출력하도록 프로그래밍하여라
+
+
+첫 번째 숫자를 입력하세요: 20
+두 번째 숫자를 입력하세요: 5
+----------
+False
+
+
+첫 번째 숫자를 입력하세요: 15
+두 번째 숫자를 입력하세요: 12
+----------
+True
+
+
+
+
+
+# 14. 다음 코드의 실행 결과는 무엇인가요?
+
+text = "  Hello, World! Python is awesome!  "
+result = text.strip().replace("World", "Universe").lower().split()
+print(result)
+
+
+	a. ['hello', 'universe', 'python', 'is', 'awesome']
+	b. ['Hello', 'Universe', 'Python', 'is', 'awesome']
+	c. ['hello,', 'universe!', 'python', 'is', 'awesome!']
+	d. ['hello', 'world', 'python', 'is', 'awesome']
+
+
+
+
+
+
+# 15. 사용자로부터 날짜를 "YYYY-MM-DD" 형식으로 입력받고, 
+해당 날짜의 연도, 월, 일만 아래와 같은 형태로  출력되도록 프로그래밍 하여라. 
+
+
+날짜를 'YYYY-MM-DD' 형식으로 입력하세요: 2025-12-10
+입력된 날짜: 2025년 12월 10일
+
+
+
+
+
+
+
+#16. 문자열 함수를 이용하여 프로그래밍하여라 
+
+(1절)
+동해물과 백두산이 마르고 닳도록
+하느님이 보우하사 우리나라만세
+
+(후렴) 무궁화 삼천리 화려강산 
+대한사람 대한으로 길이 보전하세
+
+(2절)
+남산위에 저 소나무 철갑을 두른듯
+바람서리 불변함은 우리기상 일세
+(후렴)무궁화 삼천리 화려강산 대한사람 대한으로 길이보전하세
+
+
+1) 애국가 1,2 절에서 무궁화는 몇 번 나올까?
+예시)
+무궁화는 애국가 1~2절에서 ?번 나옵니다
+
+2) 애국가 1,2 절에서 '소나무'의 위치 인덱스 값은?
+예시) 
+애국가 1~2절에서 "소나무"의 인덱스 위치는 ?입니다
+
+3) 애국가 1,2 절에서 줄바꿈 없이 출력하여라. 
+
+
+4) 애국가 1절에서 아래 문자열만 출력하여라(슬라이싱, find() 활용) 
+예시)
+동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라 만세
+
+5) 애국가에서 일부 슬라이싱 한 후 아래와 같이 출력하여라 (join() 활용)
+예시)
+동=해=물=과= =백=두=산=이= =마=르=고=  
+
+
+
+
+
+

@@ -1,0 +1,392 @@
+
+1. 다음 코드의 결과는?
+
+   def multiply(a, b=2):
+       return a * b
+
+   print(multiply(5))
+
+   - a) 10         # 정답
+   - b) 5
+   - c) 오류 발생
+
+2. 다음 함수의 출력 결과는?
+
+   def calculate_total(price, tax=0.1):
+       return price + (price * tax)
+
+   print(calculate_total(100))
+
+   - a) 100
+   - b) 110  # 정답
+   - c) 120
+
+3. 초기값이 있는 매개변수를 사용하는 이유는?
+   - a) 코드가 짧아지기 위해
+   - b) 기본값을 제공하기 위해   # 정답
+   - c) 오류를 방지하기 위해
+
+
+
+4. 매개변수로 전달되어지는 모든 숫자 데이타의 평균을 구하는 함수를 정의하고 
+   호출하는 함수 코드를 작성하여라
+
+   # 함수호출 예시) 
+    print(calculate_average(10, 20, 30))
+    print(calculate_average(3, 4, 5, 8, 10))
+
+
+    # 정답
+    def calculate_average(*numbers):
+        return sum(numbers) / len(numbers)
+
+    print(calculate_average(10, 20, 30))
+    print(calculate_average(3, 4, 5, 8, 10))
+
+
+
+
+5. 다음 코드의 출력은?
+   
+   def divide(a, b=1):
+       return a / b
+
+   print(divide(10, 2))
+   print(divide(10))
+   
+   
+   # 정답 
+   5
+   10
+
+
+6. 다음 코드의 출력은?
+    
+    def calculate_area(length, width=1):
+        return length * width
+
+    print(calculate_area(5))
+    print(calculate_area(5, 2))
+
+    - a) 5, 10  # 정답 
+    - b) 5, 5
+    - c) 10, 5
+
+
+
+7. 다음 중 함수를 정의하는 올바른 방법은?
+ * A. function my_function():
+ * B. def my_function():   # 정답
+ * C. my_function = def():
+ * D. create_function my_function():
+
+
+
+8. 다음 코드 실행 결과는?
+
+def print_info(**kwargs):
+    print(kwargs)
+
+print_info(name="John", age=30)
+
+
+(A) {'name': 'John', 'age': 30}   # 정답
+(B) ('name', 'John', 'age', 30)
+(C) Error
+(D) None
+
+
+
+
+
+9. BMI(체질량지수)를 계산하고, 결과에 따라 메시지를 출력하는 코드를 작성하시오. 
+
+# BMI 계산: 체중(kg) / (신장(m) ** 2)
+# BMI 지수에 따른 메세지 
+bmi < 18.5 => 저체중
+18.5 <= bmi < 24.9 => 정상 체중
+25 <= bmi < 29.9 => 과체중
+bmi >= 29.9 => 비만 
+
+
+# 함수 호출 사용 예시
+weight = 70  # 체중 (kg)
+height = 1.75  # 신장 (m)
+calculate_bmi(weight, height)
+
+
+# 결과 예시 
+BMI: 22.86, 상태: 정상 체중
+
+
+
+ # 정답 
+def calculate_bmi(weight, height):
+    # BMI 계산: 체중(kg) / (신장(m) ** 2)
+    bmi = weight / (height ** 2)
+
+    # BMI에 따른 메시지 출력
+    if bmi < 18.5:
+        message = "저체중"
+    elif 18.5 <= bmi < 24.9:
+        message = "정상 체중"
+    elif 25 <= bmi < 29.9:
+        message = "과체중"
+    else:
+        message = "비만"
+    
+    # 결과 출력
+    print(f"BMI: {bmi:.2f}, 상태: {message}")
+
+
+weight = 70  # 체중 (kg)
+height = 1.75  # 신장 (m)
+calculate_bmi(weight, height)
+
+
+
+10. 특정 년도를 함수로 전달하면 윤년인지 평년인지 출력하는 함수를 정의하고 호출하여라 
+
+윤년 규칙 
+- 연도가 4로 나누어 떨어지면 윤년.
+- 그러나 연도가 100으로 나누어 떨어지면 윤년이 아니다.
+- 다만 연도가 400으로 나누어 떨어지면 윤년.
+
+
+# print() 문안에 함수 호출 예시 
+print(f' 2000 년도는 {is_leap_year(2000)}')
+print(f' 2025 년도는 {is_leap_year(2000)}')
+print(f' 2030 년도는 {is_leap_year(2000)}')
+
+# 결과 예시 
+ 1988 년도는 윤년
+ 2000 년도는 윤년
+ 2025 년도는 평년
+ 2030 년도는 평년
+
+
+
+# 정답 
+def is_leap_year(year):
+    if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):
+        return '윤년'
+    else:
+        return '평년'
+    
+print(f' 1988 년도는 {is_leap_year(1988)}')
+print(f' 2000 년도는 {is_leap_year(2000)}')
+print(f' 2025 년도는 {is_leap_year(2025)}')
+print(f' 2030 년도는 {is_leap_year(2030)}')
+
+
+
+11. 학생명, 국어, 영어, 수학, 과학 점수를 함수로 전달하면 총점, 평균, 학점이 나오도록 
+프로그래밍하시오. 
+
+학점 기준:
+90점 이상 → A
+80점 이상 → B
+70점 이상 → C
+60점 이상 → D
+60점 미만 → F
+
+# 함수 호출 예시
+calculate_student_score("홍길동", 85, 90, 78, 92)
+calculate_student_score("김철수", 55, 60, 58, 62)
+calculate_student_score("이영희", 95, 92, 88, 94)
+
+
+# 결과 예시 
+학생명: 홍길동
+총점: 345, 평균: 86.25, 학점: B
+
+학생명: 김철수
+총점: 235, 평균: 58.75, 학점: F
+
+학생명: 이영희
+총점: 369, 평균: 92.25, 학점: A
+
+
+
+# 정답 
+def calculate_student_score(name, korean, english, math, science):
+    total = korean + english + math + science  # 총점 계산
+    average = total / 4  # 평균 계산
+    
+    # 학점 계산
+    if average >= 90:
+        grade = "A"
+    elif average >= 80:
+        grade = "B"
+    elif average >= 70:
+        grade = "C"
+    elif average >= 60:
+        grade = "D"
+    else:
+        grade = "F"
+    
+    # 결과 출력
+    print(f"학생명: {name}")
+    print(f"총점: {total}, 평균: {average:.2f}, 학점: {grade}")
+
+calculate_student_score("홍길동", 85, 90, 78, 92)
+calculate_student_score("김철수", 55, 60, 58, 62)
+calculate_student_score("이영희", 95, 92, 88, 94)
+
+
+
+
+12. 학생 성적 리스트(stGradeList)에서 각 학생의 과목 평균을 계산하고 
+학점을 부여되도록 프로그래밍 하시오 
+
+# 학점 기준
+90점 이상 → A
+80점 이상 → B
+70점 이상 → C
+60점 이상 → D
+60점 미만 → F
+
+# 학생 성적 리스트
+stGradeList = [['김수현', 85, 78, 88],
+               ['이준호', 90, 85, 95],
+               ['박지민', 70, 60, 75],
+               ['최예린', 95, 98, 92],
+               ['정하윤', 88, 80, 85]]
+
+
+
+# 함수 호출 실행 예시 
+calculate_grades(stGradeList)
+
+# 함수 호출 결과 예시 
+
+학생 성적표
+========================================
+이름: 김수현, 평균: 83.67, 학점: B
+이름: 이준호, 평균: 90.00, 학점: A
+이름: 박지민, 평균: 68.33, 학점: D
+이름: 최예린, 평균: 95.00, 학점: A
+이름: 정하윤, 평균: 84.33, 학점: B
+
+
+
+# 정답
+
+stGradeList = [['김수현', 85, 78, 88],
+               ['이준호', 90, 85, 95],
+               ['박지민', 70, 60, 75],
+               ['최예린', 95, 98, 92],
+               ['정하윤', 88, 80, 85]]
+
+
+def calculate_grades(stGradeList):
+    print("학생 성적표")
+    print("=" * 40)
+
+    for student in stGradeList:
+        name = student[0]  # 학생 이름
+        scores = student[1:]  # 점수 리스트
+        avg = sum(scores) / len(scores)  # 평균 계산
+        
+        # 학점 계산 (함수 내부에 직접 구현)
+        if avg >= 90:
+            grade = "A"
+        elif avg >= 80:
+            grade = "B"
+        elif avg >= 70:
+            grade = "C"
+        elif avg >= 60:
+            grade = "D"
+        else:
+            grade = "F"
+        
+        print(f"이름: {name}, 평균: {avg:.2f}, 학점: {grade}")
+
+
+calculate_grades(stGradeList)
+
+
+
+13. 도서 관리 프로그램 코드 다음과 같은 조건으로 작성하시오
+- 도서 데이터를 저장할 딕셔너리를 정의한다.
+    library = {}
+- 새로운 도서를 추가하는 함수를 정의한다. (아이디, 책제목, 저자, 출판년도)
+    add_book(book_id, title, author, year)
+- 등록된 도서 목록을 출력하는 함수를 정의한다
+    등록된 도서 목록이 없다면 '도서 목록이 비어 있습니다.' 메세지를 출력한다 
+    list_books(library)
+
+
+# 도서 데이터를 저장할 딕셔너리
+library = {}
+
+
+# 함수 호출 예시 
+list_books(library)
+
+add_book(1, "파이썬 프로그래밍", "홍길동", 2023)
+add_book(2, "데이터 사이언스 입문", "이몽룡", 2022)
+add_book(3, "네트워크 기초", "성춘향", 2021)
+
+list_books(library)
+
+
+# 함수 호출 실행 예시 
+ 도서 목록이 비어 있습니다.
+
+ '파이썬 프로그래밍' 도서가 추가되었습니다.
+ '데이터 사이언스 입문' 도서가 추가되었습니다.
+ '네트워크 기초' 도서가 추가되었습니다.
+
+ 도서 목록:
+ 1: 파이썬 프로그래밍 - 홍길동 (2023)
+ 2: 데이터 사이언스 입문 - 이몽룡 (2022)
+ 3: 네트워크 기초 - 성춘향 (2021)
+
+
+
+ # 정답 
+ # 도서 데이터를 저장할 딕셔너리
+library = {}
+
+def add_book(book_id, title, author, year):
+    """새로운 도서를 추가하는 함수"""
+    if book_id in library:
+        print(" 이미 존재하는 도서입니다!")
+    else:
+        library[book_id] = {"제목": title, "저자": author, "출판년도": year}
+        print(f" '{title}' 도서가 추가되었습니다.")
+
+
+def list_books(library):
+    """전체 도서 목록을 출력하는 함수"""
+    if not library:
+        print("\n 도서 목록이 비어 있습니다.\n")
+    else:
+        print("\n 도서 목록:")
+        for book_id, info in library.items():
+            print(f" {book_id}: {info['제목']} - {info['저자']} ({info['출판년도']}) ")
+
+
+
+list_books(library)
+
+add_book(1, "파이썬 프로그래밍", "홍길동", 2023)
+add_book(2, "데이터 사이언스 입문", "이몽룡", 2022)
+add_book(3, "네트워크 기초", "성춘향", 2021)
+
+list_books(library)
+
+'''
+ 도서 목록이 비어 있습니다.
+
+ '파이썬 프로그래밍' 도서가 추가되었습니다.
+ '데이터 사이언스 입문' 도서가 추가되었습니다.
+ '네트워크 기초' 도서가 추가되었습니다.
+
+ 도서 목록:
+ 1: 파이썬 프로그래밍 - 홍길동 (2023)
+ 2: 데이터 사이언스 입문 - 이몽룡 (2022)
+ 3: 네트워크 기초 - 성춘향 (2021)
+
+'''

@@ -1,0 +1,339 @@
+
+01. 다음 코드에서 발생할 수 있는 오류는 무엇인가요?
+
+   num = int(input("숫자를 입력하세요: "))
+   
+   - A) ValueError  **정답
+   - B) TypeError
+   - C) KeyError
+   - D) IndexError  
+
+
+02. 다음 중 예외를 처리하기 위한 기본 구문은 무엇인가요?
+   - A) if-else
+   - B) try-except  **정답
+   - C) for-while
+   - D) switch-case  
+
+
+03. finally 블록의 용도는 무엇인가요?
+   - A) 예외 발생 시 실행
+   - B) 항상 실행됨          **정답
+   - C) 예외를 발생시킴
+   - D) 변수 초기화  
+
+
+04. 다음 중 try-except 구문에서 예외 처리가 되지 않는(제외되는) 에러 유형은 무엇인가?
+
+   - A) ZeroDivisionError
+   - B) SyntaxError    **정답
+   - C)  FileNotFoundError
+   - D) ValueError
+
+
+05. 숫자가 아닌 문자열을 int()로 변환하려고 할 때 발생하는 예외는 무엇인가?
+   - A)  TypeError
+   - B)  NameError
+   - C)  ValueError     **정답
+   - D)  IndexError
+
+
+
+06. 특정 예외가 발생했을 때 에러 메시지를 변수로 받아 확인하고 싶다면 어떻게 작성해야 하는가?
+   - A)   except Exception as e:      **정답
+   - B)   except Exception = e:
+   - C)   except Exception(e):
+   - D)   except Exception e:
+
+
+
+07. 다음 코드는 사용자로부터 정수를 입력받아 리스트에서 인덱스로 사용하는 예제이다. 
+리스트의 범위를 벗어난 인덱스가 입력될 경우, 
+에러 메시지를 출력하지 않고 아무것도 하지 않고 넘어가려고 할때 빈칸에 알맞은 구문은?
+
+my_list = [10, 20, 30]
+try:
+	idx = int(input("인덱스를 입력하세요: "))
+	print(my_list[idx])
+except IndexError:
+	[ 빈칸 ]
+
+
+- **정답**: 
+    pass
+
+
+
+
+
+
+08. 다음 코드의 출력 결과는?
+
+try:
+    print(1 / 0)
+except ZeroDivisionError:
+    print("Cannot divide by zero")
+finally:
+    print("Done")
+
+
+- **정답**: 
+      Cannot divide by zero" 후 "Done" 출력  
+
+
+
+
+
+
+09. 화씨(Fahrenheit)온도를 입력받아 섭씨(Celsius)로 변환하는 함수를 코드로 작성하세요.  
+
+-  화씨를 섭씨로 변환하는 공식
+섭씨온도 : (화씨온도 - 32) * 5.0 / 9.0  
+- try~ except ~ else ~ finally ~를 이용하여 화씨온도의 데이타 오류시 예외처리 필요
+   유효한 숫자가 아닙니다. 숫자를 입력하세요.
+
+# 함수 호출 예시 
+fahrenheit_to_celsius()
+
+# 결과1 :
+화씨 온도를 입력하세요: 34.5
+34.5 화씨는 1.39 섭씨입니다.
+프로그램이 종료되었습니다.
+
+
+# 결과2 :
+화씨 온도를 입력하세요: 이십오도
+유효한 숫자가 아닙니다. 숫자를 입력하세요.
+프로그램이 종료되었습니다.
+
+
+
+**정답**
+def fahrenheit_to_celsius():
+    try:
+        fahrenheit = float(input("화씨 온도를 입력하세요: "))  # 사용자 입력 받기
+        celsius = (fahrenheit - 32) * 5.0 / 9.0  # 화씨를 섭씨로 변환
+    except ValueError:
+        print("유효한 숫자가 아닙니다. 숫자를 입력하세요.")
+    else:
+        print(f"{fahrenheit} 화씨는 {celsius:.2f} 섭씨입니다.")
+    finally:
+        print("프로그램이 종료되었습니다.")
+
+
+fahrenheit_to_celsius()
+
+
+
+
+
+10. random 모듈과  예외처리(try.. except)를 이용한 숫자 맞추기 게임을 작성하시오 
+- 숫자는 1~ 100 사이의 정수로 한다 
+- 숫자를 입력하여 맞출 때까지 반복한다. => while True 활용 
+- 입력한 숫자가 정답 숫자보다 크거나 작으면 힌트 메세지를 제공한다 
+- 정답숫자를 맞추면 시도 횟수를 출력한다 
+- 함수로 작성한다 
+- 정수 숫자 외에 다른 데이타를 입력하면 예외처리(try.. except)를 이용하여 
+'올바른 숫자를 입력하세요!' 메세지를 출력한다 
+
+
+# 모듈 임포트 
+import random
+
+# 게임 실행함수 호출 
+number_guessing_game()
+
+# 함수 호출 결과 예시1
+1부터 100 사이의 숫자를 맞춰보세요!
+숫자를 입력하세요: 50
+
+더 작은 숫자를 입력하세요!
+숫자를 입력하세요: 이십
+
+올바른 숫자를 입력하세요!
+숫자를 입력하세요: 2.5
+
+올바른 숫자를 입력하세요!
+숫자를 입력하세요: 25
+
+더 큰 숫자를 입력하세요!
+숫자를 입력하세요: 35
+
+더 작은 숫자를 입력하세요!
+숫자를 입력하세요: 30
+
+더 작은 숫자를 입력하세요!
+숫자를 입력하세요: 27
+
+더 작은 숫자를 입력하세요!
+숫자를 입력하세요: 26
+
+축하합니다! 6번 만에 정답(26)을 맞췄습니다!
+
+
+
+
+# 함수 호출 결과 예시2
+1부터 100 사이의 숫자를 맞춰보세요!
+
+숫자를 입력하세요: 50
+더 작은 숫자를 입력하세요!
+
+숫자를 입력하세요: 30
+더 큰 숫자를 입력하세요!
+
+숫자를 입력하세요: 40
+축하합니다! 3번 만에 정답(40)을 맞췄습니다!
+
+
+
+
+
+
+
+
+# 정답 
+import random
+
+def number_guessing_game():
+    target_number = random.randint(1, 100)  # 1~100 사이 랜덤 숫자 생성
+    attempts = 0  # 시도 횟수
+
+    print("1부터 100 사이의 숫자를 맞춰보세요!")
+
+    while True:
+        try:
+            guess = int(input("숫자를 입력하세요: "))
+            attempts += 1  # 시도 횟수 증가
+
+            if guess < target_number:
+                print("\n더 큰 숫자를 입력하세요!")
+            elif guess > target_number:
+                print("\n더 작은 숫자를 입력하세요!")
+            else:
+                print(f"\n축하합니다! {attempts}번 만에 정답({target_number})을 맞췄습니다!")
+                break  # 게임 종료
+        except ValueError:
+            print("\n올바른 숫자를 입력하세요!")
+
+# 게임 실행
+number_guessing_game()
+
+
+
+
+11. open() 함수에 사용되는 `a` 모드는 어떤 역할을 하는가?
+   - A) 파일을 읽기 전용으로 연다
+   - B) 파일을 쓰기 전용으로 열고 덮어쓴다 
+   - C) 파일을 열고 내용 뒤에 추가한다    **정답**
+   - D) 파일을 읽고 쓸 수 있게 한다
+
+
+
+12. with 문을 사용하여 파일을 열었을 때 얻을 수 있는 주요 장점은?
+   - A)  파일 속도가 빨라진다. 
+   - B)  파일이 자동으로 닫힌다.  **정답**
+   - C)  보안이 강화된다. 
+   - D)  용량이 줄어든다.
+
+
+13. 파일 전체 내용을 한꺼번에 읽어 문자열로 반환하는 메서드는?
+   - A)   read()   **정답**
+   - B)   readline() 
+   - C)   readlines() 
+   - D)   read_file()
+
+
+
+14. readlines() 메서드가 반환하는 데이터 타입은?
+   - A)   문자열(str)  
+   - B)   정수(int) 
+   - C)   리스트(list)  **정답**
+   - D)   딕셔너리(dict)
+
+
+
+15. 데이타 리스트에서 랜덤하게 한글자씩 선택하여 7개의 이름을 만들어 추가하고 
+파일로 쓰는 코드를 완성하시오.
+-  이때 최종 리스트는 중복 이름이 없어야하며 가나다순으로 정렬.
+-  최종 리스트로 생성된 이름을 'output/name.txt' 파일로 저장.
+
+
+# 데이타 리스트 정의 
+first_name = ['박', '김', '이', '최', '신', '장', '윤']
+last_name1 = ['은', '강', '종', '영', '준', '민']
+last_name2 = ['철','수', '미', '원', '주', '혁', '희', '수']
+
+
+# 함수 호출 후 출력 예시 
+make_name('output/name.txt', 'utf-8', first_name, last_name1, last_name2)
+
+['김은원', '김은주', '신강주', '신은혁', '신준주', '이강혁', '최민주']
+ output/name.txt : 파일 쓰기가 완료되었습니다...
+
+
+# 함수 정의 예시 
+def make_name(url, op, first_name, last_name1, last_name2):
+    name_list = []
+    # 코드 완성
+
+
+
+
+
+
+
+**정답** 
+
+import random
+
+def make_name(url, op, first_name, last_name1, last_name2):
+    name_list = []
+    while True:
+        x = random.choice(first_name)
+        y = random.choice(last_name1)
+        z = random.choice(last_name2)
+        if len(name_list) >= 7:
+            break
+        if (x + y + z) not in name_list:
+            name_list.append(x + y + z)
+    name_list.sort()
+    print(name_list)
+    with open(url, 'w', encoding=op) as file:
+        for name in name_list:
+            file.write(name + '\n')
+        print(f' {url} : 파일 쓰기가 완료되었습니다...')
+
+first_name = ['박', '김', '이', '최', '신', '장', '윤']
+last_name1 = ['은', '강', '종', '영', '준', '민']
+last_name2 = ['철','수', '미', '원', '주', '혁', '희', '수']
+
+make_name('output/name.txt', 'utf-8', first_name, last_name1, last_name2)
+
+
+
+16. 'data/data_eng.txt' 파일에 입력된 영어 점수 데이타를 이용하여 총점과 평균을 출력하고 
+별도 파일로 만드는 코드를 완성하시오.
+
+# 터미널 출력 예시 
+[67, 45, 95, 65, 45, 78, 87, 89, 100, 99, 98, 65]
+총점 : 933 , 평균 : 77.75
+
+# 완료된 파일 예시 
+영어 점수 : 67 , 45 , 95 , 65 , 45 , 78 , 87 , 89 , 100 , 99 , 98 , 65 
+총점 : 933 , 평균 : 77.75 
+
+
+
+**정답** 
+with open('data/data_eng.txt', 'r', encoding='utf-8') as file:
+    data = file.read()
+    data_list = data.splitlines()
+    print(data_list)
+    data_list = [int(data) for data in data_list]
+    print(data_list)
+    print(f'총점 : {sum(data_list)} , 평균 : {sum(data_list)/len(data_list):.2f} ')
+
+with open('output/eng_avg.txt', 'w', encoding='utf-8') as file:
+    file.write(f'\n\n영어 점수 : {' , '.join([str(data) for data in data_list])} ')
+    file.write(f'\n총점 : {sum(data_list)} , 평균 : {sum(data_list)/len(data_list):.2f} ')

@@ -1,0 +1,233 @@
+01. 사용자에게 숫자를 입력받아, 0이 입력될 때까지 합을 계산하는 코드로 올바른 것은?
+
+a) 
+total = 0
+while num != 0:
+    num = int(input("Enter a number: "))
+    total += num
+
+b) 
+total = 0
+while True:
+    num = int(input("Enter a number: "))
+    if num == 0:
+        break
+    total += num
+
+
+c) 
+total = 0
+while total < 10:
+    total += int(input("Enter a number: "))
+
+d) 
+total = 0
+while total != 0:
+    num = int(input("Enter a number: "))
+    total += num
+
+
+
+
+
+02. 구구단 6단을 리스트에 저장하고 출력하는 코드로 올바른 것을 모두 고르시오. 
+
+a) 
+result = []
+i = 1
+while i < 10:
+    result.append(6 * i)
+    i += 1
+print(result)
+
+b) 
+result = []
+i = 1
+while i < 11:
+    result.append(6 * i)
+    i += 1
+print(result)
+
+c) 
+result = []
+i = 6
+while i < 10:
+    result.append(6 * i)
+    i += 1
+print(result)
+
+d) 
+result = []
+i = 1
+while i < 10:
+    result.append(i * 6)
+    i += 1
+print(result)
+
+
+
+
+
+03. 주어진 리스트 ['apple', 'banana', 'cherry']에서 문자열의 길이를 계산하여 
+        새로운 리스트를 만드는 코드로 올바른 것은?
+   
+	결과 예시 :  [5, 6, 6]
+
+
+
+
+
+
+04. 1부터 30 사이의 숫자 중에서 3이나 5의 배수만으로 구성된 리스트를 
+     while 문을 사용하여 생성하는 코드는?
+
+[3, 5, 6, 9, 10, 12, 15, 18, 20, 21, 24, 25, 27, 30]
+
+
+
+
+
+
+05. 빈 리스트를 정의한 후 1부터 10까지의 수 중에서 3의 배수를 "Fizz"로 추가하고,  
+     그렇지 않으면 숫자 그대로 리스트에 추가하는 코드를 작성하면?
+
+최종 출력 형태 :
+		[1, 2, 'Fizz', 4, 5, 'Fizz', 7, 8, 'Fizz', 10]
+
+
+
+
+
+
+06. 주어진 리스트 
+fruits = ['apple', 'banana', 'cherry', 'kiwi', 'grape', 'orange', 'peach', 'mango']
+에서 각 과일의 첫 글자를 대문자로 바꾸고, 
+그 길이가 5 이하인 과일 이름만 포함하는 리스트를 만드는 코드를 작성하여라. 
+    (upper(), len(), lower())
+
+# 리스트 정의 
+fruits = ['apple', 'banana', 'cherry', 'kiwi', 'grape', 'orange', 'peach', 'mango']
+capitalized_fruits = []
+
+# 최종 출력 결과 : ['Apple', 'Kiwi', 'Grape', 'Peach', 'Mango']
+
+
+
+
+
+
+07. 다음 코드의 결과는 무엇인가?
+
+   i = 0
+   while i < 5:
+       print(i) 
+       i += 1
+       if i == 3: 
+           break  
+
+   a) 0, 1, 2  
+   b) 0, 1, 2, 3  
+   c) 0, 1, 2, 3, 4  
+   d) 1, 2, 3  
+
+
+
+
+08. 다음 코드의 결과는 무엇인가?
+
+   x = 10
+   while x > 0:
+       x -= 1
+       if x == 5:  
+           break  
+   print(x)  
+
+   a) 6  
+   b) 5  
+   c) 4  
+   d) 0  
+
+
+
+
+
+09. 다음 코드의 결과는 무엇인가?
+    i = 1
+    while i <= 10:
+        if i % 3 == 0: 
+            break  
+        i += 1  
+    print(i) 
+
+    a) 3  
+    b) 2  
+    c) 1  
+    d) 10  
+
+
+
+
+
+10.  사용자가 특정 비밀번호를 입력할 때까지 프로그래밍 실행이 반복되게 코드를 작성하시오. 
+
+비밀번호를 입력하세요: admin
+ 비밀번호가 틀렸습니다. 다시 시도하세요.
+
+비밀번호를 입력하세요: 12345
+ 비밀번호가 틀렸습니다. 다시 시도하세요.
+
+비밀번호를 입력하세요: python
+ 로그인 성공!
+
+
+
+
+
+
+
+11.  사용자가 단어와 뜻을 입력하면 딕셔너리에 저장하고,
+ exit을 입력하면 입력 종료 후 저장된 딕셔너리를 출력하도록 프로그래밍하시오 
+
+
+저장할 단어를 입력하세요 (종료: exit): apple
+apple의 뜻을 입력하세요: 사과
+저장할 단어를 입력하세요 (종료: exit): start
+start의 뜻을 입력하세요: 시작
+저장할 단어를 입력하세요 (종료: exit): milk
+milk의 뜻을 입력하세요: 우유
+저장할 단어를 입력하세요 (종료: exit): exit
+
+
+ 저장된 단어 목록
+{'apple': '사과', 'start': '시작', 'milk': '우유'}
+
+
+
+
+
+
+12.  사용자가 제품 이름과 재고 수량을 입력하면 딕셔너리에 저장하고,
+exit을 입력하면 종료 후 모든 재고를 출력하도록 프로그래밍하여라. 
+- 딕셔너리 저장시 제품 이름은 키, 재고 수량은 값
+- 제품이름이 기존 제품이면 재고량 추가 
+
+결과 예시)
+
+추가할 제품명을 입력하세요 (종료: exit): 밀가루
+밀가루의 재고 수량을 입력하세요: 10
+추가할 제품명을 입력하세요 (종료: exit): 고추장
+고추장의 재고 수량을 입력하세요: 5
+추가할 제품명을 입력하세요 (종료: exit): 상추
+상추의 재고 수량을 입력하세요: 10
+추가할 제품명을 입력하세요 (종료: exit): 밀가루
+밀가루의 재고 수량을 입력하세요: 5
+추가할 제품명을 입력하세요 (종료: exit): 설탕
+설탕의 재고 수량을 입력하세요: 10
+추가할 제품명을 입력하세요 (종료: exit): exit
+
+ 제품 재고
+{'밀가루': 15, '고추장': 5, '상추': 10, '설탕': 10}
+
+
+
+

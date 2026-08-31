@@ -1,0 +1,153 @@
+
+1. CSV 파일을 읽기 위해 사용하는 함수는 무엇인가요?
+   - A) csv.write()
+   - B) csv.read()
+   - C) csv.reader()  
+   - D) csv.load()  
+
+
+
+2. CSV 파일을 쓸 때, 각 행을 구분하는 기본 문자는 무엇인가요?
+   - A) 탭
+   - B) 콜론
+   - C) 쉼표  
+   - D) 공백  
+
+
+3. csv.DictReader()`를 사용할 때 반환되는 객체는 무엇인가요?
+   - A) 리스트
+   - B) 문자열
+   - C) 딕셔너리 
+   - D) 튜플  
+
+
+4. 다음 중 CSV 파일을 작성할 때 사용 가능한 메서드는 무엇인가요?
+    - A) writerow()  
+    - B) addrow()
+    - C) insertrow()
+    - D) appenderow()  
+
+
+5. 다음 중 csv.DictWriter() 를 사용할 때, 헤더를 정의하는 방법으로 올바른 것은 무엇인가요?
+
+   import csv
+   with open('data.csv', 'w', newline='') as file:
+       writer = csv.DictWriter(file, fieldnames=['name', 'age'])
+
+   - A) writer.writeheader()    
+   - B) writer.header()
+   - C) writer.writelines()
+   - D) writer.addheader()  
+
+
+
+6.  csv.DictReader()를 사용했을 때, 파일의 헤더 정보를 확인할 수 있는 속성은?
+   - A) csv_reader.header 
+   - B) csv_reader.keys 
+   - C) csv_reader.fieldnames  
+   - D) csv_reader.columns
+
+
+7. CSV 파일에서 데이터를 읽거나 쓸 때, 데이터 항목을 구분하는 기호를 무엇이라 하는가?
+   - A) sep 
+   - B) delimiter  
+   - C) index  
+   - D) header
+
+
+
+8. 리스트 형태의 데이터를 CSV 파일로 저장하는 코드에서 주석에 해당하는 빈칸에 들어갈 명령어는?
+
+import csv
+
+data = ['홍길동', 25]
+
+# CSV 파일 처리 시 한글 깨짐을 방지하기 위해 사용하는 인코딩값은?
+with open('output.csv', 'w', newline='', encoding=[  빈칸   ]) as f:
+    writer = csv.writer(f)
+
+    # 한 행을 파일에 기록하는 메서드는?
+    writer.[  빈칸  ](data)  
+
+
+
+
+
+
+
+9. 아래의 data 를 'people.csv' 파일로 저장하는 코드를 완성하여라
+
+
+import csv
+
+# 데이터 준비
+data = [
+    ["Name", "Age", "City"],
+    ["Alice", 30, "New York"],
+    ["Bob", 25, "Los Angeles"],
+    ["Charlie", 35, "Chicago"]
+]
+
+
+### 파일 쓰기 결과
+
+Name,Age,City
+Alice,30,New York
+Bob,25,Los Angeles
+Charlie,35,Chicago
+
+
+
+
+
+
+
+
+10. 국가 정보 데이타 리스트를 이용하여 아래 요구사항에 맞추어 프로그래밍하고 결과를 확인하여라 
+- '\t' 구분자로 *.tsv 파일형태로 저장한다( delimiter='\t' 활용 )
+- 저장한 tsv 파일을 읽어 전체 출력한다.
+- 영어, 프랑스, 독일어를 사용하는 국가 목록을 한줄에 출력한다.
+
+data_to_save = [
+    ['Country', 'Capital', 'Language'],
+    ['Vietnam', 'Hanoi', 'Vietnamese'],
+    ['Germany', 'Berlin', 'German'],
+    ['Brazil', 'Brasilia', 'Portuguese'],
+    ['Canada', 'Ottawa', 'English/French'],
+    ['Japan', 'Tokyo', 'Japanese'],
+    ['Australia', 'Canberra', 'English'],
+    ['France', 'Paris', 'French'],
+    ['Italy', 'Rome', 'Italian'],
+    ['Spain', 'Madrid', 'Spanish'],
+    ['Korea', 'Seoul', 'Korean']
+]
+
+
+>> 출력 예시 1
+
+--- countries.tsv 파일이 생성되었습니다. ---
+
+>> 출력 예시 2
+
+국가              | 수도           | 사용 언어
+---------------------------------------------
+Vietnam         | Hanoi        | Vietnamese
+Germany         | Berlin       | German
+Brazil          | Brasilia     | Portuguese
+Canada          | Ottawa       | English/French
+Japan           | Tokyo        | Japanese
+Australia       | Canberra     | English
+France          | Paris        | French
+Italy           | Rome         | Italian
+Spain           | Madrid       | Spanish
+Korea           | Seoul        | Korean
+
+
+>> 출력 예시 3
+
+[영어, 프랑스, 독일어를 사용하는 국가 목록]
+Germany Canada Australia France 
+
+'''
+
+

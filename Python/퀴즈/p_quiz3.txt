@@ -1,0 +1,187 @@
+문제1 : 빈 리스트를 생성하는 코드는?
+A) my_list = ()
+B) my_list = []
+C) my_list = {}
+D) my_list = list()
+
+
+
+문제2 : 리스트 fruits = ['apple', 'banana', 'cherry']의 길이를 구하는 코드는?
+A) len(fruits)
+B) fruits.size()
+C) fruits.count()
+D) count(fruits)
+
+
+
+문제3: 리스트 colors = ['red']에 'green'을 추가하는 코드는?
+A) colors.add('green')
+B) colors.append('green')
+C) colors.insert('green')
+D) colors.push('green')
+
+
+
+문제4: 리스트 items = [1, 2, 3, 4, 5]에서 
+    첫 세 개의 요소를 슬라이싱하는 코드는?
+A) items[:3]
+B) items[0:3]
+C) items[0:2]
+D) A와 B 모두 정답
+
+
+
+문제5: 리스트 data = [5, 3, 1, 4, 2]를 
+오름차순으로 정렬하는 코드는?
+A) data.sort()
+B) data.sorted()
+C) data.order()
+D) A와 B 모두 정답
+
+
+
+문제6: 리스트 animals = ['cat', 'dog', 'fish']에서 
+    'dog'를 삭제하는 코드는?
+A) animals.remove('dog')
+B) animals.pop('dog')
+C) animals.delete('dog')
+D) animals.erase('dog')
+
+
+
+문제7: 리스트 elements = ['a', 'b', 'c', 'd']에서 
+    'c'의 인덱스를 찾는 코드는?
+A) index_c = elements.index('c')
+B) index_c = elements.find_index('c')
+C) index_c = elements.position('c')
+D) index_c = elements.search('c')
+
+
+
+문제8: 리스트 matrix = [[1, 2], [3, 4], [5, 6]]에서 4를 출력하는 코드는?
+A) value = matrix[1][0]
+B) value = matrix[1][1]
+C) value = matrix[0][1]
+D) value = matrix[2][1]
+
+
+
+
+
+문제9: 리스트 items = [1, 2, 3, 4, 5]의 요소 순서를 반전시키는 코드는?
+A) items.reverse()
+B) items.invert()
+C) items.swap()
+D) items.flip()
+
+
+
+
+
+문제10: 
+튜플 my_tuple = (1, 2, 3, 4)를 리스트로 변환한 후, 
+2를 삭제하고 다시 튜플로 변환하는 코드를 작성하세요.
+
+
+
+
+문제11: 
+리스트 words = ['Hello', 'World']를 
+    공백으로 구분된 문자열로 변환하는 코드는?
+    Hello World
+A) result = words.join()
+B) result = join(words)
+C) result = ' '.join(words)
+D) result = list(words)
+
+
+
+
+문제12: 
+튜플 data = ('a', 'b', 'c')를 리스트로 변환한 후 
+각 요소를 '-'로 결합하여 문자열로 만드는 코드는?
+(결과 : a-b-c)
+
+
+
+
+문제13: 
+입력한 숫자 데이타를 아래와 같은 형태로 가공하여 리스트에 추가하는 코드를 작성하여라
+입력 횟수는 3번으로 제한한다.
+
+첫번째 숫자를 입력하세요...45
+두번째 숫자를 입력하세요...88
+세번째 숫자를 입력하세요...34
+------------------------------
+['a-45번', 'b-88번', 'c-34번']
+
+
+
+
+
+문제14: 
+리스트를 아래와 같이 정의한 후 주석문 형태를 참조하여 리스트에 항목을 
+수정, 추가, 삭제하여라 
+
+초기 리스트 : ['사과', '바나나', '체리']
+결과 1  : ['사과', '바나나', '체리', '오렌지', '포도']
+결과 2  : ['사과', '복숭아', '수박', '오렌지', '포도']
+결과 3  : ['사과', '복숭아', '오렌지', '포도']        
+결과 4  : ['사과', '복숭아', '오렌지']
+결과 5  : ['한라봉', '사과', '복숭아', '오렌지']  
+
+
+# 초기 리스트
+items_list = ["사과", "바나나", "체리"]
+
+# "오렌지", "포도" 추가 
+
+# 데이타 수정 : '바나나' → '복숭아', '체리' → '수박' 
+
+# '수박' 삭제
+
+# 리스트의 마지막 항목 제거
+
+# 첫번째 위치에 '한라봉' 삽입 
+
+
+
+
+
+
+
+문제 15 :
+문자열로 구성된 데이타가 초기형태로 삽입된 리스트와 빈 튜플을 선언한 후 주석문 형태를 참조하여 
+리스트의 요소를 이용하여 튜플에 요소를 추가하는 코드를 작성하여라
+
+결과 >> 
+ step0 : word_list = ['apart', 'banana', 'orange', 'cherry'] 
+ step1 : word_tuple = () 
+ step2 : word_tuple = ('at',)
+ step3 : word_tuple = ('at', 'bnn')
+ step4 : word_tuple = ('at', 'bnn', 'rne')
+ step5 : word_tuple = ('cherry', 'at', 'bnn', 'rne')
+
+
+# 리스트 정의 
+word_list = [ 'apart', 'banana', 'orange', 'cherry' ]
+print(f' step0 : word_list = {word_list} ')
+
+# 비어있는 튜플 정의 
+word_tuple = ()
+print(f' step1 : word_tuple = {word_tuple} ')
+
+# 리스트의 1번째 요소에서 첫글자와 마지막 글자로 구성된 데이타를 튜플에 삽입 
+
+
+# 리스트의 2번째 요소에서 홀수번째 글자로 구성된 데이타를 튜플에 삽입 
+
+
+# 리스트의 3번째 요소에서 짝수번째 글자로 구성된 데이타를 튜플에 삽입 
+
+
+# 리스트의 4번째 요소를 튜플의 첫번째 요소로 삽입 
+
+
+
+

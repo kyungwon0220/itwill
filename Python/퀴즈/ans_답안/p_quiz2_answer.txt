@@ -1,0 +1,291 @@
+
+# 1. 다음 코드의 실행 결과는? 
+x = 4
+y = 2
+z = 3
+print((x ** y) // z)  
+
+# ** 제곱승, // 정수몫, / 나누기(실수), % 나머지 
+# 출력: 5
+
+
+# 2. 다음 코드의 실행 결과는? 
+
+x = True
+y = False
+result = x and y
+print(result)
+
+
+# and 연산자는 양쪽 값이 모두 True일 때만 True를 반환
+# 출력 : False
+
+
+
+# 3. 다음 코드의 실행 결과는? 
+ a = 7
+ b = 10
+ result = a != b
+ print(result)
+
+	#  1) True
+	#  2) False
+	#  3) 7
+	# 4) 10
+
+# != 연산자는 두 값이 다른지 비교하는 연산자
+# 1) True 
+
+
+
+# 4. 문자열 포맷팅 문제 (f-string)로 다음 코드의 실행 결과는? 
+name = "John"
+age = 25
+height = 175.5
+print(f"Name: {name}, Age: {age}, Height: {height:.1f} cm")  
+
+
+# f" ~ {변수1} ~ {변수2:전체자릿수.소숫점이하자릿수f ~ {변수3:<패딩숫자값}}  "
+# f" ~  {변수1:<패딩숫자값}  ~  {변수2:<패딩숫자값}  ~ {변수1:^패딩숫자값}  "
+# 출력: Name: John, Age: 25, Height: 175.5 cm
+
+
+
+
+# 5. 문자열 포맷팅 문제 (format() 함수)로 다음 코드의 실행 결과는? 
+name = "Bob"
+score = 95.6789
+print("Name: {}, Score: {:.2f}".format(name, score)) 
+
+# " ~ {인덱스1}  ~ {인덱스2} ~ ".format(변수1, 변수2) # 인덱스 생략 가능
+# " ~ {변수1}  ~ {변수2} ~ ".format(변수1=값1, 변수2=값2) # 인덱스 생략 가능
+# 출력: Name: Bob, Score: 95.68
+
+
+# 6. 문자열 함수 문제로 다음 코드의 실행 결과는? 
+s = "hello world"
+print(s.title())  
+
+# title() : 알파벳 단어기준. 첫글자가 대문자로 변환
+# 출력: Hello World
+
+
+# 7. 문자열 슬라이싱 문제로 다음 코드의 실행 결과는? 
+
+s = "Data Science"
+print(s[::3])  
+
+# 출력: Dacn
+
+
+# 8. 문자열 슬라이싱 문제로 다음 코드의 실행 결과는? 
+
+s = "Machine Learning"
+print(s[1:10:2])  
+
+
+# start~ end-1 의 인덱스에 해당하는 문자열 반환
+# 출력: ahn e
+
+
+# 9. 문자열 인덱싱 문제로 다음 코드의 실행 결과는? 
+s = "Artificial Intelligence"
+print(s[-5])  
+
+# 출력: g
+
+# 10. 문자열 인덱싱 문제로 다음 코드의 실행 결과는? 
+s = "Deep Learning"
+print(s[-3:])  
+
+# 출력: ing
+
+
+# 11. 문자열 함수 문제로 다음 코드의 실행 결과는? 
+s = "Artificial Intelligence"
+print(s.count('i'))  
+
+	a. 3
+	b. 4
+	c. 5
+
+# 대소문자 구별
+# 출력: b) 4
+
+
+
+# 12. 문자열 함수 문제로 다음 코드의 실행 결과는? 
+
+text = "   Hello, World!   "
+result = text.strip()
+print(f"'{result}'")
+
+	a. 'Hello,World! '
+	b. 'Hello, World!'
+	c. '    Hello, World!'
+
+
+# strip() : 좌우 여백 삭제 함수 
+#  b
+
+
+# 13. 사용자가 두 숫자를 입력하고, 두 값이 둘 다 10보다 크면 True를 출력하도록 프로그래밍하여라
+
+>> 출력 예시 
+
+첫 번째 숫자를 입력하세요: 20
+두 번째 숫자를 입력하세요: 5
+----------
+False
+
+
+첫 번째 숫자를 입력하세요: 15
+두 번째 숫자를 입력하세요: 12
+----------
+True
+
+
+x = int(input("첫 번째 숫자를 입력하세요: "))
+y = int(input("두 번째 숫자를 입력하세요: "))
+result = (x > 10) and (y > 10)
+print('-'*10)
+print(result)
+
+
+
+# 14. 다음 코드의 실행 결과는 무엇인가요?
+
+text = "  Hello, World! Python is awesome!  "
+result = text.strip().replace("World", "Universe").lower().split()
+print(result)
+
+
+	a. ['hello', 'universe', 'python', 'is', 'awesome']
+	b. ['Hello', 'Universe', 'Python', 'is', 'awesome']
+	c. ['hello,', 'universe!', 'python', 'is', 'awesome!']
+	d. ['hello', 'world', 'python', 'is', 'awesome']
+
+
+# c
+# strip()은 양쪽 공백을 제거하고, replace()는 World를 Universe로, 
+# lower()는 모두 소문자로, split()은 공백을 기준으로 나누어 리스트로 반환
+
+
+# 15. 사용자로부터 날짜를 "YYYY-MM-DD" 형식으로 입력받고, 
+해당 날짜의 연도, 월, 일만 아래와 같은 형태로  출력되도록 프로그래밍 하여라. 
+
+
+날짜를 'YYYY-MM-DD' 형식으로 입력하세요: 2025-12-10
+입력된 날짜: 2025년 12월 10일
+
+
+
+# 사용자로부터 날짜 입력 받기
+date = input("날짜를 'YYYY-MM-DD' 형식으로 입력하세요: ")
+
+# 슬라이싱을 이용해 연, 월, 일 추출
+year = date[:4]
+month = date[5:7]
+day = date[8:]
+
+# 결과 출력
+print(f"입력된 날짜: {year}년 {month}월 {day}일")
+
+
+
+
+
+
+#16. 문자열 함수를 이용하여 프로그래밍하여라 
+
+(1절)
+동해물과 백두산이 마르고 닳도록
+하느님이 보우하사 우리나라만세
+
+(후렴) 무궁화 삼천리 화려강산 
+대한사람 대한으로 길이 보전하세
+
+(2절)
+남산위에 저 소나무 철갑을 두른듯
+바람서리 불변함은 우리기상 일세
+(후렴)무궁화 삼천리 화려강산 대한사람 대한으로 길이보전하세
+
+
+1) 애국가 1,2 절에서 무궁화는 몇 번 나올까?
+예시)
+무궁화는 애국가 1~2절에서 ?번 나옵니다
+
+2) 애국가 1,2 절에서 '소나무'의 위치 인덱스 값은?
+예시) 
+애국가 1~2절에서 "소나무"의 인덱스 위치는 ?입니다
+
+3) 애국가 1,2 절에서 줄바꿈 없이 출력하여라. 
+
+
+4) 애국가 1절에서 아래 문자열만 출력하여라(슬라이싱, find() 활용) 
+예시)
+동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라 만세
+
+5) 애국가에서 일부 슬라이싱 한 후 아래와 같이 출력하여라 (join() 활용)
+예시)
+동=해=물=과= =백=두=산=이= =마=르=고=  
+
+
+
+
+anthem = '''(1절)
+동해물과 백두산이 마르고 닳도록
+하느님이 보우하사 우리나라만세
+(후렴) 무궁화 삼천리 화려강산 
+대한사람 대한으로 길이 보전하세
+(2절)
+남산위에 저 소나무 철갑을 두른듯
+바람서리 불변함은 우리기상 일세
+(후렴)무궁화 삼천리 화려강산 대한사람 대한으로 길이보전하세
+'''
+# print(anthem)
+
+# 퀴즈1 
+word_count = anthem.count('무궁화')
+print(f'무궁화는 애국가 1~2절에서 {word_count}번 나옵니다')
+print(f'무궁화는 애국가 1~2절에서 {anthem.count("무궁화")}번 나옵니다')
+
+# 퀴즈2 
+# find(), index()
+# word_idx = anthem.find('소나무')
+# word_idx = anthem.index('소나무') # index() 찾고자 하는 단어가 없다면 에러 발생
+word_idx = anthem.index('소나무')
+print(f'애국가 1~2절에서 "소나무"의 인덱스 위치는 {word_idx} 입니다')
+# 애국가 1~2절에서 "소나무"의 인덱스 위치는 89 입니다
+
+
+# 퀴즈 3
+print(anthem.count('\n')) # \n 줄바꿈 특수 문자 # 9 
+print(anthem.replace('\n', '')) # \n 을 공백으로 변경
+
+# 퀴즈 4
+'''
+1) 문자열 변수 저장 
+2) 슬라이싱 범위 값 찾기 : find() , 시작인덱스, 마지막인덱스  
+3) 출력 
+'''
+start_idx = anthem.find('동해물과')
+end_idx = anthem.find('만세') + 2
+print('='*10)
+print( anthem[start_idx:end_idx] )
+print(anthem[start_idx:end_idx].replace('\n', ' '))
+
+# 퀴즈 5
+'''
+1) 문자열 변수 저장 
+2) 슬라이싱 범위 값 찾기 : find() , 시작인덱스, 마지막인덱스  
+3) 출력 : 구분문자.join(문자열변수)
+'''
+print('='*10)
+start_idx = anthem.find('동해물과')
+end_idx = anthem.find('마르고') + 3
+print('='*10)
+print( anthem[start_idx:end_idx] )
+print( '='.join(anthem[start_idx:end_idx]) )
+# 특정 문자열을 슬라이싱하고 공백을 삭제하고 낱글자 사이에 '=' 삽입 
+print( '='.join(anthem[start_idx:end_idx].replace(' ','')) )

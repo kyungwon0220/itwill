@@ -1,0 +1,317 @@
+
+01. 클래스의 생성자를 정의하는 메서드는 무엇인가요?
+   - A) __init__()   ** 정답 
+   - B) __new__()
+   - C) __call__()
+   - D) __str__()  
+
+
+02. 다음 코드에서 Dog 클래스의 인스턴스를 생성하는 방법은 무엇인가요?
+
+   class Dog:
+       def bark(self):
+           return "Woof!"
+
+   - A) dog = Dog.bark()
+   - B) dog = Dog()    ** 정답 
+   - C) dog = Dog.bark
+   - D) dog = new Dog()  
+
+
+
+03. 다음 코드의 실행 결과는?
+
+class Test:
+    x = 10
+
+a = Test()
+b = Test()
+
+a.x = 20
+
+print(Test.x, a.x, b.x)
+
+   - A)  20 20 20
+   - B)  10 20 10     ** 정답 
+   - C)  10 10 10
+   - D)  오류 발생
+
+
+
+04. 클래스 변수의 특징은 무엇인가요?
+   - A) 모든 인스턴스에서 공유된다.          ** 정답 
+   - B) 각 인스턴스마다 별도로 존재한다.
+   - C) 클래스 내부에서만 접근할 수 있다.
+   - D) 변경할 수 없다.  
+
+
+05. 다음 코드에서 super()의 사용 목적은 무엇인가요?
+   
+   class Parent:
+       def __init__(self):
+           print("Parent initialized")
+
+   class Child(Parent):
+       def __init__(self):
+           super().__init__()
+           print("Child initialized")
+
+   - A) 자식 클래스의 메서드를 호출한다.
+   - B) 부모 클래스의 메서드를 호출한다.       ** 정답 
+   - C) 모든 인스턴스의 메서드를 호출한다.
+   - D) 클래스를 초기화한다.  
+
+
+
+06. 다음 코드에서 `Dog` 클래스의 `sound` 메서드를 오버라이딩 한 결과로 출력되는 값은 무엇인가요?
+
+class Animal:
+    def sound(self):
+        return "Some sound"
+
+class Dog(Animal):
+    def sound(self):
+        return "Bark"
+
+dog = Dog()
+print(dog.sound())
+
+- A) Some sound
+- B) Bark                 ** 정답 
+- C) 오류 발생
+- D) None
+
+
+
+07. 다음 코드의 실행 결과는?
+
+class Parent:
+    def hello(self):
+        print("Parent")
+
+class Child(Parent):
+    def hello(self):
+        super().hello()
+        print("Child")
+
+c = Child()
+c.hello()
+
+- A)  Child
+- B)  Parent
+- C)  Parent                      ** 정답 
+       Child
+- D)  오류 발생
+
+
+
+08. 삼각형(Triangle)을 클래스로 정의한 후 2개의 삼각형을 인스턴스하는 코딩을 작성세요 
+- 속성(이름, 밑변, 높이)과 메서드(면적, 삼각형 정보)를 정의하고 출력
+- 삼각형의 면적 구하는 공식 (밑변의길이 * 높이)/2
+
+# 출력 예시 
+
+ --------------------
+삼각형 이름 :  triangle1
+삼각형의 밑변 :  10
+삼각형의 높이 :  5
+삼각형의 면적 :  ?
+
+ --------------------
+삼각형 이름 :  triangle2
+삼각형의 밑변 :  20
+삼각형의 높이 :  10
+삼각형의 면적 :  ?
+
+
+---
+class Triangle:
+
+    # 생성자
+    def __init__(self, name, base, height):
+        self.name = name
+        self.base = base
+        self.height = height
+
+    # 삼각형 면적
+    def get_area(self):
+        return (self.base * self.height) / 2
+
+    # 삼각형 정보 출력
+    def show_info(self):
+        print("-" * 20)
+        print(f"삼각형 이름 : {self.name}")
+        print(f"삼각형의 밑변 : {self.base}")
+        print(f"삼각형의 높이 : {self.height}")
+        print(f"삼각형의 면적 : {self.get_area()}")
+
+
+# 삼각형 객체 생성
+triangle1 = Triangle("triangle1", 10, 5)
+triangle2 = Triangle("triangle2", 20, 10)
+
+
+# 삼각형 정보 출력
+triangle1.show_info()
+triangle2.show_info()
+
+
+
+
+
+
+
+09.   쇼핑몰에서 주문이 발생하면, '주문(Order)' 객체가 '상품(Product)'을 담고, 이를 '사용자(User)'에게 배송하는 과정을 클래스를 이용하여 구현하여라
+
+[ Product 클래스]
+상품 정보를 저장
+상품명(name)
+가격(price)
+
+[ User 클래스]
+사용자 정보를 저장
+이름(name)
+배송지(address)
+
+[ Order 클래스]
+하나의 주문 정보를 관리하는 클래스
+생성자의 매개변수로 User 객체를 전달받는다.
+주문한 상품들을 저장할 리스트(cart)를 생성한다
+
+[ Order 클래스 구현 기능] 
+
+- 상품 추가 기능
+메서드명 : add_product()
+Product 객체를 매개변수로 전달받는다.
+전달받은 상품을 장바구니(cart)에 저장한다.
+상품이 추가되었다는 메시지를 출력한다. (예 - '노트북'이(가) 장바구니에 담겼습니다.)
+
+
+- 주문 기능
+메서드명 : checkout()
+주문 정보를 출력한다.
+주문 상품의 총 금액을 계산하여 출력한다.
+배송 시작 메시지를 출력한다.
+
+예)
+
+--- 주문서 ---
+주문자: 드림
+배송지: 서울시 서대문구 연희동
+상품 목록: 노트북, 무선 마우스
+총 결제 금액: 1530000원
+배송이 시작되었습니다!
+
+
+
+[ 프로그래밍 사용 예시 ]
+user = User("서하늘", "서울시 서대문구 연희동")
+order = Order(user)
+
+order.add_product(Product("노트북", 1500000))
+order.add_product(Product("무선 마우스", 30000))
+
+order.checkout()
+
+
+
+[ 프로그래밍 실행 결과 예시  ]
+
+'노트북'이(가) 장바구니에 담겼습니다.
+'무선 마우스'이(가) 장바구니에 담겼습니다.
+
+--- 주문서 ---
+주문자: 서하늘
+배송지: 서울시 서대문구 연희동
+상품 목록: 노트북, 무선 마우스
+총 결제 금액: 1530000원
+배송이 시작되었습니다!
+
+
+
+
+
+---
+# 상품 클래스
+class Product:
+
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
+
+
+# 사용자 클래스
+class User:
+
+    def __init__(self, name, address):
+        self.name = name
+        self.address = address
+
+
+# 주문 클래스
+class Order:
+
+    def __init__(self, user):
+        self.user = user
+        self.cart = []
+
+    # 상품 추가
+    def add_product(self, product):
+        self.cart.append(product)
+
+        print(f"'{product.name}'이(가) 장바구니에 담겼습니다.")
+
+    # 주문
+    def checkout(self):
+
+        print()
+        print("--- 주문서 ---")
+
+        print(f"주문자: {self.user.name}")
+        print(f"배송지: {self.user.address}")
+
+        # 상품 이름 출력
+        product_names = []
+
+        for product in self.cart:
+            product_names.append(product.name)
+
+        print(f"상품 목록: {', '.join(product_names)}")
+
+        # 총 금액 계산
+        total = 0
+
+        for product in self.cart:
+            total += product.price
+
+        print(f"총 결제 금액: {total}원")
+
+        print("배송이 시작되었습니다!")
+
+
+# 사용자 객체 생성
+user = User(
+    "서하늘",
+    "서울시 서대문구 연희동"
+)
+
+# 주문 객체 생성
+order = Order(user)
+
+# 상품 추가
+order.add_product(
+    Product("노트북", 1500000)
+)
+
+order.add_product(
+    Product("무선 마우스", 30000)
+)
+
+# 주문
+order.checkout()
+
+
+
+
+
+

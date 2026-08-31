@@ -1,0 +1,344 @@
+import sqlite3
+
+
+DB_NAME = "todo.db"
+
+
+# ---------------------------------
+# 1. 데이터베이스 연결
+# ---------------------------------
+def connect_db():
+    return sqlite3.connect(DB_NAME)
+
+
+# ---------------------------------
+# 2. 테이블 생성
+# ---------------------------------
+def create_table():
+
+    conn = connect_db()
+    cursor = conn.cursor()
+
+    sql = """
+    CREATE TABLE IF NOT EXISTS todos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        completed INTEGER DEFAULT 0
+    )
+    """
+
+    cursor.execute(sql)
+
+    conn.commit()
+    conn.close()
+
+
+# ---------------------------------
+# 3. 할 일 추가
+# ---------------------------------
+def add_todo():
+
+    title = input("할 일을 입력하세요: ")
+
+    if title.strip() == "":
+        print("할 일을 입력해주세요.")
+        return
+
+    conn = connect_db()
+    cursor = conn.cursor()
+
+    sql = """
+    INSERT INTO todos (title, completed)
+    VALUES (?, ?)
+    """
+
+    cursor.execute(sql, (title, 0))
+
+    conn.commit()
+    conn.close()
+
+    print("할 일이 추가되었습니다.")
+
+
+# ---------------------------------
+# 4. 할 일 전체 조회
+# ---------------------------------
+def show_todos():
+
+    conn = connect_db()
+    cursor = conn.cursor()
+
+    sql = """
+    SELECT id, title, completed
+    FROM todos
+    ORDER BY id DESC
+    """
+
+    cursor.execute(sql)
+
+    rows = cursor.fetchall()
+
+    conn.close()
+
+    print("\n========== TODO LIST ==========")
+
+    if len(rows) == 0:
+        print("등록된 할 일이 없습니다.")
+        print("===============================")
+        return
+
+    for row in rows:
+
+        todo_id = row[0]
+        title = row[1]
+        completed = row[2]
+
+        if completed == 1:
+            status = "완료"
+        else:
+            status = "미완료"
+
+        print(
+            f"{todo_id}. [{status}] {title}"
+        )
+
+    print("===============================")
+
+
+# ---------------------------------
+# 5. 할 일 수정
+# ---------------------------------
+def update_todo():
+
+    show_todos()
+
+    todo_id = input("\n수정할 TODO 번호: ")
+
+    conn = connect_db()
+    cursor = conn.cursor()
+
+    sql = """
+    SELECT title
+    FROM todos
+    WHERE id = ?
+    """
+
+    cursor.execute(sql, (todo_id,))
+
+    row = cursor.fetchone()
+
+    if row is None:
+
+        print("해당 TODO가 존재하지 않습니다.")
+        conn.close()
+        return
+
+    print(f"현재 내용: {row[0]}")
+
+    new_title = input("새로운 내용을 입력하세요: ")
+
+    if new_title.strip() == "":
+
+        print("내용을 입력해주세요.")
+        conn.close()
+        return
+
+    sql = """
+    UPDATE todos
+    SET title = ?
+    WHERE id = ?
+    """
+
+    cursor.execute(
+        sql,
+        (new_title, todo_id)
+    )
+
+    conn.commit()
+    conn.close()
+
+    print("TODO가 수정되었습니다.")
+
+
+# ---------------------------------
+# 6. 할 일 삭제
+# ---------------------------------
+def delete_todo():
+
+    show_todos()
+
+    todo_id = input("\n삭제할 TODO 번호: ")
+
+    conn = connect_db()
+    cursor = conn.cursor()
+
+    sql = """
+    SELECT title
+    FROM todos
+    WHERE id = ?
+    """
+
+    cursor.execute(sql, (todo_id,))
+
+    row = cursor.fetchone()
+
+    if row is None:
+
+        print("해당 TODO가 존재하지 않습니다.")
+        conn.close()
+        return
+
+    print(f"삭제할 내용: {row[0]}")
+
+    answer = input(
+        "정말 삭제하시겠습니까? (y/n): "
+    )
+
+    if answer.lower() != "y":
+
+        print("삭제를 취소했습니다.")
+        conn.close()
+        return
+
+    sql = """
+    DELETE FROM todos
+    WHERE id = ?
+    """
+
+    cursor.execute(sql, (todo_id,))
+
+    conn.commit()
+    conn.close()
+
+    print("TODO가 삭제되었습니다.")
+
+
+# ---------------------------------
+# 7. 완료 / 미완료 변경
+# ---------------------------------
+def toggle_todo():
+
+    show_todos()
+
+    todo_id = input(
+        "\n완료/미완료를 변경할 TODO 번호: "
+    )
+
+    conn = connect_db()
+    cursor = conn.cursor()
+
+    # 현재 상태 확인
+    sql = """
+    SELECT title, completed
+    FROM todos
+    WHERE id = ?
+    """
+
+    cursor.execute(sql, (todo_id,))
+
+    row = cursor.fetchone()
+
+    if row is None:
+
+        print("해당 TODO가 존재하지 않습니다.")
+        conn.close()
+        return
+
+    title = row[0]
+    completed = row[1]
+
+    # 현재 상태의 반대 값으로 변경
+    if completed == 0:
+
+        new_status = 1
+        status_text = "완료"
+
+    else:
+
+        new_status = 0
+        status_text = "미완료"
+
+    sql = """
+    UPDATE todos
+    SET completed = ?
+    WHERE id = ?
+    """
+
+    cursor.execute(
+        sql,
+        (new_status, todo_id)
+    )
+
+    conn.commit()
+    conn.close()
+
+    print(
+        f"'{title}' → {status_text} 상태로 변경되었습니다."
+    )
+
+
+# ---------------------------------
+# 8. 메뉴 출력
+# ---------------------------------
+def show_menu():
+
+    print("\n========== TODO LIST ==========")
+    print("1. 할 일 추가")
+    print("2. 할 일 조회")
+    print("3. 할 일 수정")
+    print("4. 할 일 삭제")
+    print("5. 완료/미완료 변경")
+    print("0. 프로그램 종료")
+    print("===============================")
+
+
+# ---------------------------------
+# 9. 프로그램 실행
+# ---------------------------------
+def main():
+
+    create_table()
+
+    while True:
+
+        show_menu()
+
+        menu = input(
+            "메뉴를 선택하세요: "
+        )
+
+        if menu == "1":
+
+            add_todo()
+
+        elif menu == "2":
+
+            show_todos()
+
+        elif menu == "3":
+
+            update_todo()
+
+        elif menu == "4":
+
+            delete_todo()
+
+        elif menu == "5":
+
+            toggle_todo()
+
+        elif menu == "0":
+
+            print("프로그램을 종료합니다.")
+            break
+
+        else:
+
+            print("잘못된 메뉴입니다.")
+
+
+# ---------------------------------
+# 프로그램 시작
+# ---------------------------------
+if __name__ == "__main__":
+    main()
