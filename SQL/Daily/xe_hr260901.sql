@@ -1,6 +1,6 @@
 select last_name
 from HR.EMPLOYEES
-where last_name not between 'Ac' and 'Ax' /* ¾ËÆÄºªµµ »çÀü½Ä ±âÁØÀ¸·Î ¹®ÀÚ¿­ ºñ±³ÇÏ¿© ¹üÀ§¸¦ ÆÇ´Ü */
+where last_name not between 'Ac' and 'Ax' /* ì•ŒíŒŒë²³ë„ ì‚¬ì „ì‹ ê¸°ì¤€ìœ¼ë¡œ ë¬¸ìì—´ ë¹„êµí•˜ì—¬ ë²”ìœ„ë¥¼ íŒë‹¨ */
 order by last_name;
 
 
@@ -24,4 +24,4 @@ select first_name, last_name, job_id, concat(concat(last_name || ' ', first_name
 from hr.employees;
 
 
-select length('oracle'), lengthb('oracle'), length('¿À¶óÅ¬'), lengthb('¿À¶óÅ¬') from dual;
+select length('oracle'), lengthb('oracle'), length('ï¿½ï¿½ï¿½ï¿½Å¬'), lengthb('ï¿½ï¿½ï¿½ï¿½Å¬') from dual;

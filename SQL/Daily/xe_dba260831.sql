@@ -1,7 +1,7 @@
 select * from dba_users;
 
 
-alter user hr identified by hr account unlock; /* °èÁ¤ »óÅÂ Á¤º¸°¡ EXPIRED & LOCKED ÇØ°á ¹æ¹ı */
+alter user hr identified by hr account unlock; /* ê³„ì • ìƒíƒœ ì •ë³´ê°€ EXPIRED & LOCKED í•´ê²° ë°©ë²• */
 
 
 show user;

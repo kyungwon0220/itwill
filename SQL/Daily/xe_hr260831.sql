@@ -5,8 +5,8 @@ select * from user_tables;
 select * from hr.employees where employee_id = 100;
 
 select
-    salary * 12 ¿¬ºÀ,
-    ' »ç¹ø : ' || employee_id " »ç ¹ø "
+    salary * 12 ì—°ë´‰,
+    ' ì‚¬ë²ˆ : ' || employee_id " ì‚¬ ë²ˆ "
 from hr.employees;
 
 desc hr.employees;

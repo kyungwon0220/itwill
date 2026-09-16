@@ -1,5 +1,5 @@
 DECLARE
-    v_name VARCHAR2(30); /* ����Ʈ ���� NULL */
+    v_name VARCHAR2(30); /* 디폴트 값인 NULL */
     v_job VARCHAR2(50) := 'Oracle DBA';
 BEGIN
 	dbms_output.put_line('Hellow World1, ' || q'[x]');
@@ -14,11 +14,11 @@ END;
 /
 
 DECLARE
-    v_a NUMBER(5) := 0.5; /* �ڵ� �ݿø� ó���Ǿ� ' 1 ' ���*/
-    v_b NUMBER(2,1) := 0.7; /* 2�ڸ� + �Ҽ��� 1�ڸ����� ��� == ' .7 ' ��� */
-    V_C VARCHAR2(10) NOT NULL := 'oracle'; /* NOT NULL �����, �ʱⰪ �Ҵ� �ʼ� */
-    v_d CONSTANT DATE DEFAULT sysdate; /* CONSTANT �����, �ʱⰪ �Ҵ� �ʼ� */
-    v_e CONSTANT NUMBER(3) := 20; /* CONSTANT �����, �ʱⰪ �Ҵ� �ʼ� */
+    v_a NUMBER(5) := 0.5; /* 자동 반올림 처리되어 ' 1 ' 출력*/
+    v_b NUMBER(2,1) := 0.7; /* 2자리 + 소수점 1자리까지 출력 == ' .7 ' 출력 */
+    V_C VARCHAR2(10) NOT NULL := 'oracle'; /* NOT NULL 선언시, 초기값 할당 필수 */
+    v_d CONSTANT DATE DEFAULT sysdate; /* CONSTANT 선언시, 초기값 할당 필수 */
+    v_e CONSTANT NUMBER(3) := 20; /* CONSTANT 선언시, 초기값 할당 필수 */
 BEGIN
     dbms_output.put_line(v_a);
     v_a := 200;
@@ -26,7 +26,7 @@ BEGIN
     dbms_output.put_line(v_c || ', ' || v_d);
     v_c := 'abc';
     dbms_output.put_line(v_c);
---    v_e := 10; /* ����� ���Ҵ� �Ұ��� ERR �߻� */
+--    v_e := 10; /* 상수는 재할당 불가로 ERR 발생 */
 END;
 /
 
