@@ -60,11 +60,13 @@ from dual;
 
 select
     sysdate,
+    to_char(sysdate, 'ds'),
     to_char(sysdate, 'yyyy-mm-dd hh24:mi:ss.sssss') as "날짜_시간", /* 초 이하는, 5자리까지 추출 가능 */
     to_char(sysdate, 'yyyy"년" fmmm"월" dd"일"') "날짜",
+    to_char(sysdate, 'dl'),
     to_char(sysdate, 'yyyy yy rr rrrr year') as "년도",
     to_char(sysdate, 'month mon mm fmmm') as "달", /* fm == 선행되는 0을 제거하는 요소 */
-    to_char(sysdate, 'ddd dd d ddth ddsp ddthsp') as "일",
+    to_char(sysdate, 'ddd dd d ddth ddsp ddthsp Ddthsp DDTHSP') as "일", /* Ddthsp == 첫자를 대문자, 나머지 소문자로 출력, DDTHSP == 모두 대문자로 출력 */
     to_char(sysdate, 'day dy') as "요일",
     to_char(sysdate, 'q"분기"') as "분기",
     to_char(sysdate, 'ww iw w') "주", /* iw == ISO 국제 기준*/
@@ -73,8 +75,9 @@ from dual;
 
 
 select
-  tz_offset('Asia/Seoul')M, /* 'Asia/Seoul' OFFSET 시간대 출력 (+09:00) */
-  systimestamp + 9/24M, /* +9시간 */
+  tz_offset('Asia/Seoul'), /* 'Asia/Seoul' OFFSET 시간대 출력 (+09:00) */
+  to_date('26/06/22', 'yy-mm-dd'), /* TO_DATE == 날짜 DATE 타입으로 형변환 */
+  systimestamp + 9/24, /* +9시간 */
   to_char(systimestamp + 10/(24*60), 'yyyy-mm-dd hh24:mi:ss.sssss'), /* +10분 */
   systimestamp, to_char(systimestamp + 10/(24*60*60), 'yyyy-mm-dd hh24:mi:ss'), /* +10초 */
   add_months(sysdate, 5), /* + 5달 */
@@ -84,4 +87,11 @@ select
   last_day(add_months(sysdate,1))
 from dual;
 
+
 select employee_id, ROUND(sysdate - hire_date, 2) AS "근무 일수" from HR.EMPLOYEES; /* NUMBER 타입 반환 */
+select hire_date
+from hr.employees
+where hire_date between to_date('2006-01-01', 'yyyy-mm-dd') and to_date('2006-12-31 23:59:59', 'yyyy-mm-dd hh24:mi:ss')
+order by 1;
+
+/* RR DATE 타입 참고 주소 : https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/Format-Models.html#GUID-22F2B830-261E-4BF0-91FB-6A1DAFC6D0A3:~:text=Support%20Guide.-,The%20RR%20Datetime%20Format%20Element,-The%20RR%20datetime */
