@@ -1,4 +1,4 @@
---[문제14] employees 테이블에 last_name 컬럼의 값 중에 ?"J" 또는 "A" 또는 "M"으로 시작하는 사원들의 last_name, last_name의 길이를 표시하는 query(select문) 를 작성합니다.사원들의 last_name 기준으로 내림차순 정렬해 주세요.
+--[문제14] employees 테이블에 last_name 컬럼의 값 중에 "J" 또는 "A" 또는 "M"으로 시작하는 사원들의 last_name, last_name의 길이를 표시하는 query(select문) 를 작성합니다.사원들의 last_name 기준으로 내림차순 정렬해 주세요.
 SELECT last_name, LENGTH(last_name)
 FROM HR.EMPLOYEES
 --WHERE last_name LIKE 'J%' OR last_name LIKE 'M%' OR last_name LIKE 'A%'

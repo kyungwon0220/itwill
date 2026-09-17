@@ -10,6 +10,3 @@ select
 from hr.employees;
 
 desc hr.employees;
-
-select unique department_id, job_id
-from hr.employees;
