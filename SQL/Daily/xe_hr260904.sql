@@ -38,6 +38,39 @@ having count(*) >= 5; /* SELECT 절에 없는, 조건으로도 제한 가능*/
 select employee_id, last_name, department_name /* Cartesian Product (카티시안 곱) == 두 테이블의, 행 수가 서로 곱해진 결과 */
 from hr.employees, hr.departments;
 
+
 select hr.employees.employee_id, hr.employees.last_name, hr.departments.department_name
 from hr.employees, hr.departments
-where hr.employees.department_id = hr.departments.department_id;
+where hr.employees.department_id = hr.departments.department_id; /* JOIN 조건 술어 */
+
+
+select hr.employees.employee_id, hr.employees.last_name, hr.departments .department_name
+from hr.employees e, hr.departments d /* ' e '. ' d ' 같이, 별칭을 선언하고 사용하지 않으면 ERR 발생 */
+where e.department_id = d.department_id;
+
+
+select last_name, city
+from hr.employees e, hr.departments d, hr.locations l
+where e.department_id = d.department_id and d.location_id = l.location_id
+order by city;
+
+
+select employee_id, last_name, department_name
+from hr.employees e, hr.departments d
+where e.department_id(+) = d.department_id; /* JOIN 조건 술어에서 ' (+) ' 안붙은, hr.departments 테이블 기준으로(모든 부서명 출력) RIGHT OUTER JOIN */
+
+
+select employee_id, last_name, department_name
+from hr.employees e, hr.departments d
+where e.department_id = d.department_id(+); /* JOIN 조건 술어에서 ' (+) ' 안붙은, hr.employee 테이블 기준으로(모든 사원 출력) LEFT OUTER JOIN */
+
+
+select e.employee_id, e.last_name, d.department_name, l.city
+from hr.employees e, hr.departments d, hr.locations l
+where e.department_id = d.department_id(+)
+AND d.location_id = l.location_id(+);
+
+
+select w.employee_id, w.last_name, m.employee_id, m.last_name
+from hr.employees w, hr.employees m
+where w.manage_id = m.employee_id; /* SELF JOIN */
