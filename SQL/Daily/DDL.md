@@ -42,6 +42,7 @@ QUOTA 1M ON users;
 > 신규 유저 생성 예제 코드
 
 </br></br></br>
+#### ALTER
 ```SQL
 ALTER USER insa /* ' CREATE ' 문구만 ' ALTER ' 변경 */
 QUOTA UNLIMITED
@@ -54,9 +55,14 @@ ON users;
 DROP USER insa CASCADE;
 ```
 > CASCADE : 유저가 생성했던 객체들을 우선으로 삭제하는 옵션
+
+</br></br></br>
+#### TRUNCATE
+```SQL
+TRUNCATE TABLE HR.MGR; /* ' DELETE ' 보다, 리소스를 줄인다 ( 차후, 관리 진도에서 배울 예정 ) */
+```
 ---
 </br></br></br>
-
 
 ```SQL
 CREATE TABLE insa.EMP(id NUMBER, name VARCHAR2(30), day DATE DEFAULT SYSDATE)
@@ -72,69 +78,6 @@ DROP TABLE insa.emp PURGE;
 ---
 </br></br></br>
 
-
-###
-```SQL
---USER_ → 내가 소유한 것
---ALL_  → 내가 접근할 수 있는 것
---DBA_  → DB 전체
-
-
---USER_TABLES → 내가 소유한 테이블
---ALL_TABLES  → 내가 접근 가능한 테이블
---DBA_TABLES  → DB 전체 테이블
-```
-> 예시
-- ' SYS.TAB$ ' 같이 $로 끝나는 객체는, 내부 구현에 사용하는 테이블로서 일반적인 SQL 개발에서는 직접 조회하기보단 공식 Data Dictionary View 사용 권장
-```SQL
-SELECT *
-FROM USER_USERS; /* 현재 접속한 사용자(본인)의 정보 */
-
-
-SELECT *
-FROM DBA_USERS; /* DB 전체 사용자 정보 ( DBA 권한 또는 해당 데이터 딕셔너리 뷰를 조회할 수 있는 권한 필요 )*/
-```
-```SQL
-SELECT *
-FROM SYS.TAB$; /* Oracle 내부 데이터 딕셔너리 테이블 ( 내부 구현에 사용하는 테이블로서, 일반적인 SQL 개발에서는 직접 조회하기보다 공식 Data Dictionary View 사용 권장 ) */
-
-
-SELECT *
-FROM USER_TABLES; /* 현재 접속한 사용자가(본인) 소유한 테이블 정보 */
-
-
-SELECT *
-FROM DBA_TABLES; /* 테이블 정보용 공식 Dictionary View ( DB 전체의 테이블을 확인할 수 있는 권한 필요 ) */
-```
-```SQL
-SELECT *
-FROM SYS.COL$; /* Oracle 내부 데이터 딕셔너리 테이블 ( 데이터베이스 객체의 컬럼(열) 관련 내부 정보를 저장 ) */
-
-
-SELECT *
-FROM USER_TAB_COLUMNS; /* 내가 소유한 테이블의 컬럼 */
-```
-```SQL
-SELECT *
-FROM DBA_DATA_FILES; /* Oracle 내부 데이터 딕셔너리 테이블 (TABLESPACE 자체를 조회하는 것이라기보다는, TABLESPACE가 사용하는 물리적인 DATAFILE을 조회) */ /* DB 데이터 파일 조회 ( 어떤 TABLESPACE가, 어떤 DATAFILE을 사용하는지 확인 ) */
-
-
-SELECT *
-FROM DBA_TEMP_FILES; /* 임시 테이블 스페이스 조회 */
-
-
-SELECT *
-FROM DBA_TS_QUOTAS; /* DB 전체 사용자의, TABLESPACE QUOTA 조회 ( QUOTA 부여한 유저 정보 조회 ) */
-
-
-SELECT *
-FROM USER_TS_QUOTAS; /* 현재 접속한 사용자의(본인) TABLESPACE QUOTA 조회 */
-```
-- ' SELECT * FROM DBA_DATA_FILES; ' == 영구 TABLESPACE의 데이터 파일(Datafile) 정보 조회 ( 파일 경로, 크기, 자동 확장 여부, 어느 TABLESPACE에 속하는지 등 )
-  - ' SELECT * FROM DBA_DATA_FILES; ' 결과중, ' TABLESPACE_NAME ' == 'SYSTEM', 'SYSAUX', 'UNDOTBS1' 항목은, 일반 유저가 사용 금지
-- ' SELECT * FROM DBA_TS_QUOTAS; ' 결과중, ' MAX_BYTES ' == ' -1 ' 의미는 무한 ( -1 == 용량 제한 없다는 의미 )
----
-</br></br></br>
 
 ### 서버 프로세스 (Server Process)
 ![https://docs.oracle.com/en/database/oracle/oracle-database/19/cncpt/sql.html#GUID-1B95E60C-99C5-446D-9C6B-5D16EFE59ACF:~:text=the general stages%3A-,Figure 8-3 Stages of SQL Processing,-Description of "Figure](./mdIMG/260910ServerProcess.jpg)

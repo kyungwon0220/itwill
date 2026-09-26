@@ -37,6 +37,21 @@ COMMIT; /* Transaction 종료 (Transaction 시작절까지 포함하여, 영구 
 > ' COMMIT; ' 수행하여, 영구 저장된 결과
 
 </br></br></br>
+```SQL
+INSERT INTO CTAS_EMP SELECT * FROM HR.EMPLOYEES; /* INSERT SUBQUERY (  DML 정상 수행으로, Transaction 시작 ) */
+
+
+INSERT INTO HR.MGR(ID, NAME, DAY)
+SELECT employee_id, UPPER(last_name) name, TO_CHAR(hire_date, 'yyyy-mm-dd') day /* 표현식 존재시, 별칭 지정 필수 */
+FROM HR.EMPLOYEES o
+WHERE EXISTS ( SELECT NULL /* Correlated Subquery 이용한, INSERT */ /* MEMO ( 차후 디버깅 복습 필요 예정 ) */
+                FROM HR.EMPLOYEES
+                WHERE MANAGER_ID = o.EMPLOYEE_ID);
+
+
+ROLLBACK; /* Transaction 종료 (Transaction 시작절까지 포함하여, 취소) */
+```
+</br></br></br>
 #### UPDATE
 ```SQL
 UPDATE insa.EMP
