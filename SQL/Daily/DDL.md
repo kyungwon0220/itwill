@@ -1,4 +1,4 @@
-## 260910tue
+## 260910thu
 ### DDL(Data Definition Language)
 1. CREATE
 2. ALTER

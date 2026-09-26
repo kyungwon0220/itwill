@@ -1,4 +1,4 @@
-## 260910tue
+## 260910thu
 ### DCL(Data Control Language)
 - GRANT, REVOKE
 - 시스템 권한 : DataBase 영향을 줄수 있는 권한 ( CREATE SESSION )

@@ -1,4 +1,4 @@
-## 260910tue
+## 260910thu
 ### DML(Data Manipulation Language)
 - DML 정상 성공시, Transaction 발생 ( TCL 사용하여, 확정 필요 )
 #### INSERT

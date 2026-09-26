@@ -1,0 +1,1 @@
+--[문제] HR.EMPLOYEES 테이블에서, 관리자 사원들의 employee_id, last_name, hire_date 데이터를 HR.MGR 테이블에 로드해 주세요.
