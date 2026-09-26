@@ -80,3 +80,67 @@ FROM HR.EMPLOYEES e
 ORDER BY (SELECT department_name /* Scalar Subquery 방식 */
             FROM HR.DEPARTMENTS
             WHERE department_id = e.department_id );
+
+--[문제56] job_id를 바꾸지 않은 사원정보를 출력해주세요.
+SELECT *
+FROM HR.EMPLOYEES
+WHERE employee_id IN (
+SELECT employee_id
+FROM HR.EMPLOYEES
+MINUS
+SELECT employee_id
+FROM HR.JOB_HISTORY
+);
+
+SELECT *
+FROM HR.EMPLOYEES o
+WHERE NOT EXISTS ( SELECT NULL FROM HR.JOB_HISTORY WHERE employee_id = o.employee_id );
+
+--[문제58] 
+SELECT e.employee_id, d.department_name
+FROM HR.EMPLOYEES e, HR.DEPARTMENTS d
+WHERE e.department_id = d.department_id(+)
+UNION /* 중복 제거 ( 내부적으로 정렬 발생 ) */
+SELECT e.employee_id, d.department_name
+FROM HR.EMPLOYEES e, HR.DEPARTMENTS d
+WHERE e.department_id(+) = d.department_id;
+
+SELECT e.employee_id, d.department_name
+FROM HR.EMPLOYEES e FULL OUTER JOIN HR.DEPARTMENTS d /* ANSI 표준 방식 문법 */
+ON  e.department_id = d.department_id;
+
+SELECT e.employee_id, d.department_name
+FROM HR.EMPLOYEES e, HR.DEPARTMENTS d
+WHERE e.department_id = d.department_id(+)
+UNION ALL /* ANSI 표준 불가하여, UNION ALL 방식 (UNION == 정렬로, CPU 부하)*/
+SELECT NULL, department_name
+FROM HR.DEPARTMENTS o
+WHERE NOT EXISTS ( SELECT NULL /* 부서는 존재하나, 소속 사원이 없는 부서 */
+                    FROM HR.EMPLOYEES
+                    WHERE department_id = o.department_id);
+
+--[문제59] UNION ALL, ROULLUP
+--1) department_id, job_id, manager_id 기준으로 총액 급여를 출력
+--2) department_id, job_id 기준으로 총액급여를 출력
+--3) department_id 기준으로 총액급여를 출력
+--4) 전체 총액 급여를 출력
+--1),2),3),4)를 한꺼번에 출력해주세요.
+
+SELECT department_id, job_id, manager_id, SUM(salary)
+FROM HR.EMPLOYEES
+GROUP BY department_id, job_id, manager_id
+UNION ALL
+SELECT department_id, job_id, NULL, SUM(salary)
+FROM HR.EMPLOYEES
+GROUP BY department_id, job_id
+UNION ALL
+SELECT department_id, NULL, NULL, SUM(salary)
+FROM HR.EMPLOYEES
+GROUP BY department_id
+UNION ALL
+SELECT NULL, NULL, NULL, SUM(salary)
+FROM HR.EMPLOYEES;
+
+SELECT department_id, job_id, manager_id, SUM(salary)
+FROM HR.EMPLOYEES
+GROUP BY ROLLUP(department_id, job_id, manager_id);
