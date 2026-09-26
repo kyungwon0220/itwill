@@ -18,7 +18,8 @@ FROM DBA_USERS
 WHERE USERNAME IN('INSA', 'HR');
 
 
-GRANT CREATE SESSION TO insa;
+GRANT CREATE SESSION TO insa; /* 시스템 권한 부여 */
+GRANT CREATE TABLE TO insa; /* 시스템 권한 부여 */
 GRANT SELECT ON HR.EMPLOYEES TO insa; /* 객체 권한 부여 */
 GRANT SELECT ON HR.DEPARTMENTS TO insa; /* 객체 권한 부여 */
 
@@ -30,3 +31,9 @@ REVOKE SELECT ON HR.EMPLOYEES FROM insa;
 SELECT *
 FROM DBA_TAB_PRIVS
 WHERE GRANTEE = 'INSA';
+
+
+SELECT *
+FROM v$reserved_words
+WHERE reserved = 'Y'; /*  객체명/식별자로 사용이 제한되는 예약어 조회 */
+

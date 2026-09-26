@@ -1,3 +1,4 @@
+## 260910tue
 ### DCL(Data Control Language)
 - GRANT, REVOKE
 - 시스템 권한 : DataBase 영향을 줄수 있는 권한 ( CREATE SESSION )
@@ -19,11 +20,17 @@ FROM USER_SYS_PRIVS;  /* 일반 유저 입장에서, 본인의 시스템 권한 
 
 SELECT *
 FROM USER_TAB_PRIVS /* 일반 유저 입장에서, 본인의 객체 권한 조회 */
+
+SELECT *
+FROM USER_OBJECTS; /* 일반 유저 입장에서, 본인이 생성한 객체 조회 */
 ```
 </br></br></br>
 #### GRANT
 ```SQL
 GRANT CREATE SESSION TO insa; /* SQLPLUS 접속 가능한, 시스템 권한 부여 */
+
+
+GRANT CREATE TABLE TO insa; /* 테이블 생성이 가능하게, 시스템 권한 부여 */
 
 
 GRANT SELECT ON HR.EMPLOYEES TO insa; /* 객체 권한 부여 */

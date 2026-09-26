@@ -12,6 +12,8 @@ ALTER SESSION SET nls_language = 'simplified chinese; /* 현재 세션 언어 �
 
 ALTER SESSION SET TIME_ZONE = '+09:00'; /* 현재 세션의 시간대를 UTC+08:00 변경 */
 ALTER SESSION SET TIME_ZONE = 'Asia/Seoul'; /* 현재 세션의 시간대 지역을 Asia/Seoul 변경 */
+
+ALTER SESSION SET nls_date_format = 'YYYY-MM-DD HH24:MI:SS'; /* 현재 세션의 DATE 출력 형식 변경 */
 ```
 > 지역 설정 요소 참고 주소 : https://docs.oracle.com/en/database/oracle/oracle-database/19/nlspg/appendix-A-locale-data.html#GUID-D2FCFD55-EDC3-473F-9832-AAB564457830
 ---

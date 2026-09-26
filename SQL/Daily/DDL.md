@@ -1,3 +1,4 @@
+## 260910tue
 ### DDL(Data Definition Language)
 1. CREATE
 2. ALTER
@@ -5,6 +6,21 @@
 4. RENAME
 5. TRUNCATE
 6. COMMENT
+</br></br></br>
+```SQL
+SELECT *
+FROM v$reserved_words
+WHERE reserved = 'Y'; /*  객체명/식별자로 사용이 제한되는 예약어 조회 */
+```
+|KEYWORD|RESERVED|. . .|
+:---|:---|---|
+DROP|Y|. . .|
+FOR|Y|. . .|
+OF|Y|. . .|
+IS|Y|. . .|
+VARCHAR|Y|. . .|
+. . .|Y|. . .|
+
 </br></br></br>
 ```SQL
 --CREATE USER 고유한 유저명 /* 유저 생성시 필수 구문 */
@@ -38,6 +54,21 @@ ON users;
 DROP USER insa CASCADE;
 ```
 > CASCADE : 유저가 생성했던 객체들을 우선으로 삭제하는 옵션
+---
+</br></br></br>
+
+
+```SQL
+CREATE TABLE insa.EMP(id NUMBER, name VARCHAR2(30), day DATE DEFAULT SYSDATE)
+TABLESPACE users; /* 실무에서는 TABLESPACE 필히 작성해 주는게 좋다 (생략시, 사용자의 DEFAULT TABLESPACE 위치에 생성) */
+```
+> TABLE 생성 예제 코드
+
+</br></br></br>
+```SQL
+DROP TABLE insa.emp PURGE;
+```
+> TABLE 삭제 예제 코드
 ---
 </br></br></br>
 
@@ -85,7 +116,7 @@ FROM USER_TAB_COLUMNS; /* 내가 소유한 테이블의 컬럼 */
 ```
 ```SQL
 SELECT *
-FROM DBA_DATA_FILES; /* Oracle 내부 데이터 딕셔너리 테이블 (DB 생성되어있는, 테이블 스페이스) */
+FROM DBA_DATA_FILES; /* Oracle 내부 데이터 딕셔너리 테이블 (TABLESPACE 자체를 조회하는 것이라기보다는, TABLESPACE가 사용하는 물리적인 DATAFILE을 조회) */ /* DB 데이터 파일 조회 ( 어떤 TABLESPACE가, 어떤 DATAFILE을 사용하는지 확인 ) */
 
 
 SELECT *
@@ -93,15 +124,20 @@ FROM DBA_TEMP_FILES; /* 임시 테이블 스페이스 조회 */
 
 
 SELECT *
-FROM DBA_TS_QUOTAS; /* QUOTA 부여한 유저 정보 조회 */
+FROM DBA_TS_QUOTAS; /* DB 전체 사용자의, TABLESPACE QUOTA 조회 ( QUOTA 부여한 유저 정보 조회 ) */
+
+
+SELECT *
+FROM USER_TS_QUOTAS; /* 현재 접속한 사용자의(본인) TABLESPACE QUOTA 조회 */
 ```
-- ' SELECT * FROM DBA_DATA_FILES; ' 결과중, ' TABLESPACE_NAME ' == 'SYSTEM', 'SYSAUX', 'UNDOTBS1' 항목은, 일반 유저가 사용 금지
+- ' SELECT * FROM DBA_DATA_FILES; ' == 영구 TABLESPACE의 데이터 파일(Datafile) 정보 조회 ( 파일 경로, 크기, 자동 확장 여부, 어느 TABLESPACE에 속하는지 등 )
+  - ' SELECT * FROM DBA_DATA_FILES; ' 결과중, ' TABLESPACE_NAME ' == 'SYSTEM', 'SYSAUX', 'UNDOTBS1' 항목은, 일반 유저가 사용 금지
 - ' SELECT * FROM DBA_TS_QUOTAS; ' 결과중, ' MAX_BYTES ' == ' -1 ' 의미는 무한 ( -1 == 용량 제한 없다는 의미 )
 ---
 </br></br></br>
 
 ### 서버 프로세스 (Server Process)
-![](./mdIMG/260910ServerProcess.jpg)
+![https://docs.oracle.com/en/database/oracle/oracle-database/19/cncpt/sql.html#GUID-1B95E60C-99C5-446D-9C6B-5D16EFE59ACF:~:text=the general stages%3A-,Figure 8-3 Stages of SQL Processing,-Description of "Figure](./mdIMG/260910ServerProcess.jpg)
 1. User Process, SQL 문장을 던진다
 2. Server Process, CURSOR 메모리 할당받고
 3. User Process 던져준 SQL 문장을 받아서, 이미지상의 ' Parsing ' 작업
