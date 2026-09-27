@@ -1,5 +1,10 @@
 ## 260910thu
 ### DDL(Data Definition Language)
+- DDL, DCL 문은, 정상 수행되면 Auto COMMIT 발생
+  - SQLPLUS 환경에서 EXIT 종료시 Auto COMMIT 발생 ( 자동으로 COMMIT 후에 종료된다 )
+  - SQLPLUS 환경상 트랜잭션 상황에서, CONN 다른 계정으로 접속시 Auto COMMIT 발생
+  - SQLPLUS 환경상, 강제 종료시 자동 ROLLBACK 발생 ( 자동으로 ROLLBACK 후에 종료 )
+  - [260911.md TCL(Transaction Control Language)](260911.md#sql-tcl)
 1. CREATE
 2. ALTER
 3. DROP
@@ -80,7 +85,8 @@ DROP TABLE insa.emp PURGE;
 
 
 ### 서버 프로세스 (Server Process)
-![https://docs.oracle.com/en/database/oracle/oracle-database/19/cncpt/sql.html#GUID-1B95E60C-99C5-446D-9C6B-5D16EFE59ACF:~:text=the general stages%3A-,Figure 8-3 Stages of SQL Processing,-Description of "Figure](./mdIMG/260910ServerProcess.jpg)
+![](./mdIMG/260910ServerProcess.jpg)
+> https://docs.oracle.com/en/database/oracle/oracle-database/19/cncpt/sql.html#GUID-1B95E60C-99C5-446D-9C6B-5D16EFE59ACF:~:text=the%20general%20stages%3A-,Figure%208%2D3%20Stages%20of%20SQL%20Processing,-Description%20of%20%22Figure
 1. User Process, SQL 문장을 던진다
 2. Server Process, CURSOR 메모리 할당받고
 3. User Process 던져준 SQL 문장을 받아서, 이미지상의 ' Parsing ' 작업
@@ -112,5 +118,5 @@ DROP TABLE insa.emp PURGE;
 
 ### Shared Pool
 ![](./mdIMG/260910SharedPool.jpg)
-- Data dictionary Cache : Semantic Check 시도할 때마다, 디스크 I/O 발생을 줄이기 위해서 딕셔너리 정보를 메모리에 올려놓은 공간
+- Data dictionary Cache : Semantic Check 시도할 때마다, 디스크 I/O 발생을 줄이기 위해서 딕셔너리 정보를 메모리에 올려놓은 공간 ( 동일한 SQL 문장이 Shared Pool 메모리 안에, 라이브러리를 캐시 했는지 조회(있으면 쉐어링, 없으면 Hard Parsing) )
 ---

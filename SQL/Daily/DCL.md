@@ -1,4 +1,4 @@
-## 260910tue
+## 260910thu
 ### 권한, ROLE
 - 시스템 권한 : DataBase 영향을 줄수 있는 권한 ( CREATE SESSION )
 - 객체 권한 : 객체(테이블, 뷰, 시퀀스, 동의어, 프로시저, 함수, 패키지. . . 등) 사용할수 있는 권한
@@ -109,17 +109,53 @@ FROM USER_TS_QUOTAS; /* 현재 접속한 사용자의(본인) TABLESPACE QUOTA �
 </br></br></br>
 ### DCL(Data Control Language)
 - GRANT, REVOKE
+- DDL, DCL 문은 정상 수행되면 Auto COMMIT 발생
+  - SQLPLUS 환경에서 EXIT 종료시 Auto COMMIT 발생 ( 자동으로 COMMIT 후에 종료 )
+  - SQLPLUS 환경상 트랜잭션 상황에서, CONN 다른 계정으로 접속시 Auto COMMIT 발생
+  - SQLPLUS 환경상, 강제 종료시 자동 ROLLBACK 발생 ( 자동으로 ROLLBACK 후에 종료 )
+  - [260911.md TCL](260911.md#sql-tcl)
 #### GRANT
 ```SQL
 GRANT CREATE SESSION TO insa; /* SQLPLUS 접속 가능한, 시스템 권한 부여 */
 
 
-GRANT CREATE TABLE TO insa; /* 테이블 생성이 가능하게, 시스템 권한 부여 */
+GRANT CREATE TABLE TO insa; /* ' insa ' 유저 자신의 스키마에, TABLE 생성이 가능한 ' 시스템 권한 ' 부여 ( ' HR.EMP ' 같이, 다른 사용자의 스키마에 생성은 불가 ) */
 
 
-GRANT SELECT ON HR.EMPLOYEES TO insa; /* 객체 권한 부여 */
+GRANT SELECT ON HR.EMPLOYEES TO insa; /* ' insa ' 유저 자신의 스키마에, TABLE 조회가 가능한 ' 객체 권한 ' 부여 ( ' HR.EMPLOYEES ' 같이, 다른 사용자의 테이블 SELECT == 그에대한 별도의 권한 필요 )*/
 ```
 - 객체 권한은 DBA, 객체 소유자가 권한 부여 가능
+</br></br></br>
+```SQL
+GRANT CREATE ANY TABLE TO ORA1; /* DB 內 모든 사용자의 스키마에 테이블을 생성할 수 있는 시스템 권한(System Privilege) 부여 */
+
+
+GRANT SELECT ANY TABLE TO ORA1; /* DB 內 모든 사용자의 테이블을 조회(SELECT)할 수 있는 시스템 권한(System Privilege) 부여 */
+
+
+GRANT DROP ANY TABLE TO ORA1; /* DB 內 모든 사용자의 테이블을 삭제(DROP)할 수 있는 시스템 권한(System Privilege) 부여 */
+
+
+GRANT INSERT ANY TABLE TO ORA1; /* DB 內 모든 사용자의 테이블에 데이터를 삽입(INSERT)할 수 있는 시스템 권한(System Privilege) 부여 */
+
+
+GRANT UPDATE ANY TABLE TO ORA1; /* DB 內 모든 사용자의 테이블 데이터를 수정(UPDATE)할 수 있는 시스템 권한 부여 */
+
+
+GRANT DELETE ANY TABLE TO ORA1; /* DB 內 모든 사용자의 테이블 데이터를 삭제(DELETE)할 수 있는 시스템 권한 부여 */
+```
+- 끝에, ' WITH ADMIN OPTION ' 붙일시, 부여받는 유저가 다른 유저에게 동일하게 시스템 권한 부여가 가능
+  - 권한 부여자가, 권한 회수해도 연쇄적으로 회수되지 않는다
+    - 예를들어, A 유저 입장에서 ' GRANT SELECT ANY TABLE TO B WITH ADMIN OPTION; ' == A 유저가 B 유저에게 시스템 권한과, 이를 부여할 권한까지 부여 ( B 유저가, 다른 유저에게 ' ADMIN OPTION ' 권한까지 부여 가능 )
+    - B 유저가 C 유저에게 ' GRANT SELECT ANY TABLE TO C; ' == B 유저가 C 유저에게, ' 시스템 권한 ' 부여
+    - A 유저가 B 유저의 권한을 회수해도
+    - B 유저가 C 유저에게 부여한 시스템 권한까지 회수되지 않는다 ( C 유저 권한은 유지 )
+- 끝에, ' GRANT OPTION ' 붙일시, 부여받는 유저가 다른 유저에게 동일하게 ' 객체 권한 ' 부여가 가능하나, ' GRANT OPTION ' 권한 부여는 불가
+  - 반면, ' GRANT OPTION ' == 연쇄적인 권한 회수(CASCADE) 발생
+    - 예를들어, A 유저 입장에서 ' GRANT SELECT ON HR.EMPLOYEES TO B WITH GRANT OPTION; ' == A 유저가 B 유저에게 객체 권한과, 이를 부여할 권한까지 부여 ( 단, ' GRANT OPTION ' 권한까지는 불가, ' 객체 권한 ' 부여만 가능 )
+    - B 유저가 C 유저에게 ' GRANT SELECT ON HR.EMPLOYEES TO C; ' == B 유저가 C 유저에게, ' 객체 권한 ' 부여
+    - A 유저가 B 유저의 권한을 회수하면
+    - B 유저가 C 유저에게 부여한 권한까지 회수 ( 연쇄적인 권한 회수(CASCADE) 발생 )
 </br></br></br>
 #### REVOKE
 ```SQL

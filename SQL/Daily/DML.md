@@ -37,6 +37,8 @@ COMMIT; /* Transaction 종료 (Transaction 시작절까지 포함하여, 영구 
 > ' COMMIT; ' 수행하여, 영구 저장된 결과
 
 </br></br></br>
+<div id="sql-correlated-subquery-insert"></div>
+
 ```SQL
 INSERT INTO CTAS_EMP SELECT * FROM HR.EMPLOYEES; /* INSERT SUBQUERY (  DML 정상 수행으로, Transaction 시작 ) */
 
@@ -46,11 +48,52 @@ SELECT employee_id, UPPER(last_name) name, TO_CHAR(hire_date, 'yyyy-mm-dd') day 
 FROM HR.EMPLOYEES o
 WHERE EXISTS ( SELECT NULL /* Correlated Subquery 이용한, INSERT */ /* MEMO ( 차후 디버깅 복습 필요 예정 ) */
                 FROM HR.EMPLOYEES
-                WHERE MANAGER_ID = o.EMPLOYEE_ID);
+                WHERE manager_id = o.EMPLOYEE_ID);
 
 
 ROLLBACK; /* Transaction 종료 (Transaction 시작절까지 포함하여, 취소) */
 ```
+</br></br></br>
+```SQL
+INSERT ALL /* Multi Table INSERT */
+	INTO HR.SAL_HISTORY(id, day, sal)
+    VALUES(no, hire, sal) /* 타겟 */
+
+
+	INTO HR.MGR_HISTORY(id, mgr, sal)
+    VALUES(no, mgr, sal) /* 타겟 */
+SELECT employee_id no, manager_id mgr, hire_date hire, salary * 12 sal
+FROM HR.EMPLOYEES; (  DML 정상 수행, Transaction 시작 )
+
+
+INSERT ALL
+WHEN day < TO_DATE('2005-01-01', 'yyyy-mm-dd') AND sal >= 5000 THEN /* 조건 Multi Table INSERT ( 조건을 만족하는 INTO 절에 모두 INSER )*/
+    INTO HR.SAL_HISTORY(id, day, sal)
+    VALUES(id, day, sal)
+WHEN comm IS NOT NULL THEN
+    INTO HR.MGR_HISTORY(id, comm, sal)
+    VALUES(id, comm, sal)
+SELECT employee_id ID, hire_date DAY, salary SAL, commission_pct comm
+FROM HR.EMPLOYEES;
+
+
+INSERT FIRST /* 조건 Multi Table INSERT ( 조건을 위에서부터 차례로 검사하며, 처음 만족하는 INTO 절 하나에만 INSERT ) */
+WHEN salary < 5000 THEN
+    INTO HR.SAL_LOW(id, name, sal)
+    VALUES(employee_id, last_name, salary)
+WHEN salary BETWEEN 5000 AND 10000 THEN
+    INTO HR.SAL_MID(id, name, sal)
+    VALUES(employee_id, last_name, salary)
+ELSE
+    INTO HR.SAL_HIGH(id, name, sal)
+    VALUES(employee_id, last_name, salary)
+SELECT employee_id, salary, last_name
+FROM HR.EMPLOYEES;
+
+
+ROLLBACK; /* Transaction 종료 (Transaction 시작절까지 포함하여, 취소) */
+```
+
 </br></br></br>
 #### UPDATE
 ```SQL
@@ -84,6 +127,15 @@ SET name = 'Jerry'; /* 모든 name 컬럼, ' Jerry ' 수정된다 ( Transaction 
 ROLLBACK; /* Transaction 종료 (Transaction 시작절까지 포함하여, 취소) */
 ```
 </br></br></br>
+
+<div id="sql-correlated-subquery-update"></div>
+```SQL
+UPDATE HR.EMP4 o
+SET dept_id = (SELECT department_id
+                FROM HR.EMPLOYEES
+                WHERE employee_id = o.id); /* Correlated Subquery 이용한 UPDATE */ /* MEMO ( 차후 디버깅 복습 필요 예정 ) */
+```
+</br></br></br>
 #### DELETE
 ```SQL
 DELETE FROM insa.EMP
@@ -98,11 +150,3 @@ ROLLBACK; /* Transaction 종료 (Transaction 시작절까지 포함하여, 취�
 </br></br></br>
 #### MERTGE ( 병합. INSERT, UPDATE, DELETE 한번에 수행 가능 )
 ---
-</br></br></br>
-
-
-### TCL(Transaction Control Language)
-- Transaction : 논리적으로, DML 하나로 묶어 처리하는 ' 작업 단위 '
-- COMMIT
-- ROLLBACK
-- SAVEPOINT
