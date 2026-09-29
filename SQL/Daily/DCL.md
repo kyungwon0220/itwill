@@ -19,12 +19,26 @@ FROM DBA_TS_QUOTAS; /* DB 전체 사용자의, TABLESPACE QUOTA 조회 */
 </br></br></br>
 ```SQL
 SELECT *
-FROM SYS.TAB$; /* Oracle 내부 DATA 딕셔너리 TABLE ( 내부 구현에 사용하는 테이블로서, 일반적인 SQL 개발에서는 직접 조회하기보다 공식 Data Dictionary View 사용 권장 ) */
+FROM SYS.OBJ$ /* 실제 DATA 저장된 테이블로서, 일반 유저는 조회 불가 ( 테이블, 인덱스, 뷰, 프로시저 등 모든 객체의 기본 메타 정보가 마스터격 )*/
+WHERE name = 'EMPLOYEES';
 
 
 SELECT *
-FROM SYS.COL$; /* Oracle 내부 DATA 딕셔너리 TABLE ( 데이터베이스 객체의 컬럼(열) 관련 내부 정보를 저장 ) */
+FROM SYS.TAB$ /* 테이블의 실제 정보가 저장된 TABLE ( 테이블(Table)로서의 고유 특성(저장 공간 설정 등) )*/
+WHERE OBJ# = 92696; /* 실제 테이블의 DATA 중, 'EMPLOYEES' 테이블의 ' OBJ# ' 값 */
+
+
+SELECT *
+FROM SYS.COL$ /* 테이블에 속한 컬럼(Column)들의, 메타 정보(데이터 타입, 길이 등)가 저장된 원본 딕셔너리 TABLE */
+WHERE OBJ# = 92696; /* 실제 테이블의 DATA 중, 'EMPLOYEES' 테이블의 ' OBJ# ' 값 */
+
+
+SELECT *
+FROM SYS.CON$ /* 제약 조건(Constraints)의 고유 이름과 시스템 ID가 매핑된 원본 TABLE ( DBA_CONSTRAINTS 뷰와, USER_CONSTRAINTS 뷰의 원본 TABLE ) */
 ```
+> CREATE TABLE 정상 수행시, 내부적으로 실제 데이터를 INSERT 작업 ( 내부적으로 AUTO COMMIT 발생 )
+
+</br></br></br>
 ```SQL
 SELECT *
 FROM DBA_TABLES; /* 테이블 정보용 공식 Dictionary View ( DB 전체의 테이블을 확인할 수 있는 권한 필요 ) */
@@ -40,6 +54,20 @@ FROM DBA_ROLES; /* 현재 DB, 생성되어있는 ROLE 확인 */
 
 SELECT *
 FROM DBA_TEMP_FILES; /* 임시 테이블 스페이스 조회 */
+
+
+SELECT *
+FROM DBA_CONSTRAINTS; /* DB 전체 시스템의, 모든 제약 조건 조회 ( CON$ 테이블 기반 VIEW ) */
+
+
+SELECT *
+FROM DBA_OBJECTS
+WHERE OBJECT_NAME = 'EMPLOYEES'; /* ' SYS.OBJ$ ' 테이블에 대해 GUI 고려한 VIEW */
+
+
+SELECT *
+FROM DBA_TAB_COLUMNS
+WHERE TABLE_NAME = 'EMPLOYEES'; /* DB 內 모든 테이블의 컬럼 정보(데이터 타입, 길이, NULL 여부 등) ( COL$ 테이블 기반 VIEW ) */
 ```
 ```SQL
 SELECT *
@@ -103,6 +131,10 @@ FROM USER_TAB_PRIVS; /* 현재 접속한 사용자가(본인) 소유한 객체�
 
 SELECT *
 FROM USER_TS_QUOTAS; /* 현재 접속한 사용자의(본인) TABLESPACE QUOTA 조회 */
+
+
+SELECT *
+FROM USER_CONSTRAINTS; /* 내가 생성하고, 소유한 테이블의 제약 조건 (PK, FK 등) */
 ```
 > 일반 유저 세션에서의, 권한 조회 예제 코드 ( DBA 세션에서도 동일하게 조회 가능 )
 ---
