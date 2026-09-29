@@ -37,9 +37,9 @@ COMMIT; /* Transaction 종료 (Transaction 시작절까지 포함하여, 영구 
 > ' COMMIT; ' 수행하여, 영구 저장된 결과
 
 </br></br></br>
-<div id="sql-correlated-subquery-insert"></div>
 
-```SQL
+
+```SQL <a id="sql-correlated-subquery-insert"></a>
 INSERT INTO CTAS_EMP SELECT * FROM HR.EMPLOYEES; /* INSERT SUBQUERY (  DML 정상 수행으로, Transaction 시작 ) */
 
 
@@ -128,8 +128,8 @@ ROLLBACK; /* Transaction 종료 (Transaction 시작절까지 포함하여, 취�
 ```
 </br></br></br>
 
-<div id="sql-correlated-subquery-update"></div>
-```SQL
+
+```SQL <a id="sql-correlated-subquery-update"></a>
 UPDATE HR.EMP4 o
 SET dept_id = (SELECT department_id
                 FROM HR.EMPLOYEES

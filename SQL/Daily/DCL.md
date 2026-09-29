@@ -113,7 +113,7 @@ FROM USER_TS_QUOTAS; /* 현재 접속한 사용자의(본인) TABLESPACE QUOTA �
   - SQLPLUS 환경에서 EXIT 종료시 Auto COMMIT 발생 ( 자동으로 COMMIT 후에 종료 )
   - SQLPLUS 환경상 트랜잭션 상황에서, CONN 다른 계정으로 접속시 Auto COMMIT 발생
   - SQLPLUS 환경상, 강제 종료시 자동 ROLLBACK 발생 ( 자동으로 ROLLBACK 후에 종료 )
-  - [260911.md TCL](260911.md#sql-tcl)
+  - [260911.md TCL(Transaction Control Language)](260911.md#sql-tcl)
 #### GRANT
 ```SQL
 GRANT CREATE SESSION TO insa; /* SQLPLUS 접속 가능한, 시스템 권한 부여 */
