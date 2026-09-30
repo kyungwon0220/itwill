@@ -57,6 +57,26 @@ ON users;
 - 유저명은 수정 불가 ( 필요시 삭제후, 재생성 )
 </br></br></br>
 ```SQL
+ALTER TABLE HR.EMP
+ADD job_id VARCHAR2(30); /* ' HR.EMP ' 테이블에 ' job_id ' 컬럼 추가 ( 모든 행의, 기본값은 NULL ) */
+
+
+ALTER TABLE HR.EMP
+MODIFY job_id VARCHAR2(40); /* VARCHAR2(40) 크기 수정 */
+
+
+ALTER TABLE HR.EMP
+DROP COLUMN job_id; /* ' job_id ' 컬럼 삭제 */
+
+
+ALTER TABLE HR.EMP
+SET UNUSED COLUMN job_id; /* ' job_id ' 컬럼 ' SET UNUSED ' 설정 ( ' SET UNUSED ' 설정시, 조회 불가 및 ' SET UNUSED ' 취소 불가 )*/
+
+
+ALTER TABLE HR.EMP DROP UNUSED COLUMNS; /* ' SET UNUSED ' 처리한 컬럼 실삭제 */
+```
+</br></br></br>
+```SQL
 DROP USER insa CASCADE;
 ```
 > CASCADE : 유저가 생성했던 객체들을 우선으로 삭제하는 옵션

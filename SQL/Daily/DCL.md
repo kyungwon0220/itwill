@@ -61,6 +61,18 @@ FROM DBA_CONSTRAINTS; /* DB 전체 시스템의, 모든 제약 조건 조회 ( C
 
 
 SELECT *
+FROM DBA_CONS_COLUMNS; /* 컬럼별 제약 조건 조회 */
+
+
+SELECT *
+FROM DBA_INDEXES; /* 현재 사용자가 소유한 인덱스 정보 조회 */
+
+
+SELECT *
+FROM DBA_IND_COLUMNS; /* 인덱스를 구성하는 컬럼 정보 조회 */
+
+
+SELECT *
 FROM DBA_OBJECTS
 WHERE OBJECT_NAME = 'EMPLOYEES'; /* ' SYS.OBJ$ ' 테이블에 대해 GUI 고려한 VIEW */
 
@@ -135,6 +147,22 @@ FROM USER_TS_QUOTAS; /* 현재 접속한 사용자의(본인) TABLESPACE QUOTA �
 
 SELECT *
 FROM USER_CONSTRAINTS; /* 내가 생성하고, 소유한 테이블의 제약 조건 (PK, FK 등) */
+
+
+SELECT *
+FROM USER_UNUSED_COL_TABS; /* ' SET UNUSED ' 처리한 컬럼의 개수 조회 */
+
+
+SELECT *
+FROM USER_CONS_COLUMNS; /* 컬럼별 제약 조건 조회 */
+
+
+SELECT *
+FROM USER_INDEXES; /* 현재 사용자가 소유한 인덱스 정보 조회 */
+
+
+SELECT *
+FROM USER_IND_COLUMNS; /* 인덱스를 구성하는 컬럼 정보 조회 */
 ```
 > 일반 유저 세션에서의, 권한 조회 예제 코드 ( DBA 세션에서도 동일하게 조회 가능 )
 ---

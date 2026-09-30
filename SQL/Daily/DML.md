@@ -148,5 +148,16 @@ ROLLBACK; /* Transaction 종료 (Transaction 시작절까지 포함하여, 취�
 > TCL 사용하여, 확정지어주지 않는다면, 다른 세션에서는 DELETE 결과가 보이지 않는다 ( 읽기 일관성 )
 
 </br></br></br>
-#### MERTGE ( 병합. INSERT, UPDATE, DELETE 한번에 수행 가능 )
+#### MERGE ( 병합. INSERT, UPDATE, DELETE 한번에 수행 가능 )
+```SQL
+MERGE INTO HR.DW_EMP d /* 타겟 (업데이트 되는 테이블) */
+USING HR.OLTP_EMP o /* 소스 테이블 */
+ON (d.employee_id = o.employee_id) /* 조인과 같이, 연결 고리 조건 */
+WHEN MATCHED THEN /* ON 절의 조건키 값이 일치하는 행들 */
+    UPDATE SET d.salary = o.salary * 1.1
+    DELETE WHERE o.FLAG = 'D'
+WHEN NOT MATCHED THEN
+    INSERT(d.employee_id, d.last_name, d.salary, d,deparmtnet_id) /* 타겟 테이블에 INSERT */
+    VALUES(o.employee_id, o.last_name, o.salary, o,deparmtnet_id);
+```
 ---
