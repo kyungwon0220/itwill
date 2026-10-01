@@ -83,3 +83,81 @@ SET UNUSED COLUMN job_id; /* ' job_id ' 컬럼 ' SET UNUSED ' 설정 ( ' SET UNU
 
 ALTER TABLE HR.EMP DROP UNUSED COLUMNS; /* ' SET UNUSED ' 처리한 컬럼 실삭제 */
 
+
+ALTER TABLE HR.EMP
+ADD CONSTRAINT emp_dept_id_fk /* ' emp_dept_id_fk ' 이름으로 FOREIGN KEY 생성 */
+FOREIGN KEY(dept_id) /* ' HR.EMP.dept_id ' 컬럼을 지정 */
+REFERENCES HR.DEPT(dept_id); /* ' HR.DEPT(dept_id) ' 內 존재하는 값 또는 NULL 입력 가능하게 */
+-- ON DELETE RESTRICT (기본값) == ' HR.EMP.dept_id ' 컬럼에 데이터 존재시, ' HR.DEPT.dept_id '삭제 불가
+-- ON DELETE CASCADE ==  ' HR.DEPT.dept_id '삭제시, ' HR.EMP.dept_id ' 컬럼 데이터들도 삭제
+-- ON DELETE SET NULL == ' HR.DEPT.dept_id '삭제시, ' HR.EMP.dept_id ' 컬럼 값들을 ' NULL '
+
+
+ALTER TABLE HR.EMP
+ADD CONSTRAINT emp_id_pk PRIMARY KEY(id); /* ' emp_id_pk ' == 제약조건명,' id ' 컬럼에 제약 조건 설정*/
+
+
+ALTER TABLE HR.EMP
+ADD PRIMARY KEY(id); /* CONSTRANT_NAME 자동 생성 (제약 조건명 자동 생성) */
+
+
+ALTER TABLE HR.EMP
+DROP PRIMARY KEY; /* PRIMARY 키는 테이블당 1개로 유일하기에, 이렇게도 삭제 가능 */
+
+
+ALTER TABLE HR.DEPT
+DROP CONSTRAINT dept_pk CASCADE; /* ' dept_pk ' PK 참조중인, 외래키들 삭제 +  ' dept_pk ' PK 삭제 */
+
+
+ALTER TABLE HR.EMP
+ADD CONSTRAINT emp_dept_id_fk /* ' emp_dept_id_fk ' 이름으로 FOREIGN KEY 생성 */
+FOREIGN KEY(dept_id) /* ' HR.EMP.dept_id ' 컬럼을 지정 */
+REFERENCES HR.DEPT(dept_id); /* ' HR.DEPT(dept_id) ' 內 존재하는 값 또는 NULL 입력 가능하게 */
+-- ON DELETE RESTRICT (기본값) == ' HR.EMP.dept_id ' 컬럼에 데이터 존재시, ' HR.DEPT.dept_id '삭제 불가
+-- ON DELETE CASCADE ==  ' HR.DEPT.dept_id '삭제시, ' HR.EMP.dept_id ' 컬럼 데이터들도 삭제
+-- ON DELETE SET NULL == ' HR.DEPT.dept_id '삭제시, ' HR.EMP.dept_id ' 컬럼 값들을 ' NULL '
+
+
+DELETE FROM HR.DEPT WHERE dept_id = 10; /* 현재 emp_dept_id_fk 외래키가 ' ON DELETE RESTRICT (기본값) ' 생성되어 있기에, ' HR.EMP.dept_id ' == ' 10 ' 행이 존재시, DELETE 수행 불가 ERR 발생 */
+
+
+DELETE FROM HR.DEPT WHERE dept_id = 120; /* 현재 emp_dept_id_fk 외래키가 ' ON DELETE RESTRICT (기본값) ' 생성되어 있지만, ' HR.EMP.dept_id ' == ' 120 ' 행이 없기에, DELETE 수행 가능 */
+
+
+DROP TABLE HR.DEPT CASCADE CONSTRAINTS PURGE; /* ' HR.DEPT ' 참조하는, 외래키들 + ' HR.DEPT ' 테이블 삭제 */
+
+
+ALTER TABLE HR.DEPT ADD CONSTRAINT dept_name_uk UNIQUE(dept_name);
+
+
+INSERT INTO HR.DEPT(dept_id, dept_name) VALUES(30, '총무부'); /* 이미 ' dept_name ' == ' 총무부 ' 존재하여, INSERT 수행 불가 ERR */
+
+
+ALTER TABLE HR.DEPT
+DROP UNIQUE(dept_name); /* UNIQUE 조건은, 테이블당 하나가 아니므로 ' dept_name ' 컬럼명 기입 필수 */
+
+
+ALTER TABLE HR.EMP
+ADD CONSTRAINT emp_sal_ck
+CHECK(sal>=1000 AND sal <= 2000);
+
+
+ALTER TABLE HR.EMP
+MODIFY name CONSTRAINT emp_name_nn NOT NULL; /* ' emp_name_nn ' == 제약 조건명 */
+
+
+ALTER TABLE HR.EMP
+MODIFY name NULL;
+
+
+CREATE TABLE HR.EMP(
+--   id NUMBER CONSTRAINT emp_id_pk PRIMARY KEY, /* 열 레벨 정의 */
+   name VARCHAR2(30) CONSTRAINT emp_name_nn NOT NULL /* NOT NULL 제약 조건은, 반드시 ' 열 레벨 ' 정의 필수 */
+                        CONSTRAINT emp_name_uk UNIQUE, /* 제약 조건 2개 적용 ( 열 레벨 정의 ) */ 
+   sal NUMBER,
+--   dept_id NUMBER CONSTRAINT emp_dept_id_fk REFERENCES HR.DEPT(dept_id),
+   CONSTRAINT emp_id_pk PRIMARY KEY(id), /* 테이블 레벨 정의 */
+--   CONSTRAINT emp_name_uk UNIQUE(name), /* 테이블 레벨 정의 */
+   CONSTRAINT emp_sal_ck CHECK(sal BETWEEN 1000 AND 2000),
+   CONSTRAINT emp_dept_id_fk FOREIGN KEY(dept_id) REFERENCES HR.DEPT(dept_id) /* 테이블 레벨 정의 */ )
+TABLESPACE users;
