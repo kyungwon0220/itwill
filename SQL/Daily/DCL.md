@@ -114,6 +114,18 @@ FROM USER_OBJECTS; /* 현재 접속한 사용자가(본인) 소유한 객체 조
 
 
 SELECT *
+FROM ALL_OBJECTS; /* 현재 접속한 사용자가 조회 권한을 가진 모든 객체 조회 */
+
+
+SELECT *
+FROM USER_VIEWS; /* 현재 접속한 사용자가(본인) 소유한 가상 테이블(VIEW) 조회 */
+
+
+SELECT *
+FROM ALL_VIEWS; /* 현재 접속한 사용자가(본인) 조회 권한을 가진, 모든 가상 테이블(View) 조회 */
+
+
+SELECT *
 FROM USER_TABLES; /* 현재 접속한 사용자가(본인) 소유한 테이블 정보 */
 
 

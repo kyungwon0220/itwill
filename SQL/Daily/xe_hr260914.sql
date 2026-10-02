@@ -78,7 +78,7 @@ DROP COLUMN job_id; /* ' job_id ' 컬럼 삭제 */
 
 
 ALTER TABLE HR.EMP
-SET UNUSED COLUMN job_id; /* ' job_id ' 컬럼 ' SET UNUSED ' 설정 ( ' SET UNUSED ' 설정시, 조회 불가 및 ' SET UNUSED ' 취소 불가 )*/
+SET UNUSED COLUMN job_id; /* ' job_id ' 컬럼 ' SET UNUSED ' 설정 ( ' SET UNUSED ' 설정시, 조회 불가 및 ' SET UNUSED ' 취소 불가 ) ( ' SET UNUSED ' == 바로 삭제하면 해당 테이블의 서비스가 중단되기에, 사용하지 않는 컬럼으로 표시할때 사용 ) */
 
 
 ALTER TABLE HR.EMP DROP UNUSED COLUMNS; /* ' SET UNUSED ' 처리한 컬럼 실삭제 */
@@ -147,17 +147,66 @@ MODIFY name CONSTRAINT emp_name_nn NOT NULL; /* ' emp_name_nn ' == 제약 조건
 
 
 ALTER TABLE HR.EMP
-MODIFY name NULL;
+MODIFY name NULL; /* NOT NULL 제약 조건 해제 */
 
 
 CREATE TABLE HR.EMP(
 --   id NUMBER CONSTRAINT emp_id_pk PRIMARY KEY, /* 열 레벨 정의 */
-   name VARCHAR2(30) CONSTRAINT emp_name_nn NOT NULL /* NOT NULL 제약 조건은, 반드시 ' 열 레벨 ' 정의 필수 */
-                        CONSTRAINT emp_name_uk UNIQUE, /* 제약 조건 2개 적용 ( 열 레벨 정의 ) */ 
-   sal NUMBER,
+    id NUMBER,
+    name VARCHAR2(30) CONSTRAINT emp_name_nn NOT NULL /* NOT NULL 제약 조건은, 반드시 ' 열 레벨 ' 정의 필수 */
+                        CONSTRAINT emp_name_uk UNIQUE, /* 제약 조건 2개 적용 ( 열 레벨 정의 ) */
+    sal NUMBER,
 --   dept_id NUMBER CONSTRAINT emp_dept_id_fk REFERENCES HR.DEPT(dept_id),
-   CONSTRAINT emp_id_pk PRIMARY KEY(id), /* 테이블 레벨 정의 */
+    dept_id NUMBER,
+    CONSTRAINT emp_id_pk PRIMARY KEY(id), /* 테이블 레벨 정의 */
 --   CONSTRAINT emp_name_uk UNIQUE(name), /* 테이블 레벨 정의 */
-   CONSTRAINT emp_sal_ck CHECK(sal BETWEEN 1000 AND 2000),
-   CONSTRAINT emp_dept_id_fk FOREIGN KEY(dept_id) REFERENCES HR.DEPT(dept_id) /* 테이블 레벨 정의 */ )
+    CONSTRAINT emp_sal_ck CHECK(sal BETWEEN 1000 AND 2000),
+    CONSTRAINT emp_dept_id_fk FOREIGN KEY(dept_id) REFERENCES HR.DEPT(department_id) /* 테이블 레벨 정의 */ )
 TABLESPACE users;
+
+
+RENAME EMP TO EMP_NEW; /* ' RENAME ' 키워드로의 수정은 ( 변경 ) SYS 유저도 아닌, 테이블 소유자 본인만 사용 가능 */
+
+
+ALTER TABLE EMP_NEW
+RENAME TO EMP;
+
+
+ALTER TABLE HR.EMP RENAME TO EMP_NEW; /* SYS 유저가, 테이블명 변경시 */
+
+
+ALTER TABLE HR.EMP
+RENAME COLUMNS id TO emp_id;
+
+
+ALTER TABLE HR.EMP_NEW RENAME CONSTRAINT emp_id_pk TO emp_pk;
+
+
+ALTER INDEX emp_id_pk RENAME TO emp_idx; /* ' INDEX_NAME ' 수정 ( 변경 ) */
+
+
+CREATE OR REPLACE VIEW HR.COPY_EMP
+AS
+SELECT employee_id, last_name || ' ' || first_name AS "name", job_id, department_id /* 표현식 사용시, 별칭 지정 필수 */
+FROM HR.EMPLOYEES;
+
+
+CREATE OR REPLACE VIEW HR.COPY_EMP(id, name, job, mgr, dept_id)
+AS
+SELECT employee_id, last_name || ' ' || first_name, job_id, manager_id, department_id
+FROM HR.EMPLOYEES;
+
+
+CREATE OR REPLACE VIEW HR.COPY_EMP
+AS
+SELECT e.employee_id, e.last_name, e.first_name, e.job_id, e.department_id, d.department_name
+FROM HR.EMPLOYEES e, HR.DEPARTMENTS d
+WHERE e.department_id = d.department_id;
+
+
+DROP VIEW HR.COPY_EMP;
+
+--[문제] oltp_emp에 있는 사원들중에 dw_emp에 존재하는 사원 정보를 출력해주세요.
+--[문제] dw_emp에 있는 사원들중에 oltp_emp에 존재하는 사원들은 oltp_emp에 있는 급여를 기준으로 10% 인상해주세요. 테스트한 후 rollback 수행하세요.
+--[문제] dw_emp에 있는 사원들중에 oltp_emp에 존재하는 사원이면서 flag값이 'D'인 사원에 대해서 삭제해 주세요.테스트한 후 rollback 수행하세요.
+--[문제] oltp_emp테이블에 dw_emp테이블에 없는 데이터들을 dw_emp테이블에 입력해주세요.    테스트한 후 rollback 수행하세요.
