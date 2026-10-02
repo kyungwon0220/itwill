@@ -231,10 +231,18 @@ GRANT DELETE ANY TABLE TO ORA1; /* DB 內 모든 사용자의 테이블 데이�
 </br></br></br>
 #### REVOKE
 ```SQL
-REVOKE CREATE SESSION FROM insa; /* 시스템 권한 회수 ( 이미 접속중인 세션은, 그대로 동작 (재접속시, 접속 불가) ) */
+REVOKE CREATE SESSION
+FROM insa; /* 시스템 권한 회수 ( 이미 접속중인 세션은, 그대로 동작 (재접속시, 접속 불가) ) */
 
 
-REVOKE SELECT ON HR.EMPLOYEES FROM insa; /* 객체 권한 회수 */
+REVOKE SELECT, INSERT, UPDATE, DELETE /* 객체 권한 회수 */
+ON HR.EMPLOYEES
+FROM insa;
+
+
+REVOKE ALL /* 부여된 모든 객체 권한 회수 */
+ON HR.EMPLOYEES
+FROM insa;
 ```
 - 객체 권한은 DBA, 객체 소유자가 권한 회수 가능
 ---
