@@ -68,3 +68,40 @@ VALUES(9999, NULL); /* ' dept_id = 20 ' CHECK 제약 조건 위반으로, INSERT
 UPDATE HR.EMP_20
 SET dept_id = 10 /* CHECK 제약 조건 위반으로, UPDATE 불가 ERR */
 WHERE "name" = 'Taylor Winston';
+
+
+CREATE SEQUENCE ID_SEQ
+START WITH 1 /* ' START WITH ' 미설정시, 기본값은 1 */
+MAXVALUE 10 /* ' MAXVALUE ' 미설정시, 기본값은 10의 27승 */
+INCREMENT BY 1 /* ' INCREMENT BY ' 미설정시, 기본값은 1 */
+NOCYCLE /* 기본값 ' NOCYCLE ' */
+NOCACHE; /* 기본값은 CACHE == 20 */
+
+
+SELECT *
+FROM USER_SEQUENCES /* 현재 접속한 사용자가(본인) 소유한 SEQUENCES 정보 */
+WHERE SEQUENCE_NAME = 'ID_SEQ';
+
+
+DROP TABLE HR.EMP CASCADE CONSTRAINTS PURGE;
+CREATE TABLE HR.EMP(id number, name varchar2(30), day timestamp) TABLESPACE users;
+
+
+INSERT INTO HR.EMP(id, name)
+VALUES(ID_SEQ.NEXTVAL, /* ' NEXTVAL ' == 실제 컬럼이 아닌, 의사 열 ( 가상 컬럼 == pseudo COLUMN ) */
+        'Taylor Winston');
+
+
+SELECT ID_SEQ.CURRVAL
+FROM DUAL; /* ' CURRVAL ' == 가상 컬럼 == 현재까지 사용한 마지막 번호 ( ' NEXTVAL ' 사용 이력이 없다면, 조회 불가 ERR ) */
+
+
+SELECT ID_SEQ.NEXTVAL /* ' NEXTVAL ' 사용함으로 처리되어 CURRVAL + 1 증가 (' SELECT * FROM ALL_SEQUENCES ' 수행시, ' LAST_NUMBER ' + 1 증가 ) */
+FROM DUAL;
+
+
+ALTER SEQUENCE ID_SEQ /* ' START WITH ' 제외한, 다른 옵션들은 수정 가능 */
+INCREMENT BY 1;
+
+
+DROP SEQUENCE ID_SEQ; /* 시퀀스 삭제 */

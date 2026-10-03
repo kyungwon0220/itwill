@@ -134,6 +134,10 @@ FROM USER_TAB_COLUMNS; /* 현재 접속한 사용자가(본인) 소유한 테이
 
 
 SELECT *
+FROM USER_SEQUENCES; /* 현재 접속한 사용자가(본인) 소유한 SEQUENCE 정보 조회 */
+
+
+SELECT *
 FROM USER_SYS_PRIVS;  /* 현재 접속한 사용자의(본인) 시스템 권한 조회 */
 
 
