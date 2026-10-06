@@ -1,6 +1,7 @@
 DECLARE
-    v_name VARCHAR2(30); /* 디폴트 값인 NULL */
-    v_job VARCHAR2(50) := 'Oracle DBA';
+    v_name VARCHAR2(30); /* ' v_name ' == 디폴트 값인 NULL */
+    v_job VARCHAR2(50) NOT NULL := 'Oracle DBA'; /* NOT NULL 존재시, 기본값 할당 필수 */
+    v_d CONSTANT DATE DEFAULT SYSDATE; /* CONSTANT ( 상수 ) 선언시, 기본값 할당 필수 */
 BEGIN
 	dbms_output.put_line('Hellow World1, ' || q'[x]');
 	dbms_output.put_line('Tomorrow''s : ' || TO_CHAR(SYSDATE, 'yyyy-mm-dd'));
@@ -13,22 +14,30 @@ BEGIN
 END;
 /
 
+
+
+
+SELECT *
+FROM HR.EMPLOYEES
+WHERE employee_id = :id; /* 선언없이 바로 사용 (*/
+
+
+
+
 DECLARE
-    v_a NUMBER(5) := 0.5; /* 자동 반올림 처리되어 ' 1 ' 출력*/
-    v_b NUMBER(2,1) := 0.7; /* 2자리 + 소수점 1자리까지 출력 == ' .7 ' 출력 */
-    V_C VARCHAR2(10) NOT NULL := 'oracle'; /* NOT NULL 선언시, 초기값 할당 필수 */
-    v_d CONSTANT DATE DEFAULT sysdate; /* CONSTANT 선언시, 초기값 할당 필수 */
-    v_e CONSTANT NUMBER(3) := 20; /* CONSTANT 선언시, 초기값 할당 필수 */
+    a NUMBER := 0.5; /* 자동 반올림 처리되어 ' 1 ' 출력*/
+    b NUMBER(2,1) := 0.7; /* 2자리 + 소수점 1자리까지 출력 == ' .7 ' 출력 */
+    c CONSTANT NUMBER := 20; /* CONSTANT 선언시, 초기값 할당 필수 */
 BEGIN
-    dbms_output.put_line(v_a);
-    v_a := 200;
-    dbms_output.put_line(v_a || ', ' || v_b);
-    dbms_output.put_line(v_c || ', ' || v_d);
-    v_c := 'abc';
-    dbms_output.put_line(v_c);
---    v_e := 10; /* 상수는 재할당 불가로 ERR 발생 */
+    dbms_output.put_line(a);
+    a := 200;
+    dbms_output.put_line(a || ', ' || b || ', ' || c);
+--    c := 10; /* 상수는 재할당 불가로 ERR 발생 */
 END;
 /
+
+
+
 
 DECLARE
     v_sal NUMBER := 1000;
@@ -39,8 +48,3 @@ BEGIN
     dbms_output.put_line(v_total);
 END;
 /
-
-SELECT * FROM hr.employees WHERE employee_id = 100;
-SELECT * FROM hr.employees WHERE employee_id = 101;
-SELECT * FROM hr.employees WHERE employee_id = 102;
-SELECT * FROM hr.employees WHERE employee_id = :c_id;

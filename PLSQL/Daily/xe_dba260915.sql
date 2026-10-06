@@ -1,6 +1,10 @@
-select sql_id, sql_text, parse_calls, loads, executions, plan_hash_value, hash_value from v$sql
-where sql_text like '%hr.employees%' and sql_text not like '%v$sql%';
+SELECT SQL_ID, SQL_TEXT, PARSE_CALLS, LOADS, EXECUTIONS, PLAN_HASH_VALUE, HASH_VALUE
+FROM V$SQL
+WHERE SQL_TEXT LIKE '%HR.EMPLOYEES%' AND SQL_TEXT NOT LIKE '%v$sql%';
 
-select * from table(dbms_xplan.display_cursor('09f16j5673k2r')); /* SQL_ID ' 09f16j5673k2r ', 실행 계획 */
 
-alter system flush shared_pool; /* FLUSH */
+SELECT *
+FROM TABLE(DBMS_XPLAN.DISPLAY_CURSOR('76vc1dfwz3b1x')); /* SQL_ID ' 76vc1dfwz3b1x ', 실행 계획 ( SQL DEVELOPER 프로그램상 ' F10 ' 키로 확인하는 실행 계획 )*/
+
+
+ALTER SYSTEM FLUSH SHARED_POOL; /* 메모리 FLUSH */
