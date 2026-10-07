@@ -75,7 +75,7 @@ WHERE job_id IN('SA_REP', 'AD_PRES') AND salary > 10000;
 --[문제11] 2006년도 입사한 사원의 employee_id, last_name, hire_date를 출력해주세요 단 last_name 이름을 기준으로 오름차순정렬 해주세요.
 SELECT employee_id, last_name, hire_date
 FROM HR.EMPLOYEES
-WHERE hire_date BETWEEN DATE '2006-01-01' and '2006-12-31'
+WHERE hire_date BETWEEN DATE '2006-01-01' AND '2006-12-31'
 ORDER BY 2;
 
 --[문제12] 80번 department_id 사원중에 commission_pct 값이 0.2 이고 job_id는 SA_MAN인 사원의 employee_id, last_name, salary를 출력해주세요.

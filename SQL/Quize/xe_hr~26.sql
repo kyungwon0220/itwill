@@ -27,7 +27,7 @@ FROM HR.EMPLOYEES
 WHERE TO_CHAR(hire_Date, 'yyyy') = '2006' AND MOD(TO_CHAR(hire_date, 'mm'), 2) = 1
 ORDER BY hire_date DESC;
 
---26.
+--[문제26] 사원들의 급여를 기준으로 출력해주세요. ( ~4999 : low, 5000 ~ 9999 : medium, 10000 ~ 19999 : good, 20000 ~ : excellent )
 SELECT last_name, salary,
     CASE 
         WHEN salary BETWEEN 0 AND 4999 THEN 'low'
