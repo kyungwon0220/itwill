@@ -64,7 +64,7 @@ ALTER SYSTEM SET processes=500 SCOPE=SPFILE; /* ' SCOPE=SPFILE ' 사용하여, '
 System altered.
 ```
 </br></br></br>
-#### Dynamic Parameter
+#### Dynamic Parameter <a id="dynamic-parameter"></a>
 - DB 운영중에 Parameter 수정하고, 적용 가능
 ```SQL
 --SELECT * FROM v$parameter WHERE issys_modifiable != 'FALSE';

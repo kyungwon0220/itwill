@@ -14,3 +14,29 @@ SHOW PARAMETER sort_area_size; /* DEFERRED 파라미터는, ' SCOPE=BOTH ' 수�
 
 
 ALTER SYSTEM RESET open_cursors SCOPE=BOTH; /* 파라미터 값을, 디폴트로 초기화 */
+
+SHOW SGA;
+SHOW PARAMETER sga_max_size; /* ' SHOW SGA; ' 內 ' Total System Gllobal Area ' 값 */
+SELECT * FROM v$parameter WHERE NAME = 'sga_max_size'; /* ' ISSYS_MODIFIABLE = 'FALSE' ' == Static Parameter */
+
+SELECT * FROM dba_segments WHERE tablespace_name = 'SYSTEM'; /* Data Dicionary == Segment */
+SELECT * FROM v$sgastat;
+SHOW PARAMETER sga_target;
+SHOW PARAMETER shared_pool_size; /* VALUE == 0 == 크기를, 오라클이 자동 관리한다는 의미 */
+SELECT * FROM v$sgainfo;
+
+SELECT * FROM v$sgainfo WHERE NAME = 'Large Pool Size';
+SELECT * FROM v$parameter WHERE NAME = 'large_pool_size';
+
+SHOW PARAMETER db_block_size; /* 초기 파라미터 파일 上 ' db_block_size ' Parameter */
+SELECT * FROM user$;
+SELECT * FROM v$parameter WHERE NAME IN ('db_cache_size',
+                                            'db_keep_cache_size',
+                                            'db_recycle_cache_size',
+                                            'db_2k_cache_size',
+                                            'db_4k_cache_size',
+                                            'db_8k_cache_size',
+                                            'db_16k_cache_size',
+                                            'db_32k_cache_size');
+
+SELECT * FROM v$parameter WHERE NAME = 'log_buffer';
