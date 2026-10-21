@@ -19,9 +19,7 @@
         - 다양한 유형의 프로그램 데이터를 캐시 해두는 영역
           - Data Dicionary Cache (Row Cache) == Semantic Check ( 의미 분석 체크 ) 할때마다, 디스크 I/O 발생 부담으로, ' Data Dictionary ' 정보를 메모리에 Row 단위로 올려놓은 메모리 공간 <a id="data-dictionary-cache"></a>
             - ```SQL
-              SELECT *
-              FROM dba_segments
-              WHERE tablespace_name = 'SYSTEM';
+              SELECT * FROM dba_segments WHERE tablespace_name = 'SYSTEM';
               ```
               > 내부적으로 ' HEADER_BLOCK ' 다음이, Root Block
           - Library Cache ( 가칭 ) == 클라이언트가 수행한 SQL, PL / SQL 대한 정보, 실행 계획을 갖고있는 메모리 <a id="library-cache"></a>
@@ -37,9 +35,7 @@
     - Large Pool
       - ' large_pool_size ' 파라미터로, 동적 크기 조정 가능 ( ISSYS_MODIFIABLE == IMMEDIATE (Dynamic Parameter) )
         - ```SQL
-          SELECT *
-          FROM v$parameter
-          WHERE NAME = 'large_pool_size';
+          SELECT * FROM v$parameter WHERE NAME = 'large_pool_size';
           ```
           > VLAUE == ' 0 ' 의미는, 크기를 오라클이 자동 관리하겠다는 의미
       - Oracle Shared Server 환경시 UGA(User Global Area) 생성 ( 차후 네트워크 진도에서 배울 예정 )
