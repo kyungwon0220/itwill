@@ -19,9 +19,4 @@ ALTER DATABASE DROP LOGFILE MEMBER '/u01/app/oracle/oradata/ORA19C/redo02.log';
 
 ALTER SYSTEM CHECKPOINT; /* 수동으로, Full Check Point 발생 */
 
-SELECT * FROM v$parameter WHERE NAME = 'fast_start_mttr_target';
-SHOW PARAMETER fast_start_mttr_target;
-
-SHOW PARAMETER log_checkpoints_to_alert;
-
 select * from v$process where pname is not null;

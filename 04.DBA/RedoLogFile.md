@@ -2,6 +2,7 @@
 - [Redo Log Buffer](SGA.md#redo-log-buffer) 內 Redo Entry, [LGWR](261013.md#lgwr) 프로세스가 기록하는 File
 - Data 모든 변경 사항 기록
 - Instance 및 Media Failure 발생시 복구 방식 제공
+- Block 크기로 생성
 - 순환식 구조로서, 최소 2개 이상의 Redo Log Group 필수
   - 2개의 Group 존재 상태에서, Group 삭제 시도시, 불가 ERR
 - ```SQL
