@@ -27,3 +27,27 @@ ALTER SYSTEM SET processed=500;
 ORA-02095: specified initialization parameter cannot be modified
 ```
 ---
+</br></br></br>
+
+
+### ORA-00372 ORA-01110 ORA-01647
+- [Read Only Mode](261015.md#read-only-mode-tablespace) Tablespace 內 Segment DML 및 DDL 작업 수행 시도시 ERR
+```SQL
+DELETE FROM INSA.EMP WHERE department_id = 20;
+
+
+CREATE TABLE INSA.dept
+TABLESPACE insadata
+AS SELECT * FROM HR.DEPARTMENTS;
+```
+```
+ORA-00372: 파일 5는 지금 수정될 수 없습니다
+ORA-01110: 5 데이터 파일 : '/u01/app/oracle/oradata/ORA19C/insa_tbs01.dbf'
+
+
+ORA-01647: 'INSADATA' 테이블스페이스는 읽기 전용입니다. 영역을 할당할 수 없습니다.
+01647. 00000 - "tablespace '%s' is read-only, cannot allocate space in it"
+*Cause: Tried to allocate space in a read-only tablespace
+*Action: Create the object in another tablespace
+```
+---
