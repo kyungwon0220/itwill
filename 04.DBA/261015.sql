@@ -47,7 +47,7 @@ DESC INSA.EMP;
 ROLLBACK;
 
 SELECT 'mv -v ' || NAME || ' /home/oracle/Documents/' AS "Command" FROM v$datafile;
-SELECT 'ALTER DATABASE RENAME FILE''' || NAME || ''' TO ' || '''/home/oracle/Documents/userdata' || SUBSTR(NAME, INSTR(NAME, '/', -1)) || ''';' FROM v$datafile;
+SELECT 'ALTER DATABASE RENAME FILE''' || NAME || ''' TO ' || '''/home/oracle/Documents/insadata' || SUBSTR(NAME, INSTR(NAME, '/', -1)) || ''';' FROM v$datafile;
 
 SELECT f.file_name
 FROM dba_extents e, dba_data_files f
