@@ -40,8 +40,17 @@ ALTER TABLE INSA.EMP MODIFY last_name VARCHAR2(50);
 --ALTER TABLE INSA.EMP DROP COLUMN dept_name; /* READ ONLY 모드에서 불가 ERR */
 ALTER TABLE INSA.EMP ADD dept_name VARCHAR2(30);
 --ALTER TABLESPACE temp OFFLINE; /* OFFLINE 처리 불가 ERR */
-ALTER TABLESPACE SYSAUX OFFLINE;
+ALTER TABLESPACE SYSAUX OFFLINE; /* == ' ALTER TABLESPACE SYSAUX OFFLINE NORMAL; '*/
 ALTER TABLESPACE SYSAUX ONLINE;
 
 DESC INSA.EMP;
 ROLLBACK;
+
+SELECT 'mv -v ' || NAME || ' /home/oracle/Documents/' AS "Command" FROM v$datafile;
+SELECT 'ALTER DATABASE RENAME FILE''' || NAME || ''' TO ' || '''/home/oracle/Documents/userdata' || SUBSTR(NAME, INSTR(NAME, '/', -1)) || ''';' FROM v$datafile;
+
+SELECT f.file_name
+FROM dba_extents e, dba_data_files f
+where e.file_id = f.file_id AND e.segment_name = 'EMP' AND e.owner = 'INSA';
+
+DROP TABLESPACE userdata INCLUDING CONTENTS AND DATAFILES;
