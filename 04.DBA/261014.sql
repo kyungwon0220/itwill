@@ -3,7 +3,7 @@ select * from v$log_history; /* log switch 발생 시점 조회 */
 SELECT a.group#, b.sequence#, a.member, b.members, b.bytes/1024/1024 mb, b.archived, b.status, b.first_change#, b.next_change#
 FROM v$logfile a, v$log b
 WHERE a.group# = b.group#
-ORDER BY 1;
+ORDER BY 1; /* Redo Log File 정보 조회 */
 
 ALTER SYSTEM SWITCH LOGFILE; /* 수동으로, ' Log Switch ' 발생 */
 

@@ -1,4 +1,3 @@
-## 260910thu
 ### DDL(Data Definition Language)
 - DDL, DCL 문은, 정상 수행되면 Auto COMMIT 발생
   - SQLPLUS 환경에서 EXIT 종료시 Auto COMMIT 발생 ( 자동으로 COMMIT 후에 종료된다 )
@@ -31,10 +30,11 @@ VARCHAR|Y|. . .|
 --CREATE USER 고유한 유저명 /* 유저 생성시 필수 구문 */
 --IDENTIFIED BY PW /* 유저 생성시 필수 구문 */
 --DEFAULT TABLESPACE 테이블 스페이스명
---TEMPORARY TABLESPACE 임시 테이블 스페이스명 /* SORT, HASH 작업시에, 메모리가 아닌 디스크에서 작업하는 공간 */
+--TEMPORARY TABLESPACE 임시 테이블 스페이스명 /* PGA 內 UGA 內 ' SQL Work Area' 공간에서, SORT, HASH, 병합 등의 작업 時 메모리가 아닌 디스크에서 작업하는 공간 */
 --QUOTA 용량(K, M) /* 테이블 스페이스를 사용할 권한 부여 */
 --ON 테이블 스페이스명
---ACCOUNT UNLOCK;
+--ACCOUNT UNLOCK
+--PASSWORD EXPIRE; /* 첫 로그인시, 先 PW 변경 */
 ```
 > CREATE 예시
 ```SQL
@@ -77,9 +77,15 @@ ALTER TABLE HR.EMP DROP UNUSED COLUMNS; /* ' SET UNUSED ' 처리한 컬럼 실�
 ```
 </br></br></br>
 ```SQL
-DROP USER insa CASCADE;
+ALTER SYSTEM KILL SESSION '263, 41580' IMMEDIATE; /* 진행중이던 트랜잭션은, [PMON](261013tue.md#pmon) 프로세서가 ROLLBACK 처리 */
 ```
-> CASCADE : 유저가 생성했던 객체들을 우선으로 삭제하는 옵션
+> ' SID ' == ' 263 ' && ' SERIAL# ' == ' 41580 ' Session Kill
+
+</br></br></br>
+```SQL
+DROP USER insa CASCADE; /* ' CASCADE ' == 유저가 생성했던 객체들을 우선으로 삭제 */
+```
+> 현재 접속중일시, 삭제 불가 ( 필요시, Session Kill )
 
 </br></br></br>
 #### TRUNCATE
