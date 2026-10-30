@@ -69,6 +69,10 @@ FROM DBA_INDEXES; /* 현재 사용자가 소유한 인덱스 정보 조회 */
 
 
 SELECT *
+FROM DBA_SEQUENCES; /* DB 內 생성되어 있는, Sequence 정보 조회 */
+
+
+SELECT *
 FROM DBA_IND_COLUMNS; /* 인덱스를 구성하는 컬럼 정보 조회 */
 
 
@@ -135,6 +139,10 @@ FROM USER_TAB_COLUMNS; /* 현재 접속한 사용자가(본인) 소유한 테이
 
 SELECT *
 FROM USER_SEQUENCES; /* 현재 접속한 사용자가(본인) 소유한 SEQUENCE 정보 조회 */
+
+
+SELECT *
+FROM ALL_SEQUENCES; /* 현재 접속한 사용자가(본인) 조회 권한을 가진, SEQUENCE 정보 조회 */
 
 
 SELECT *
