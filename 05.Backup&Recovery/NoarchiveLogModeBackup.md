@@ -1,19 +1,10 @@
 # Noarchive Log Mode Backup
-- Redo 정보가 없으면, 백업 시점 이후의 작업 내용은 복구 불가 ( 백업 시점으로의 복구만 가능 )
-  - 백업본 이후의 Redo 정보 존재시, 완전 복구 가능
-- DB 정상 종료 後 Whole(Full) Backup 진행 ( shutdown { NORMAL || TRANSACTIONAL || IMMEDIATE} )
-  - 필수 Backup 대상 : 모든 Data File, Control File, Temp File
-  - 선택적 Backup 대상 : Redo Log File, 초기 파라미터 File, 패스워드 File, Temp File
-- 일관성 있는 Backup ( Close Backup = Cold Backup = Offline Backup ) : 모든 Data 파일의 Checkpoint, Control 파일의 Checkpoint, Redo Checkpoint 정보가 일치하는 Backup
-```SQL
-select name, log_mode, checkpoint_change#, scn_to_timestamp(checkpoint_change#), current_scn from v$database;
-```
-|NAME|LOG_MODE|CHECKPOINT_CHANGE#|SCN_TO_TIMESTAMP(CHECKPOINT_CHANGE#)|CURRENT_SCN|
-:---|:---|:---|---:|---:|
-ORA19C|NOARCHIVELOG|2236840|26/10/31 04:13:33.000000000|2285811|
-- CHECKPOINT_CHANGE# : 마지막에 발생한, Check Point SCN ( Dirty 버퍼를 Write 작업한, 마지막 시점 )
-- SCN_TO_TIMESTAMP(CHECKPOINT_CHANGE#) : ' CHECKPOINT_CHANGE# ' 발생 시각
-- CURRENT_SCN : 현재 SCN
+- Redo 정보가 없으면, 백업 시점 이후의 작업 내용은 복구 불가 ( 백업 시점으로의, [불완전 복구](#cancle-base-recovery) 가능 )
+  - 백업 시점 이후의 Redo 정보 존재시, 완전 복구 가능
+- DB 정상 종료 後 Whole Backup 진행 ( shutdown { NORMAL || TRANSACTIONAL || IMMEDIATE} )
+  - 필수 Backup 대상 : 모든 Data File, Control File
+  - 선택적 Backup 대상 : Redo Log File, 초기 파라미터 File, 패스워드 File
+- 일관성 있는 Backup 稱 ( Close Backup = Cold Backup = Offline Backup ) : 모든 Data 파일의 Checkpoint, Control 파일의 Checkpoint, Redo Checkpoint 정보가 일치하는 Backup
 </br></br></br>
 ## Step
 0. 일지 작성 준비
@@ -21,7 +12,7 @@ ORA19C|NOARCHIVELOG|2236840|26/10/31 04:13:33.000000000|2285811|
 select name, log_mode, checkpoint_change#, scn_to_timestamp(checkpoint_change#), current_scn from v$database; /* DB Checkpoint 정보 */
 select name, checkpoint_change#, scn_to_timestamp(checkpoint_change#) from v$datafile; /* 파일별 Checkpoint 시점과, 발생한 시각 */
 ```
-2. DB 정상 종료
+1. DB 정상 종료
 ```SQL
 shutdown immediate;
 ```
@@ -31,11 +22,14 @@ shutdown immediate;
 cp -v /u01/app/oracle/oradata/ORA19C/* /home/oracle/backup/noarch/
 ```
 3. DB Open
+```SQL
+startup;
+```
 4. pfile 백업본 생성
 ```SQL
 create pfile='/home/oracle/backup/noarch/initora19c.ora' from spfile;
 ```
-6. Backup 일지 작성
+5. Backup 일지 작성
 ```CMD
 $ ls -l /home/oracle/backup/noarch/
 total 2451012
@@ -51,7 +45,7 @@ total 2451012
 -rw-r-----. 1 oracle oinstall 361766912 Oct 31 22:58 undotbs01.dbf
 -rw-r-----. 1 oracle oinstall   5251072 Oct 31 22:58 users01.dbf
 ```
-> 백업 위치 정보
+> 백업 위치 정보 등
 ---
 </br></br></br>
 
@@ -86,10 +80,10 @@ select status from v$instance; /* 현재 DB Open 시점 조회 */
 select * from v$recover_file; /* Recovery 필요 대상 File 조회 */
 --    7	ONLINE	ONLINE	FILE NOT FOUND	0		0
 ```
-> System Data 파일은, Offline 불가
+> 만약 System Data File 손상시, System Data 파일은 Offline 처리가 불가하므로 Mount 시점에서만 Recovery 가능
 </br>
 
-3. Recovery 필요 파일들만 Offline 後 DB Open 後 상황을, 전체 공지
+3. Recovery 필요 Data File Offline 後 DB Open 및 상황을, 사내 전체 공지
 ```SQL
 alter database datafile 7 offline drop;  /* Noarchive Log Mode 時 문법 */
 
@@ -101,6 +95,21 @@ alter database open;
 ```CMD
 cp -v /home/oracle/backup/tmp/users01.dbf /u01/app/oracle/oradata/ORA19C/
 ```
+</br>
+
+4.5.
+- 백업본이 없는 Data 파일의 Recovery 필요시, 빈 껍데기 File 생성
+  - ```CMD
+    alter database create datafile '/u01/app/oracle/oradata/ORA19C/insa_tbs01.dbf'; /* 크기는, 처음 생성시에 지정한대로 자동으로 지정ㄷ */
+    ```
+    > 당연히, 이도 Tablespace 생성시부터 현재까지의 Redo 정보가 없다면, Recovery 불가
+</br>
+
+- Undo Tablespace 파일이 손상 되었는데, Redo 정보가 없을시, 새로 사용할 Undo Tablespace File 생성 및 사용 지정
+  - ```SQL
+    create undo tablespace undo1 datafile '/u01/app/oracle/oradata/ORA19C/undo01.dbf' size 10M autoextend on; /* 새로운 Undo Tablespace 생성 */
+    alter system set undo_tablespace = undo1 scope = both; /* undo1 Tablespace 사용 지정 */
+    ```
 </br>
 
 5. Recovery
@@ -118,19 +127,19 @@ recover tablespace users;
 alter database datafile 7 online;
 ```
 ---
-</br></br></br>
+</br>
 
-
-#### ' 5. Recovery ' 時 Redo Log File 없는 경우, Cancel Base Recovery <a id="cancle-base-recovery"></a>
-- Control 파일은, Redo Log 정보를 갖고 있다. 실제 Redo Log File 없는경우
+#### ' 5. Recovery ' 時 Redo Log File 없는 경우, Cancel Base Recovery ( 불완전 복구 ) <a id="cancle-base-recovery"></a>
+- Recovery 대상 Data 파일의 Redo Log File 없는 경우, 해당 Data File Offline Drop ( 미사용 ) OR DB 전체를 백업 시점으로 Rollback 中 선택 ( Recovery 대상 Data 파일만 Redo 적용 없이 DB Open 절대 불가 )
 ```SQL
 recover database using backup controlfile until cancel;
 ```
 > ' Specify log: {<RET>=suggested | filename | AUTO | CANCEL} ' 질문 時 ' cancel ' 입력 필수
+- Recovery 대상 Data 파일의 Recovery 취소 ( ' 3. Recovery 필요 파일들만 Offline ' 상태 유지 )
 </br>
 
 ```SQL
-alter database open resetlogs; /* 불완전 복구시, DB Open */
+alter database open resetlogs; /* 불완전 복구시, DB Open 필수 문법 */
 ```
 > Redo Log File 새로 생성, ' SEQUENCE# ' 1부터 새로 시작
 ---

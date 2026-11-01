@@ -24,6 +24,12 @@ select * from v$recover_file;
 ```SQL
 select name, log_mode, checkpoint_change#, scn_to_timestamp(checkpoint_change#), current_scn from v$database; /* DB Checkpoint 정보 */
 ```
+|NAME|LOG_MODE|CHECKPOINT_CHANGE#|SCN_TO_TIMESTAMP(CHECKPOINT_CHANGE#)|CURRENT_SCN|
+:---|:---|:---|---:|---:|
+ORA19C|NOARCHIVELOG|2236840|26/10/31 04:13:33.000000000|2285811|
+- CHECKPOINT_CHANGE# : 마지막에 발생한, Check Point SCN ( Dirty 버퍼를 Write 작업한, 마지막 시점 )
+- SCN_TO_TIMESTAMP(CHECKPOINT_CHANGE#) : ' CHECKPOINT_CHANGE# ' 발생 시각
+- CURRENT_SCN : 현재 SCN
 ---
 </br></br></br>
 

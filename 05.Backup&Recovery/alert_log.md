@@ -118,3 +118,59 @@ Deleted file /u01/app/oracle/oradata/ORA19C/insa_tbs01.dbf
 Completed: DROP TABLESPACE insa_tbs INCLUDING CONTENTS AND DATAFILES
 ```
 ---
+</br></br></br>
+
+
+### Online Backup 시작시
+```SQL
+alter database begin backup;
+```
+```CMD
+2026-11-01T15:21:50.251386+09:00
+alter database begin backup
+Completed: alter database begin backup
+```
+---
+</br></br></br>
+
+
+### Online Backup 종료시
+```SQL
+alter database end backup;
+```
+```CMD
+2026-11-01T15:26:11.936244+09:00
+alter database end backup
+Completed: alter database end backup
+```
+---
+</br></br></br>
+
+
+### Archive Mode 上 Data File Restore
+```SQL
+recover tablespace users;
+
+auto
+```
+```CMD
+2026-11-01T16:54:42.095797+09:00
+ALTER DATABASE RECOVER    CONTINUE DEFAULT
+2026-11-01T16:54:42.096044+09:00
+Media Recovery Log /home/oracle/backup/arch2/1_4_1248148260.dbf
+2026-11-01T16:54:42.135709+09:00
+Recovery of Online Redo Log: Thread 1 Group 2 Seq 5 Reading mem 0
+  Mem# 0: /u01/app/oracle/oradata/ORA19C/redo02.log
+2026-11-01T16:54:42.152886+09:00
+Recovery of Online Redo Log: Thread 1 Group 3 Seq 6 Reading mem 0
+  Mem# 0: /u01/app/oracle/oradata/ORA19C/redo03.log
+2026-11-01T16:54:42.186705+09:00
+Recovery of Online Redo Log: Thread 1 Group 1 Seq 7 Reading mem 0
+  Mem# 0: /u01/app/oracle/oradata/ORA19C/redo01.log
+2026-11-01T16:54:42.236825+09:00
+Media Recovery Complete (ora19c)
+Completed: ALTER DATABASE RECOVER    CONTINUE DEFAULT
+```
+- 백업 시점인 SCN 4 ( 2442594 ) == Archive 활용
+- 나머지는 Redo Log 존재하여, Redo 적용
+---
