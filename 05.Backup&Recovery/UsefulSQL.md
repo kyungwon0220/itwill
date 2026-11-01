@@ -30,7 +30,7 @@ select name, log_mode, checkpoint_change#, scn_to_timestamp(checkpoint_change#),
 
 ### Data File Checkpoint 조회
 ```SQL
-select file#, name, status, checkpoint_change#, scn_to_timestamp(checkpoint_change#) from v$datafile;
+select file#, name, status, checkpoint_change#, scn_to_timestamp(checkpoint_change#) from v$datafile; /* Control File 내용이며, ' scn_to_timestamp ' == DB Open 시점부터 조회 가능 */
 ```
 ---
 </br></br></br>

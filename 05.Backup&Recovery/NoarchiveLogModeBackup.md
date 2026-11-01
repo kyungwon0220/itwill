@@ -86,6 +86,7 @@ select status from v$instance; /* 현재 DB Open 시점 조회 */
 select * from v$recover_file; /* Recovery 필요 대상 File 조회 */
 --    7	ONLINE	ONLINE	FILE NOT FOUND	0		0
 ```
+> System Data 파일은, Offline 불가
 </br>
 
 3. Recovery 필요 파일들만 Offline 後 DB Open 後 상황을, 전체 공지
@@ -105,7 +106,9 @@ cp -v /home/oracle/backup/tmp/users01.dbf /u01/app/oracle/oradata/ORA19C/
 5. Recovery
 ```SQL
 recover tablespace users;
---recover datafile 7
+--recover datafile 7;
+--recover datafile '/u01/app/oracle/oradata/ORA19C/users01.dbf';
+
 ```
 > Restore 가져온 백업본 Checkpoint 시점부터의 Redo Log 정보 없을시, [불완전 복구](#cancle-base-recovery) 필요 (DB 전체를, 일관성 있는 백업본 시점으로)
 </br>

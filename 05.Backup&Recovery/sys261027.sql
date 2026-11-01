@@ -5,7 +5,7 @@ SELECT TABLESPACE_NAME FROM DBA_TABLESPACES;
     TEMP
     USERS
 
-select file#, name, status, checkpoint_change#, scn_to_timestamp(checkpoint_change#) from v$datafile; /* Data File 헤더에도, ' checkpoint_change# ' 존재 ( ' scn_to_timestamp ' == DB Open 시점부터 조회 가능 ) */
+select file#, name, status, checkpoint_change#, scn_to_timestamp(checkpoint_change#) from v$datafile; /* Control File 내용이며, Data File 헤더에도 ' checkpoint_change# ' 존재 ( ' scn_to_timestamp ' == DB Open 시점부터 조회 가능 ) */
     /u01/app/oracle/oradata/ORA19C/system01.dbf	    2236840
     /u01/app/oracle/oradata/ORA19C/sysaux01.dbf	    2236840
     /u01/app/oracle/oradata/ORA19C/undotbs01.dbf	2236840
@@ -55,7 +55,7 @@ and e.owner = 'HR'; /* 대문자 입력 필수 */
 select name, log_mode, checkpoint_change#, scn_to_timestamp(checkpoint_change#), current_scn from v$database; /* DB Checkpoint 정보 ( ' scn_to_timestamp ' == DB Open 시점부터 조회 가능 ) */
     ORA19C	NOARCHIVELOG	2293044	26/10/31 22:52:30.000000000	2293856 /* 현재 시점 */
 
-select file#, name, status, checkpoint_change#, scn_to_timestamp(checkpoint_change#) from v$datafile; /* ' scn_to_timestamp ' == DB Open 시점부터 조회 가능 */
+select file#, name, status, checkpoint_change#, scn_to_timestamp(checkpoint_change#) from v$datafile; /* Control File 내용이며, ' scn_to_timestamp ' == DB Open 시점부터 조회 가능 */
 1	/u01/app/oracle/oradata/ORA19C/system01.dbf	    SYSTEM	2293044	26/10/31 22:52:30.000000000
 3	/u01/app/oracle/oradata/ORA19C/sysaux01.dbf	    ONLINE	2293044	26/10/31 22:52:30.000000000
 4	/u01/app/oracle/oradata/ORA19C/undotbs01.dbf	ONLINE	2293044	26/10/31 22:52:30.000000000

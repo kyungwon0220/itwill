@@ -90,3 +90,31 @@ ORA-01110: data file 7: '/u01/app/oracle/oradata/ORA19C/users01.dbf'
 ```
 > OS 上 문제 File 하나만 출력 ( 문제되는 모든 파일은, Log 보거나 [v$recover_file](UsefulSQL.md#sql-select_recover_file) 조회 필요 )
 ---
+</br></br></br>
+
+
+### Tablespace 생성시
+```SQL
+create tablespace insa_tbs datafile '/u01/app/oracle/oradata/ORA19C/insa_tbs01.dbf' size 10m;
+```
+```CMD
+2026-11-01T06:22:14.664871+09:00
+create tablespace insa_tbs datafile '/u01/app/oracle/oradata/ORA19C/insa_tbs01.dbf' size 10m
+Completed: create tablespace insa_tbs datafile '/u01/app/oracle/oradata/ORA19C/insa_tbs01.dbf' size 10m
+```
+---
+</br></br></br>
+
+
+### Tablespace 삭제시
+```SQL
+drop tablespace insa_tbs including contents and datafiles;
+```
+```CMD
+2026-11-01T06:52:51.845396+09:00
+DROP TABLESPACE insa_tbs INCLUDING CONTENTS AND DATAFILES
+2026-11-01T06:52:55.532482+09:00
+Deleted file /u01/app/oracle/oradata/ORA19C/insa_tbs01.dbf
+Completed: DROP TABLESPACE insa_tbs INCLUDING CONTENTS AND DATAFILES
+```
+---
