@@ -113,7 +113,7 @@ select segment_id,segment_name, owner, tablespace_name, status from dba_rollback
 
 select a.file#, b.name tbs_name, a.name file_name, a.checkpoint_change#, a.status
 from v$datafile a, v$tablespace b
-where a.ts# = b.ts#;
+where a.ts# = b.ts#; /* Control 파일이 갖고있는, Data File 정보 */
 --3	SYSAUX	    /u01/app/oracle/oradata/ORA19C/sysaux01.dbf	    2307358	ONLINE
 --1	SYSTEM	    /u01/app/oracle/oradata/ORA19C/system01.dbf	    2307358	SYSTEM
 --4	UNDOTBS1	/u01/app/oracle/oradata/ORA19C/undotbs01.dbf	2307358	ONLINE

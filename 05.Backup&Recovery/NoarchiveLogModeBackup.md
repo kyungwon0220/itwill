@@ -98,13 +98,6 @@ cp -v /home/oracle/backup/tmp/users01.dbf /u01/app/oracle/oradata/ORA19C/
 </br>
 
 4.5.
-- 백업본이 없는 Data 파일의 Recovery 필요시, 빈 껍데기 File 생성
-  - ```CMD
-    alter database create datafile '/u01/app/oracle/oradata/ORA19C/insa_tbs01.dbf'; /* 크기는, 처음 생성시에 지정한대로 자동으로 지정ㄷ */
-    ```
-    > 당연히, 이도 Tablespace 생성시부터 현재까지의 Redo 정보가 없다면, Recovery 불가
-</br>
-
 - Undo Tablespace 파일이 손상 되었는데, Redo 정보가 없을시, 새로 사용할 Undo Tablespace File 생성 및 사용 지정
   - ```SQL
     create undo tablespace undo1 datafile '/u01/app/oracle/oradata/ORA19C/undo01.dbf' size 10M autoextend on; /* 새로운 Undo Tablespace 생성 */
