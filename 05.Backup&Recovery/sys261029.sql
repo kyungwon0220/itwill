@@ -187,7 +187,7 @@ alter database begin backup; /* DB Level Online Backup 시작 ( Full Checkpoint 
 alter database end backup;
 
 alter database backup controlfile to '/home/oracle/backup/arch/open/control01.ctl';
-alter database backup controlfile to trace as '/home/oracle/backup/arch/open/create_control.txt';
+alter database backup controlfile to trace as '/home/oracle/backup/arch/open/control_trace.txt';
 
 
 

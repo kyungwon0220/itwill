@@ -100,4 +100,11 @@ SHOW PARAMETER sort_area_size;
 ---|---|---|
 sort_area_size|integer|65536
 > DB 접속 해제 後 재접속 또는, 새로운 세션에서 ' SHOW PARAMETER sort_area_size; ' 실행하여 확인시, VALUE ' 1048576 ' 수정되어 있다
+
+</br></br></br>
+##### Hidden Parameter
+- [Text Parameter File ( pfile 또는 Static Parameter File 稱 )](text-parameter-file) 內 ' _allow_resetlogs_corruption ' Parameter 적용
+  - 1. pfile 가장 마지막 줄에 ' _allow_resetlogs_corruption=true ' 내용 추가
+    - ' _allow_resetlogs_corruption ' Parameter == DB Open 시도시, Data 파일들의 Checkpoint SCN 일치하지 않아서 발생하는 ERR 무시 ( 예를들어, 모든 Redo 정보 및 Archive Backup Log File 부재하며, Data 파일이 Online 백업본만 존재시 )
+    2. pfile 기반으로 DB Open
 ---
