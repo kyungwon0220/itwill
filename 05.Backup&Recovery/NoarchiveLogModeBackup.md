@@ -129,6 +129,7 @@ recover database using backup controlfile until cancel;
 ```
 > ' Specify log: {<RET>=suggested | filename | AUTO | CANCEL} ' 질문 時 ' cancel ' 입력 필수
 - Recovery 대상 Data 파일의 Recovery 취소 ( ' 3. Recovery 필요 파일들만 Offline ' 상태 유지 )
+- ' until cancel ' 필수 ( ' until cancel ' 안붙일시, 시점 제어 개념의 cancel 아닌, Recover 자체를 취소하는 개념의 cancel )
 </br>
 
 ```SQL

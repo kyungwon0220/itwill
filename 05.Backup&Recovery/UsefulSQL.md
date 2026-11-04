@@ -72,7 +72,7 @@ select file#, name, status, checkpoint_change#, scn_to_timestamp(checkpoint_chan
 ```SQL
 select a.group#, a.sequence#, b.member, a.bytes/1024/1024 mb, a.archived, a.status, a.first_change#, to_char(first_time,'yyyy-mm-dd hh24:mi:ss') first_time, a.next_change#, to_char(next_time, 'yyyy-mm-dd hh24:mi:ss') next_time
 from v$log a, v$logfile b
-where a.group# = b.group#;
+where a.group# = b.group#; /* 현재 Redo 정보 조회 */
 ```
 |GROUP#|SEQUENCE#|MEMBER|MB|ARCHIVED|STATUS|FIRST_CHANGE#|FIRST_TIME|NEXT_CHANGE#|NEXT_TIME|
 ---:|---:|:---|---:|:---|:---|---:|:---|---:|:---|

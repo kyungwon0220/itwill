@@ -16,7 +16,6 @@
     - ' ! cp -v /u01/app/oracle/oradata/ORA19C/\*.dbf /home/oracle/backup/arch/open/ ' == OS 內 .dbf File Backup ( cp )
     - Online 백업 시점의 내용이 들어있는 Redo Log File Check ( Memo )
 - Tablespace Level Backup
-- 특정 테이블스페이스만 Backup 가능
   - ```SQL
     alter tablespace data_tbs begin backup;
 
@@ -24,7 +23,7 @@
     alter system archive log current; /* Backup 後 CURRENT Group Redo Log File Archive 습관화 권장 */
     --alter system switch logfile;
     ```
-    - Tablespace backup 수행 時 Tablespace 內 모든 Data File Backup 시각이 갱신되므로, Data 파일별 Backup 일지 관리 필수 ( 차후, Backup 필요한 Data 파일별 시점 ' CHANGE# ' 확인 필요 )
+    - Tablespace backup 수행 時 Tablespace 內 모든 Data File Backup 시각이 갱신되므로, Data 파일별 Backup 일지 관리 필수 ( 차후, Backup 필요한 Data 파일별 ' CHANGE# ' 시점 확인 필요 )
     - Tablespace 정보 등의 Control File 수정 사항 발생시, [Control File Backup](../04.DBA/261007.md#control-file-backup) 및 Trace File 생성 습관화 권장
 - ```SQL
   archive log list;
@@ -36,7 +35,8 @@
   --Current log sequence            32
   ```
   - Automatic archival : arc Background Process 동작
-  - Archive destination : Archive 생성되는 Dir ( 마지막 경로만 표시 )
+  - Archive destination : Archive 생성되는 Dir
+    - ' Archive destination ' 값인 ' /home/oracle/arch2 ' 경로에 Archive Backup File 부재시, Recovery 불가 ( Archive File 다중화시에도, Recover 시도시 ' Archive destination ' 경로에 Archive Backup 파일이 있는지 확인 )
 - ```SQL
   select a.file#, a.name, a.checkpoint_change#, b.status, b.change#, b.time
   from v$datafile a, v$backup b /* ' v$backup ' == Archive Mode View */
@@ -46,9 +46,10 @@
   - ' TIME ' == 백업 시각
 - No Archive Log 모드에서, Archive Log 모드로 변경시, Archive 생성 위치 지정 필수
   - ```SQL
-    alter system set log_archive_dest_1="/home/oracle/backup/arch1/ mandatory" scope = spfile;
-    alter system set log_archive_dest_2="/home/oracle/backup/arch2/ optional" scope = spfile;
+    alter system set log_archive_dest_1="location=/home/oracle/backup/arch1/ mandatory" scope = spfile;
+    alter system set log_archive_dest_2="location=/home/oracle/backup/arch2/ optional" scope = spfile;
     ```
+    > DB 재부팅시부터 Archive File 생성지 적용
     - ' mandatory ' == Archive 작업이 성공적으로 마쳐야만, Redo Log File 재사용 가능 ( 공간 부족시, 공간 확보시까지 Wait 단계로 빠져서 대기 )
     - ' optional ' == Archive 작업이 성공적으로 마쳐지지 않더라도, Redo Log File 재사용 가능 ( 공간 부족시, Archive Log File 미생성 )
 - ```SQL

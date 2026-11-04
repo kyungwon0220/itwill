@@ -53,3 +53,31 @@ ALTER DATABASE DROP LOGFILE GROUP 5; /* Group 5 전체 삭제 ( MEMBER 포함 ) 
 ALTER DATABASE DROP LOGFILE MEMBER '/u01/app/oracle/fast_recovery_area/ORA19C/onlinelog/redo04.log'; /* ' redo04.log ' 멤버만 삭제 */
 ```
 ---
+</br></br></br>
+
+
+#### Redo Log File 손상시
+0. SQL 작업중, Redo Log File 손상 감지시
+```SQL
+alter system switch logfile;
+```
+> 화면이 멈추는 현상 등으로 Redo Log File 손상 감지시
+1. DB 정상 종료 後 OS 內 손상된 Redo Log File 생성 ( 기존 INACTIVE Redo Log File 복사 ( cp ) )
+```SQL
+shutdown immediate;
+```
+```CMD
+cp /u01/app/oracle/oradata/ORA19C/redo01.log  /u01/app/oracle/oradata/ORA19C/redo03.log
+```
+> INACTIVE 상태인 redo01.log 파일을, 손상된 redo03.log 파일명으로 복사 ( cp )
+2. Mount 시점까지 Open 後 복사한 Redo Log 파일을 Clear 작업
+```SQL
+startup mount;
+
+
+alter database clear unarchived logfile group 3;
+
+
+alter database open;
+```
+---

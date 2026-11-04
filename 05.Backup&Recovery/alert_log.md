@@ -123,7 +123,7 @@ Completed: DROP TABLESPACE insa_tbs INCLUDING CONTENTS AND DATAFILES
 
 ### Online Backup 시작시
 ```SQL
-alter database begin backup;
+alter database begin backup; /* DB Level Online Backup 시작 ( Full Checkpoint 발생 ) */
 ```
 ```CMD
 2026-11-01T15:21:50.251386+09:00
