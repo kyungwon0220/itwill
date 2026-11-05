@@ -70,7 +70,7 @@
 </br></br></br>
 
 
-### DB 운영중, Data File 손상 時 Archive 완전 복구 Scenario
+### DB 운영중, Data File 손상 時 완전 복구 Scenario
 0. DB 운영중, Data File 손상 ( rm )
 ```CMD
 rm /u01/app/oracle/oradata/ORA19C/users01.dbf
@@ -213,5 +213,159 @@ recover datafile 4;
 6. Online
 ```SQL
 alter tablespace data_tbs online;
+```
+---
+</br></br></br>
+
+
+### DB 정상 Down 後 Control File 손상 時 완전 복구 Scenario
+0. Online Bakcup 시점 이후, Tablespace 생성 後 Backup 없이, DB 정상 Down 가정
+```SQL
+create tablespace data_tbs datafile '/u01/app/oracle/oradata/ORA19C/data_tbs01.dbf' size 5m;
+create table hr.data_emp(id number) tablespace data_tbs;
+insert into hr.data_emp values(4);
+select * from hr.data_emp;
+commit;
+
+
+shutdown immediate;
+```
+</br>
+
+1. Control File 손상 後 DB Open 시도
+```CMD
+rm /u01/app/oracle/oradata/ORA19C/control01.ctl;
+
+startup;
+```
+> ERR 발생하며, Nomount 시점까지 Open ( Control File 손상 감지 )
+</br>
+
+2. 백업본 Control File Restore 및 DB Mount 시점까지 Open
+```CMD
+cp /home/oracle/backup/control01.ctl  /u01/app/oracle/oradata/ORA19C/
+
+alter database mount;
+```
+</br>
+
+3. [Control File 재생성](261007.md#control-file-remake) 작업
+- 0. ```SQL
+     alter database backup controlfile to trace as '/u01/app/oracle/oradata/ORA19C/control_trace.txt';
+     ```
+     > Trace File 없을시, 생성
+</br>
+
+- 1. DB Down 後 Redo 손상이 없는 경우기에, 백업본 Control Trace File 내용 上 ' NORESETLOGS ' Part, TEMPFILE Part 발췌
+  - ```CMD
+    shutdown abort;
+
+    vim  /u01/app/oracle/oradata/ORA19C/control_trace.txt
+    ```
+    ```TEXT
+    67 STARTUP NOMOUNT
+    68 CREATE CONTROLFILE REUSE DATABASE "ORA19C" NORESETLOGS  ARCHIVELOG
+    69     MAXLOGFILES 16
+    70     MAXLOGMEMBERS 3
+    71     MAXDATAFILES 100
+    72     MAXINSTANCES 8
+    73     MAXLOGHISTORY 292
+    74 LOGFILE
+    75   GROUP 1 '/u01/app/oracle/oradata/ORA19C/redo01.log'  SIZE 200M BLOCKSIZE 512,
+    76   GROUP 2 '/u01/app/oracle/oradata/ORA19C/redo02.log'  SIZE 200M BLOCKSIZE 512,
+    77   GROUP 3 '/u01/app/oracle/oradata/ORA19C/redo03.log'  SIZE 200M BLOCKSIZE 512
+    --78 -- STANDBY LOGFILE
+    79 DATAFILE
+    80   '/u01/app/oracle/oradata/ORA19C/system01.dbf',
+    81   '/u01/app/oracle/oradata/ORA19C/data_tbs01.dbf',
+    82   '/u01/app/oracle/oradata/ORA19C/sysaux01.dbf',
+    --83   '/u01/app/oracle/product/19.3.0/dbhome_1/dbs/UNNAMED00004',
+    '/u01/app/oracle/oradata/ORA19C/data_tbs02.dbf',
+    84   '/u01/app/oracle/oradata/ORA19C/undo01.dbf',
+    85   '/u01/app/oracle/oradata/ORA19C/users01.dbf'
+    86 CHARACTER SET AL32UTF8
+    87 ;
+    ```
+    - 78 Line ' STANDBY LOGFILE ' 부분 삭제 ( 공백 포함 )
+    - 83 Line ' /u01/app/oracle/product/19.3.0/dbhome_1/dbs/UNNAMED00004 ' == Control File 백업본 이후에 생성되어 ' '/u01/app/oracle/oradata/ORA19C/data_tbs02.dbf' ' Tablespace 수동 입력 필요
+    ```TEXT
+    109 ALTER TABLESPACE TEMP ADD TEMPFILE '/u01/app/oracle/oradata/ORA19C/temp01.dbf' REUSE;
+    ```
+</br>
+
+- 2. DB Down 상태에서, 명령처럼 붙여넣기 後 DB Open
+  ```SQL
+  alter database open;
+  ```
+  > 명령처럼 붙여넣기 성공시, Auto Mount 시점으로 진입ㄷ
+</br>
+
+- 3. 발췌했던, Temp File Part REUSE
+  ```SQL
+  ALTER TABLESPACE TEMP ADD TEMPFILE '/u01/app/oracle/oradata/ORA19C/temp01.dbf' REUSE;
+
+
+  select * from v$tempfile;
+  --2498709	2026/11/05 15:01:52	3	1	ONLINE	READ WRITE	33554432	4096	33554432	8192	/u01/app/oracle/oradata/ORA19C/temp01.dbf	0
+  ```
+---
+</br></br></br>
+
+
+### Tablespace 삭제 後 Time Base Recovery Scenario
+- 되돌리고자는 시간대의 백업본 존재 필수
+0. Tablespace 삭제 및 시각 Check
+```SQL
+drop tablespace data_tbs including contents and datafiles;
+```
+```CMD
+grep -i 'drop' -C2 /u01/app/oracle/diag/rdbms/ora19c/ora19c/trace/alert_ora19c.log | tail -n 10
+--2026-11-05T16:22:27.886199+09:00
+--drop tablespace data_tbs including contents and datafiles
+--2026-11-05T16:22:31.026070+09:00
+--Deleted file /u01/app/oracle/oradata/ORA19C/data_tbs01.dbf
+--Completed: drop tablespace data_tbs including contents and datafiles
+```
+</br>
+
+1. DB Down 後 되돌리고 싶은 시간대의, 모든 Data File, Control File Restore
+```CMD
+cp /home/oracle/backup/*. /u01/app/oracle/oradata/ORA19C/
+```
+</br>
+
+2. Mount 시점까지 DB Open
+```SQL
+startup mount;
+```
+</br>
+
+3. Recovery
+```SQL
+alter session set nls_date_format='yyyy-mm-dd hh24:mi:ss';
+
+
+recover database using backup controlfile until time '2026-11-05 16:22:00' /* 되돌리고자는 시간대 지정 */
+```
+> ' Specify log: {<RET>=suggested | filename | AUTO | CANCEL} ' 질문 時 ' auto ' 입력
+</br>
+
+3.5. Recovery 마지막 시점 ( CURRENT Redo Log 정보 ) Archive Backup Log File 없을시, Redo Log 파일로 존재하는지 Check
+```CMD
+cat /u01/app/oracle/diag/rdbms/ora19c/ora19c/trace/alert_ora19c.log | grep -C2 'sequence 3'
+```
+```TEXT
+--2026-11-05T14:44:12.825493+09:00
+--ARC2 started with pid=42, OS id=24202
+--Starting background process ARC3
+--Thread 1 opened at log sequence 3
+--  Current log# 3 seq# 3 mem# 0: /u01/app/oracle/oradata/ORA19C/redo03.log
+```
+> ' /u01/app/oracle/oradata/ORA19C/redo03.log ' 파일로 Recovery
+</br>
+
+4. DB Open
+```SQL
+alter database open resetlogs;
 ```
 ---

@@ -70,14 +70,14 @@ select file#, name, status, checkpoint_change#, scn_to_timestamp(checkpoint_chan
 
 ### 현재 Redo 정보 조회
 ```SQL
-select a.group#, a.sequence#, b.member, a.bytes/1024/1024 mb, a.archived, a.status, a.first_change#, to_char(first_time,'yyyy-mm-dd hh24:mi:ss') first_time, a.next_change#, to_char(next_time, 'yyyy-mm-dd hh24:mi:ss') next_time
+select a.group#, a.sequence#, b.member, a.bytes/1024/1024 mb, a.members, a.archived, a.status, a.first_change#, to_char(first_time,'yyyy-mm-dd hh24:mi:ss') first_time, a.next_change#, to_char(next_time, 'yyyy-mm-dd hh24:mi:ss') next_time
 from v$log a, v$logfile b
 where a.group# = b.group#; /* 현재 Redo 정보 조회 */
 ```
-|GROUP#|SEQUENCE#|MEMBER|MB|ARCHIVED|STATUS|FIRST_CHANGE#|FIRST_TIME|NEXT_CHANGE#|NEXT_TIME|
----:|---:|:---|---:|:---|:---|---:|:---|---:|:---|
-2|6|/u01/app/oracle/oradata/ORA19C/redo02.log|200|NO|INACTIVE|2135883|2026-11-01 16:03:22|2236839|2026-11-01 16:08:07|
-1|7|/u01/app/oracle/oradata/ORA19C/redo01.log|200|NO|CURRENT|2236839|2026-11-01 16:08:07|18446744073709551615|(null)|
+|GROUP#|SEQUENCE#|MEMBER|MB|MEMBER|ARCHIVED|STATUS|FIRST_CHANGE#|FIRST_TIME|NEXT_CHANGE#|NEXT_TIME|
+---:|---:|:---|---:|---:|:---|:---|---:|:---|---:|:---|
+2|6|/u01/app/oracle/oradata/ORA19C/redo02.log|200|1|NO|INACTIVE|2135883|2026-11-01 16:03:22|2236839|2026-11-01 16:08:07|
+1|7|/u01/app/oracle/oradata/ORA19C/redo01.log|200|1|NO|CURRENT|2236839|2026-11-01 16:08:07|18446744073709551615|(null)|
 ---
 </br></br></br>
 

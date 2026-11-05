@@ -28,7 +28,7 @@ select file#, name, status, checkpoint_change#, scn_to_timestamp(checkpoint_chan
 --5	/u01/app/oracle/oradata/ORA19C/insa_tbs01.dbf	ONLINE	2311217	26/11/01 06:49:34.000000000
 --7	/u01/app/oracle/oradata/ORA19C/users01.dbf	    ONLINE	2307358	26/11/01 06:02:23.000000000
 
-select a.group#, a.sequence#, b.member, a.bytes/1024/1024 mb, a.archived, a.status, a.first_change#, a.next_change#
+select a.group#, a.sequence#, b.member, a.bytes/1024/1024 mb, a.members, a.archived, a.status, a.first_change#, to_char(first_time,'yyyy-mm-dd hh24:mi:ss') first_time, a.next_change#, to_char(next_time, 'yyyy-mm-dd hh24:mi:ss') next_time
 from v$log a, v$logfile b
 where a.group# = b.group#; /* 현재 Redo 정보 조회 */
     0	/u01/app/oracle/oradata/ORA19C/redo03.log	200	YES	UNUSED	0	0

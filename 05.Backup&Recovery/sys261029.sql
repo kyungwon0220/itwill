@@ -195,7 +195,7 @@ alter database backup controlfile to trace as '/home/oracle/backup/arch/open/con
 alter system archive log current; /* CURRENT Group Redo Log File Archive */
 alter system switch logfile;
 
-select a.group#, a.sequence#, b.member, a.bytes/1024/1024 mb, a.archived, a.status, a.first_change#, a.next_change#
+select a.group#, a.sequence#, b.member, a.bytes/1024/1024 mb, a.members, a.archived, a.status, a.first_change#, to_char(first_time,'yyyy-mm-dd hh24:mi:ss') first_time, a.next_change#, to_char(next_time, 'yyyy-mm-dd hh24:mi:ss') next_time
 from v$log a, v$logfile b
 where a.group# = b.group#; /* 현재 Redo 정보 조회 */
 --3	3	/u01/app/oracle/oradata/ORA19C/redo03.log	200	YES	INACTIVE	2327084	2427128
