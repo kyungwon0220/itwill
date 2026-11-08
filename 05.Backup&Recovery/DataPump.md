@@ -79,16 +79,95 @@
     impdp system/oracle dumpfile=hr_50_stman.dmp directory=pump_dir remap_table=employees:emp_50_stman content=data_only
     ```
     - ' remap_table=employees:emp_50_stman ' == 원하는 테이블명으로 Import 가능 (Dump 파일에 들어있는 ' employees ' 테이블을, Import 받는이의 ' emp_50_stman ' 테이블에 Import 적재 ( 받는 Table Meta data 정보 불일치시 Import 적재 불가 ERR ))
+    - ' content=metadata_only ' == Meta 정보만 Import
+    - ' content=data_only ' == Meta 정보는 있으니, Data 파일만 Import ( Table Meta 정보 불일치시 ERR )
   - ```CMD
     impdp system/oracle dumpfile=hr_table.dmp directory=pump_dir tables=hr.emp remap_schema='hr':'james' remap_tablespace='users':'sysaux'
     ```
     > 특정 테이블을, 다른 유저에게 Import 가능
     - ' rema_schema='hr':'james' ' == 기존의 ' hr ' 유저에서, ' james ' 유저에게
     - ' remap_tablespace='users':'sysaux' ' == ' users ' 테이블스페이스에서, ' sysaux ' 테이블스페이스로 변경
+  - ```CMD
+    impdp system/oracle network_link=win12c_link tables=hr.hob_history exclude=trigger,grant,ref_constraint remap_schema='hr':'james' remap_tablespace='EXAMPLE':'sysaux'
+    ```
+    - ' network_link ' == DB Link 名
+    - ' exclude=trigger ' == Import 제외 대상
     - ' table_exists_action=skip ' == 이미 동일한 테이블명의 Table 존재시, Skip
     - ' table_exists_action=replace ' == 이미 동일한 테이블명의 Table 존재시, Drop 後 새로 생성하여 Import
     - ' table_exists_action=truncate ' == 이미 동일한 테이블명의 Table 존재시, Data 삭제 後 Import
-    - ' exclude=trigger ' == Trigger 제외
-    - ' content=data_only ' == Meta 정보는 있으니, Data 파일만 Import ( Table Meta 정보 불일치시 ERR )
-    - ' content=metadata_only ' == Meta 정보만 Import
+</br></br></br>
+#### Step
+1. 
+```SQL
+create or replace directory pump_dir as '/home/oracle/data_pump';
+```
+</br>
+
+2. ' create directory ' 지정한 Directory 사용 권한 부여
+```SQL
+grant read, write on directory pump_dir to ;
+```
+</br>
+
+3. Export ( dmp File 생성 )
+```CMD
+! expdp system/oracle directory=pump_dir dumpfile=clone_hr_schema.dmp schemas=hr;
+```
+
+3.5. 작업중 Shared Memory 부족 ERR 時
+- 1. 
+  ```SQL
+     select owner_name, job_name, operation, job_mode, state from dba_datapump_jobs;
+     --SYSTEM	SYS_EXPORT_SCHEMA_01	EXPORT                        	SCHEMA     /* expdp 작업중 중단된 경우 */
+     ```
+</br>
+
+- 2. 
+  ```SQL
+  drop table system.SYS_EXPORT_SCHEMA_01 purge;
+  ```
+  > expdp 수행 時 작업한 ' system/oracle  Owner Table 삭제 예제 코드
+</br>
+
+- 3. DB 종료 後 공간 Check 後 pfile 수정
+  ```SQL
+  shutdown immediate;
+  ```
+  ```CMD
+  free -h
+  --              total        used        free      shared  buff/cache   available
+  --Mem:           3.8G        738M        748M        1.1G        2.4G        1.9G
+  --Swap:          2.0G         12M        2.0G
+
+
+  vim /home/oracle/clone/initclone.ora
+  ```
+  ```TEXT
+  *.shared_pool_size=300m
+  ```
+  > pfile 마지막 줄에 추가
+</br>
+
+- 3.5. ERR 時 생성된 dmp File 삭제
+  ```CMD
+  rm /home/oracle/data_pump/clone_hr_schema.dmp
+  ```
+  > 불필요시, ' export.log ' Log File 삭제
+</br>
+
+- 4. pfile 기반으로 startup
+  ```SQL
+  startup pfile=/home/oracle/backup/clone/initclone.ora
+
+
+  show parameter shared_pool_size;  
+  ```
+</br>
+
+4. Import 필요한 Instance SQLPLUS 환경에서 Import
+```SQL
+! impdp system/oracle directory=pump_dir dumpfile=clone_hr_schema.dmp schemas=hr;
+```
+</br></br></br>
+
 ---

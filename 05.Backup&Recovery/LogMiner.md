@@ -6,6 +6,7 @@
   select supplemental_log_data_min from v$database;
   ```
   > Log Miner 사용 前 Setting
+
 </br></br></br>
 ## Step
 1. ```SQL
@@ -29,7 +30,7 @@
 </br>
 
 3. ```SQL
-   select to_char(timestamp, 'yyyy-mm-dd hh24:mi:ss') time, operation, sql_redo, sql_undo from v$logmnr_contents where seg_name = 'ITWILL'; /* Table Drop 時 insert Log 기록 안뜨 */
+   select to_char(timestamp, 'yyyy-mm-dd hh24:mi:ss') time, operation, sql_redo, sql_undo from v$logmnr_contents where seg_owner = 'JAMES';
    ```
    > Log 분석 출력
 </br>

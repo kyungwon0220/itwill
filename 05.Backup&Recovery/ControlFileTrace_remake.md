@@ -45,6 +45,9 @@ DATAFILE
   '/home/oracle/backup/clone/users01.dbf'
 CHARACTER SET AL32UTF8
 ;
+
+
+ALTER TABLESPACE TEMP ADD TEMPFILE '/home/oracle/backup/clone/temp01.dbf' SIZE 33554432 REUSE AUTOEXTEND ON;
 ```
 > DB 복제시, Control File 처음 생성
 ---
