@@ -65,11 +65,17 @@ db_recovery_file_dest_size|big integer|8256M|
 - ```
   list archivelog all;
 
-  list archivelog from scn 4210432;
+  list archivelog from scn 4199492;
 
-  list archivelog from scn 399999 until scn 4210432;
+  list archivelog from scn 4199492 until scn 4212424;
+
+  list archivelog from sequence 5;
+
+  --select sequence#, name, first_change#, to_char(first_time, 'yyyy-mm-dd hh24:mi:ss') first_name, next_change#, to_char(next_time, 'yyyy-mm-dd hh24:mi:ss') next_time
+  --from v$archived_log
+  --where next_change# >= 4199492;
   ```
-  > Archive Backup Log file 조회
+  > 특정 SCN 이후에 생성된 Archive Backup Log File 조회 예제 코드
 - ```
   list failure;
 
@@ -103,9 +109,17 @@ db_recovery_file_dest_size|big integer|8256M|
   ```
   > DB Level Backup ( Alert Log 미기재 )
 - ```
+  backup tablespace data_tbs;
+  ```
+  > Tablespace Level Backup
+- ```
   backup datafile 4;
   ```
   > 하나의 Data File Backup ( Alert Log 미기재 )
+- ```
+  delete backupset 11;
+  ```
+  > ' list backup; ' 실행하여, 불필요한 백업본 ' BS Key ' 지정 삭제 가능
 - ```
   report obsolete;
 
@@ -113,12 +127,12 @@ db_recovery_file_dest_size|big integer|8256M|
   --DELETE OBSOLETE;
   ```
   > 오라클은 보존 정책(Retention Policy)을 기준으로, 필요 없는 파일들 조회
-  - 실제 OS 上 물리적인 File 없어도, Control 기록된 파일명이 출력된다면 Cross Check 필요
+  - 실제 OS 上 물리적인 File 없어도, Control 파일에 기록된 백업본이 출력된다면 Cross Check 필요
     ```
     crosscheck backup;
 
     
-    corsscheck archivelog all;
+    crosscheck archivelog all;
     ```
     > 물리적으로 존재하지 않는 파일들은, 내부적으로 ' EXPIRED ' 처리
     - ' EXPIRED ' 처리된 목록 삭제 가능
@@ -131,6 +145,11 @@ db_recovery_file_dest_size|big integer|8256M|
       delete expired archivelog all;
       ```
       > ' EXPIRED ' 처리된 목록 삭제
+- ```
+  --restore controlfile from ''/
+  restore controlfile from autobackup;
+  ```
+  > Control File 재생성 후에는, Temp File Add 필수 ( ' alter tablespace temp add tempfile '/u01/app/oracle/oradata/ORA19C/temp01.dbf' REUSE autoextend on; ' )
 
 </br></br></br>
 #### Data File 손상 時 RMAN 복구 Scenario
@@ -175,6 +194,64 @@ db_recovery_file_dest_size|big integer|8256M|
    alter database datafile 2 online;
    ```
 ---
+</br></br></br>
+#### DB 운영 中 Redo Log File, Control File 손상 ( rm ) 時 RMAN 복구 Scenario
+0. DB 운영 中 Redo Log File, Control File 손상 ( rm ) 가정
+   ```CMD
+   rm /home/oracle/backup/clone/redo0*
+   rm /home/oracle/backup/clone/control01.ctl
+   ```
+   ```SQL
+   shutdown abort;
+   ```
+   > DB 자동으로 Down 될테나, 종료가 안되었을시 강제 Down
+   </br>
+
+1. DB Nomount 시점까지 Open
+</br>
+
+2. RMAN 접속 後 Control File 백업본으로, Control File Restore
+   ```CMD
+   rman target /
+
+
+   select status, instance_name from v$instance;
+
+
+   restore controlfile from autobackup;
+   ```
+   > 성공시, Control File 백업본 생성
+</br>
+
+3. Mount 시점까지 DB Open 後 Restore 및 Recover 시도
+   ```
+   alter database mount;
+   
+   restore database;
+
+   recover database;
+   ```
+   > DB 운영중에 Redo 손상으로, 사용중이던 Current Redo Log File 부재하여 적용 불가 ERR 및 SCN Check
+</br>
+
+4. Current Redo Log 시작점 SCN 까지 Recovery
+   ```
+   run {
+    set until snc=4371520;
+    restore database;
+    recover database;
+   }
+   ```
+   > 사용중이던 Curren Redo Log File 시작 SCN 4371520 이전까지만 범위 지정 Recovery ( RMAN 內 Cancel Base Recovery )
+</br>
+
+5. DB Open
+   ```
+   alter database open resetlogs;
+   ```
+---
+
+
 </br></br></br>
 ```
 /* 수동 복구시, Data File 경로 변경 Step
