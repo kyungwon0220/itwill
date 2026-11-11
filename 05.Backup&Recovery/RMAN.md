@@ -1,0 +1,206 @@
+### Archive Backup Log File 생성 경로 초기화
+```SQL
+alter system set log_archive_dest_1='location=use_db_recovery_file_dest' scope=both;
+
+ALTER SYSTEM RESET log_archive_dest_2 scope=both;
+```
+> $ORACLE_BASE/fast_recovery_area/{DB 名}/
+- ' /u01/app/oracle/fast_recovery_area/ORA19C/archivelog/ ' == Archive Backup Log File 저장소
+- ' /u01/app/oracle/fast_recovery_area/ORA19C/autobackup/ ' == Log Switch 동작 등으로, Control File, spfile 백업본 저장소
+- ' /u01/app/oracle/fast_recovery_area/ORA19C/backupset/ ' == 백업할 Data File 內 Block 모아서 하나의 bkp 파일로 저장
+- ' /u01/app/oracle/fast_recovery_area/ORA19C/onlinelog/ ' == Redo Log File 저장소
+
+</br></br></br>
+```SQL
+show parameter db_recovery_file_dest;
+```
+> 사용 공간이 85% Waring Alert 발생, 97% 도달하면 Critical Alert 발생 ( Alert Log )
+|NAME|TYPE|VALUE|
+:---|:---|:---|
+db_recovery_file_dest|string|/u01/app/oracle/fast_recovery_area|
+db_recovery_file_dest_size|big integer|8256M|
+---
+</br></br></br>
+
+## RMAN ( Recovery Manager )
+- SELECT 사용 가능
+- 결과 출력 Column 열 폭 조절 불가
+- OS 內 RMAN 접속
+  ```CMD
+  rman target /
+  ```
+- ```
+  show all;
+  ```
+  ```TEXT
+  RMAN configuration parameters for database with db_unique_name ORA19C are:
+  CONFIGURE RETENTION POLICY TO REDUNDANCY 1; # default
+  CONFIGURE BACKUP OPTIMIZATION OFF; # default
+  CONFIGURE DEFAULT DEVICE TYPE TO DISK; # default
+  CONFIGURE CONTROLFILE AUTOBACKUP ON; # default
+  CONFIGURE CONTROLFILE AUTOBACKUP FORMAT FOR DEVICE TYPE DISK TO '%F'; # default
+  CONFIGURE DEVICE TYPE DISK PARALLELISM 1 BACKUP TYPE TO BACKUPSET; # default
+  CONFIGURE DATAFILE BACKUP COPIES FOR DEVICE TYPE DISK TO 1; # default
+  CONFIGURE ARCHIVELOG BACKUP COPIES FOR DEVICE TYPE DISK TO 1; # default
+  CONFIGURE MAXSETSIZE TO UNLIMITED; # default
+  CONFIGURE ENCRYPTION FOR DATABASE OFF; # default
+  CONFIGURE ENCRYPTION ALGORITHM 'AES128'; # default
+  CONFIGURE COMPRESSION ALGORITHM 'BASIC' AS OF RELEASE 'DEFAULT' OPTIMIZE FOR LOAD TRUE ; # default
+  CONFIGURE RMAN OUTPUT TO KEEP FOR 7 DAYS; # default
+  CONFIGURE ARCHIVELOG DELETION POLICY TO NONE; # default
+  CONFIGURE SNAPSHOT CONTROLFILE NAME TO '/u01/app/oracle/product/19.3.0/dbhome_1/dbs/snapcf_ora19c.f'; # default
+  ```
+  - ' CONFIGURE CONTROLFILE AUTOBACKUP ON; # default ' == Control File Auto Backup
+    - ' CONFIGURE CONTROLFILE AUTOBACKUP FORMAT FOR DEVICE TYPE DISK TO '%F'; # default ' == Control File Auto Backup 時 파일명 Format
+      - ' %F ' == c-{DBID}-YYYYMMDD-QQ
+        - DBID == ' v$database ' 內 ' DBID '
+          - QQ == 00 ~ 16진수 FF, Sequence Value
+- ```
+  report schema;
+  --select file_id, tablespace_name, file_name, bytes/1024/1024 mb from dba_data_files;
+  --select file_id, tablespace_name, file_name, bytes/1024/1024 mb from dba_temp_files;
+  ```
+  > RMAN 재접속시, 손상 File 재감지
+  - ' RB segs ' == Undo Segment ( ' Rollback Segment ' 동의어 ) 생성 여부
+- ```
+  list archivelog all;
+
+  list archivelog from scn 4210432;
+
+  list archivelog from scn 399999 until scn 4210432;
+  ```
+  > Archive Backup Log file 조회
+- ```
+  list failure;
+
+
+  list failure 82 detail;
+  ```
+  > 복구 필요 대상
+
+- ```
+  --select a.file#, a.name, a.checkpoint_change#, b.status, b.change#, to_char(b.time, 'yyyy-mm-dd hh24:mi:ss') backup_time
+  --from v$datafile a, v$backup b /* ' v$backup ' == Archive Mode View */
+  --where a.file# = b.file#;
+  list backup;
+
+
+  list backup of datafile 4;
+
+
+  list backup of tablespace data_tbs;
+
+
+  list backup of datafile '/u01/app/oracle/oradata/ORA19C/data_tbs02.dbf';
+  ```
+  > 특정 Data File 및 Tablespace Level 백업본 조회 예제 코드
+  - ```
+    report need backup;
+    ```
+    > Backup 필요 대상
+- ```
+  backup database;
+  ```
+  > DB Level Backup ( Alert Log 미기재 )
+- ```
+  backup datafile 4;
+  ```
+  > 하나의 Data File Backup ( Alert Log 미기재 )
+- ```
+  report obsolete;
+
+
+  --DELETE OBSOLETE;
+  ```
+  > 오라클은 보존 정책(Retention Policy)을 기준으로, 필요 없는 파일들 조회
+  - 실제 OS 上 물리적인 File 없어도, Control 기록된 파일명이 출력된다면 Cross Check 필요
+    ```
+    crosscheck backup;
+
+    
+    corsscheck archivelog all;
+    ```
+    > 물리적으로 존재하지 않는 파일들은, 내부적으로 ' EXPIRED ' 처리
+    - ' EXPIRED ' 처리된 목록 삭제 가능
+      ```
+      --list expired backupset;
+      --list expired archivelog all;
+      
+
+      delete expired backupset;
+      delete expired archivelog all;
+      ```
+      > ' EXPIRED ' 처리된 목록 삭제
+
+</br></br></br>
+#### Data File 손상 時 RMAN 복구 Scenario
+0. Data File 손상 後 RMAN 접속
+   ```CMD
+   rm /u01/app/oracle/oradata/ORA19C/data_tbs01.dbf
+
+
+   rman target /
+   ```
+</br>
+
+1. 손상된 Data File 조회
+   ```
+   report schema;
+   list failure;
+   list failure detail 2;
+   list failure detail 82;
+   ```
+</br>
+
+2. 손상된 Data File Offline
+   ```
+   alter database datafile 2 offline;
+   ```
+</br>
+
+3. 손상된 Data File Restore
+   ```
+   restore datafile 2;
+   ```
+</br>
+
+3. 손상된 Data File Recover ( Redo 적용 )
+   ```
+   recover datafile 2;
+   ```
+</br>
+
+4. 손상된 Data File Online
+   ```
+   alter database datafile 2 online;
+   ```
+---
+</br></br></br>
+```
+/* 수동 복구시, Data File 경로 변경 Step
+1. alter database datafile 4 offline;
+2. Restore 작업 ( cp )
+3. alter database rename file '{기존 경로}' to '{변경할 경로}';
+4. recover datafile 4;
+5. alter database datafile 4 online;
+*/
+
+/* RMAN 복구시, Data File 경로 변경 Step
+1. alter database datafile 4 offline;
+2. set newname for datafile 4 to {변경할 경로}; # restore 명령에 적용할 임시 설정값으로, ' run{} ' 작업형 모드에서만 사용 가능
+3. restore datafile 4;
+4. switch datafile 4; # == ' 3. alter database rename file  '{기존 경로}' to '{변경할 경로}'; '
+5. recover datafile 4;
+6. alter database datafile 4 online;
+*/
+
+run {
+    alter database datafile 4 offline;
+    set newname for datafile 4 to '/home/oracle/backup/data_tbs02.dbf';
+    restore datafile 4;
+    switch datafile 4;
+    recover datafile 4;
+    alter database datafile 4 online;
+}
+```
+---

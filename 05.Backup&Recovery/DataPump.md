@@ -68,6 +68,9 @@
     expdp system/oracle dumpfile=hr_50_stman.dmp directory=pump_dir tables=hr.employees query=hr.employees:\"where department_id\=50 and job_id\=\'ST_MAN\'\"
     ```
     - ' query=hr.employees:\"where department_id\=50 and job_id\=\'ST_MAN\'\" ' == 특정 조건절에 해당하는 결과만, Export 가능 ( ' select * from hr.employees where department_id = 50 and job_id = 'ST_MAN'; ' 실행 결과 )
+    - ' full=y ' == DB 전체를 대상으로 지정
+    - ' estimate_only=y ' == Backup 수행시, 필요할 예상 시간과 용량 측정
+    - ' job_name=job1 ' == 이번 작업명을 ' job1 '
   - ```CMD
     impdp system/oracle directory=pump_dir dumpfile=hr_schema.dmp tables=hr.emp
     ```
@@ -92,9 +95,45 @@
     ```
     - ' network_link ' == DB Link 名
     - ' exclude=trigger ' == Import 제외 대상
+  - ```CMD
+    impdp system/oracle directory=pump_dir dumpfile=clone_hr_schema.dmp schemas=hr include=table sqlfile=hr_table.txt
+    ```
+    - ' sqlfile=hr_table.txt ' == Meta 정보 (SQL 문) 추출하여, ' hr_table.txt ' 파일로 저장
     - ' table_exists_action=skip ' == 이미 동일한 테이블명의 Table 존재시, Skip
     - ' table_exists_action=replace ' == 이미 동일한 테이블명의 Table 존재시, Drop 後 새로 생성하여 Import
     - ' table_exists_action=truncate ' == 이미 동일한 테이블명의 Table 존재시, Data 삭제 後 Import
+</br></br></br>
+#### DB 전체 Export 작업중, 중지 및 재개 또는 작업 취소 Scenario
+- ' expdp ' Export 동작중, ' CTRL + C ' Key 입력 後 ' Export> ' 프롬프트 뜨면, ' stop_job ' 입력
+  - 1. 
+    ```CMD
+    expdp system/oracle full=y directory=pump_dir dumpfile=12C_HR_JOB_HISTORY.DMP job_name=job1
+    --stop_job
+    ```
+    > ' Are you wish to stop this job ([yes]/no) : ' 질문 時 ' yes ' 입력
+    </br>
+    
+    3. 
+    ```CMD
+    expdp system/oracle attach=system.job1
+    ```
+    > 중단했던 job1 재접속
+    </br>
+
+    2.5. 
+    ```SQL
+    select * from dba_datapump_jobs;
+    ```
+    > Export 작업중 JOB 조회 예제 코드
+    </br>
+    
+    3. ' Export> ' 프롬프트 上 재시작 OR 작업 취소
+    ```SQL
+    start_job
+
+
+    kill_job
+    ```
 </br></br></br>
 #### Step
 1. 
@@ -169,5 +208,4 @@ grant read, write on directory pump_dir to ;
 ! impdp system/oracle directory=pump_dir dumpfile=clone_hr_schema.dmp schemas=hr;
 ```
 </br></br></br>
-
 ---

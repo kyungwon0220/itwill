@@ -38,7 +38,7 @@
   - Archive destination : Archive 생성되는 Dir
     - ' Archive destination ' 값인 ' /home/oracle/arch2 ' 경로에 Archive Backup File 부재시, Recovery 불가 ( Archive File 다중화시에도, Recover 시도시 ' Archive destination ' 경로에 Archive Backup 파일이 있는지 확인 )
 - ```SQL
-  select a.file#, a.name, a.checkpoint_change#, b.status, b.change#, b.time
+  select a.file#, a.name, a.checkpoint_change#, b.status, b.change#, to_char(b.time, 'yyyy-mm-dd hh24:mi:ss') backup_time
   from v$datafile a, v$backup b /* ' v$backup ' == Archive Mode View */
   where a.file# = b.file#;
   ```

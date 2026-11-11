@@ -15,3 +15,4 @@
         - ![](./ParameterType.JPG)
 ---
 ## 26.10.27.火 ~ : 05.Backup&Recovery
+### (https://docs.oracle.com/en/database/oracle/oracle-database/19/rcmrf/deprecated-rman-syntax.html)

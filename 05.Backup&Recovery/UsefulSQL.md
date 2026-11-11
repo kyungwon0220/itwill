@@ -110,3 +110,14 @@ group by f.tablespace_name, f.file_name;
 :---|:---|---:|
 USERS|/u01/app/oracle/oradata/ORA19C/users01.dbf|1|
 ---
+</br></br></br>
+
+
+### Export 작업중 JOB 조회
+```SQL
+select * from dba_datapump_jobs;
+```
+|OWNERNAME|JOB_NAME|OPERATION|JOB_MODE|STATE|DEGREE|ATTACHED_SESSIONS|DATAPUMP_SESSION|
+:---|:---|:---|:---|:---|---:|---:|---:|
+SYSTEM|JOB1|EXPORT|FULL|NOT RUNNING|0|0|0|
+---
