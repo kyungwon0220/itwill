@@ -1,3 +1,14 @@
+```CMD
+vim /etc/oratab
+```
+```TEXT
+clone:/u01/app/oracle/product/19.3.0/dbhome_1:N
+```
+> 가장 아래줄에 추가 ( Clone Instance 접속시, ORACLE_HOME Path 등록 )
+---
+</br></br></br>
+
+
 ### 하나의 Server 內 DB 복제 Step
 1. 복제할 DB, Data 파일들과 Archive Backup Log File 복사 ( cp )
 ```CMD
@@ -15,7 +26,7 @@ vim /home/oracle/backup/clone/initclone.ora
 *.compatible='19.0.0'
 *.control_files='/home/oracle/backup/clone/control01.ctl'
 *.db_name='clone'
-*.log_archive_dest_2='location=/home/oracle/backup/clone/ mandatory'
+*.log_archive_dest_1='location=/home/oracle/backup/clone'
 *.log_archive_format='arch_%t_%s_%r.arc'
 *.undo_tablespace='UNDO1'
 ```
@@ -112,4 +123,50 @@ alter database open resetlogs; /* 불완전 복구시, DB Open 필수 문법 */
   rm /u01/app/oracle/diag/rdbms/{DB 名}/*
   ```
   > 복제 DB 삭제
+---
+</br></br></br>
+
+#### RMAN 활용 DB 복제 時 pfile
+```TEXT
+*.compatible='19.0.0'
+*.control_files='/home/oracle/backup/clone/control01.ctl'
+*.db_name='clone'
+*.log_archive_dest_2='location=/home/oracle/backup/clone/ mandatory'
+*.log_archive_format='arch_%t_%s_%r.arc'
+*.undo_tablespace='UNDO1'
+```
+> 필수 내용으로 작성
+</br>
+
+```TEXT
+--db_file_name_convert=(/u01/app/oracle/oradata/ORA19C/, /home/oracle/clone/)
+--log_file_name_convert(/u01/app/oracle/oradata/ORA19C/, /home/oracle/clone/)
+```
+- ' db_file_name_convert ' == 원본 Data File 경로를, Clone DB 경로로 자동 변환 Parameter
+  - ```
+    set newname for datafile 1 to ''/home/oracle/backup/clone/system01.dbf';
+    ```
+    > Data File 경로 지정을 Auto 수행으로, 생략
+- ' log_file_name_convert ' == 원본 Redo Log File 경로를, Clone DB 경로로 자동 변환 Parameter
+  - ```
+    logfile
+      '/home/oracle/backup/clone/redo01.log' size 50m;
+    ```
+    > Redo Log File 경로 지정을 Auto 수행으로, 생략
+---
+</br>
+
+#### RMAN 활용 DB 복제 時
+```
+run {
+    duplicate target database to 'clone3'
+    skip tablespace users, data_tbs
+    pfile='/home/oracle/backup/clone/initclone3.ora'
+    nofilenamecheck
+    backup location '/home/oracle/backup/clone3';
+    until time "to_date('2026-11-12 18:27:30', 'yyyy-mm-dd hh24:mi:ss')"
+}
+```
+- ' skip ' == 마지막에 ' DROP CASCADE ' 동작할
+- ' backup location ' == 복제할 Data File, Control File 등의 백업본 위치
 ---

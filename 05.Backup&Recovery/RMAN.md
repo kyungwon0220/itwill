@@ -1,10 +1,11 @@
 ### Archive Backup Log File 생성 경로 초기화
+- Path 초기화시, ' $ORACLE_BASE/fast_recovery_area/{DB 名}/ ' Default 경로로 설정
+  - Default 경로 설정이 안되어 있을시, ' /u01/app/oracle/product/19.3.0/dbhome_1/dbs/ ' 경로 ( $ORACLE_HOME/dbs )
 ```SQL
 alter system set log_archive_dest_1='location=use_db_recovery_file_dest' scope=both;
 
 ALTER SYSTEM RESET log_archive_dest_2 scope=both;
 ```
-> $ORACLE_BASE/fast_recovery_area/{DB 名}/
 - ' /u01/app/oracle/fast_recovery_area/ORA19C/archivelog/ ' == Archive Backup Log File 저장소
 - ' /u01/app/oracle/fast_recovery_area/ORA19C/autobackup/ ' == Log Switch 동작 등으로, Control File, spfile 백업본 저장소
 - ' /u01/app/oracle/fast_recovery_area/ORA19C/backupset/ ' == 백업할 Data File 內 Block 모아서 하나의 bkp 파일로 저장
@@ -55,10 +56,34 @@ db_recovery_file_dest_size|big integer|8256M|
   CONFIGURE SNAPSHOT CONTROLFILE NAME TO '/u01/app/oracle/product/19.3.0/dbhome_1/dbs/snapcf_ora19c.f'; # default
   ```
   - ' CONFIGURE CONTROLFILE AUTOBACKUP ON; # default ' == Control File Auto Backup
-    - ' CONFIGURE CONTROLFILE AUTOBACKUP FORMAT FOR DEVICE TYPE DISK TO '%F'; # default ' == Control File Auto Backup 時 파일명 Format
+    - ```
+      CONFIGURE CONTROLFILE AUTOBACKUP OFF;
+      ```
+      > Control Auto Bakcup 아닌, 수동 Backup
+  - ' CONFIGURE CONTROLFILE AUTOBACKUP FORMAT FOR DEVICE TYPE DISK TO '%F'; # default ' == Control File Auto Backup 時 파일명 Format
+    - ```
+      CONFIGURE CONTROLFILE AUTOBACKUP FORMAT FOR DEVICE TYPE DISK TO '/home/oracle/backup/rman/clone/%F';
+      ```
       - ' %F ' == c-{DBID}-YYYYMMDD-QQ
         - DBID == ' v$database ' 內 ' DBID '
-          - QQ == 00 ~ 16진수 FF, Sequence Value
+        - QQ == 00 ~ 16진수 FF, Sequence Value
+    - ```
+      CONFIGURE CONTROLFILE AUTOBACKUP FORMAT FOR DEVICE TYPE DISK CLEAR;
+      ```
+      > 초기화 예제 코드
+  - ' CONFIGURE DEFAULT DEVICE TYPE TO DISK; # default ' == 미설정시 ( /u01/app/oracle/product/19.3.0/dbhome_1/dbs/ 경로에 ( $ORACLE_HOME/dbs ) 생성 )
+    - ```
+      CONFIGURE CHANNEL DEVICE TYPE DISK CLEAR;
+      ```
+      > 초기화 예제 코드
+    - ```
+      CONFIGURE CHANNEL DEVICE TYPE DISK FORMAT '/home/oracle/backup/rman/clone/%U_%T';
+      ```
+      - ' %U '
+        - ' %u ' == ' BS Key', 생성 시각을 조합해 만든 8자리 고유 문자열
+        - ' %p ' == Backupset 내부상 Backup Piece 번째 수
+        - ' %c ' == 중복 Backup 時 백업본 Number ( ' 1 ' Default )
+      - ' %T ' == Backup Date ( 예를 들면, 20261112 )
 - ```
   report schema;
   --select file_id, tablespace_name, file_name, bytes/1024/1024 mb from dba_data_files;

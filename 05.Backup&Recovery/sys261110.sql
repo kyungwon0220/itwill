@@ -51,7 +51,7 @@ where a.ts# = b.ts#;
 
 
 
-run {
+run { /* ' set until ' 독립 사용 불가하여, run{} 작업형 모드 수행 필수 */
     set until snc=4371520; /* 사용중이던 Curren Redo Log File 시작 SCN 4371520 이전까지만 복구 범위 지정 */
     restore database;
     recover database;

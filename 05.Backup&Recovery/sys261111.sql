@@ -11,7 +11,7 @@ where a.group# = b.group#; /* 현재 Redo 정보 조회 */
 --2	0	/home/oracle/backup/clone/redo02.log	200	1	YES	UNUSED	0		0	
 --1	1	/home/oracle/backup/clone/redo01.log	200	1	NO	CURRENT	4508832	        2026-11-12 18:42:05	18446744073709551615	
 
-run {
+run { /* ' set until ' 독립 사용 불가하여, run{} 작업형 모드 수행 필수 */
     set until sequence=2; /* SEQUENCE# ' 3' 이전까지 ( ' 2 ' 포함까지 ) Redo Log File 복구 범위 지정 */
     restore database;
     recover database;

@@ -13,7 +13,7 @@ where a.group# = b.group#; /* 현재 Redo 정보 조회 */
 --*.compatible='19.0.0'
 --*.control_files='/home/oracle/backup/clone/control01.ctl'
 --*.db_name='clone'
---*.log_archive_dest_2='location=/home/oracle/backup/clone/ mandatory'
+--*.log_archive_dest_1='location=/home/oracle/backup/clone'
 --*.log_archive_format='arch_%t_%s_%r.arc'
 --*.undo_tablespace='UNDO1'
 
