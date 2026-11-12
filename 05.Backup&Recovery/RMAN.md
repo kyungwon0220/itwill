@@ -29,6 +29,10 @@ db_recovery_file_dest_size|big integer|8256M|
   ```CMD
   rman target /
   ```
+  ```CMD
+  rman auxiliary /
+  ```
+  > Nomount 시점에서, RMAN 접속 ( DB 복제 등의 경우 )
 - ```
   show all;
   ```
@@ -71,9 +75,16 @@ db_recovery_file_dest_size|big integer|8256M|
 
   list archivelog from sequence 5;
 
+  alter session set nls_date_format='yyyy-mm-dd hh24:mi:ss';
+  list archivelog from time '2026-11-12 16:05:00';
+
   --select sequence#, name, first_change#, to_char(first_time, 'yyyy-mm-dd hh24:mi:ss') first_name, next_change#, to_char(next_time, 'yyyy-mm-dd hh24:mi:ss') next_time
   --from v$archived_log
   --where next_change# >= 4199492;
+
+
+  alter session set nls_date_format='yyyy-mm-dd hh24:mi:ss';
+  list archivelog until time '2026-11-12 16:05:00';
   ```
   > 특정 SCN 이후에 생성된 Archive Backup Log File 조회 예제 코드
 - ```
@@ -98,6 +109,14 @@ db_recovery_file_dest_size|big integer|8256M|
 
 
   list backup of datafile '/u01/app/oracle/oradata/ORA19C/data_tbs02.dbf';
+
+
+  alter session set nls_date_format = 'yyyy-mm-dd hh24:mi:ss';
+  list backup completed before '2026-11-12 16:05:00';
+
+
+  alter session set nls_date_format = 'yyyy-mm-dd hh24:mi:ss';
+  list backup completed after '2026-11-12 16:05:00';
   ```
   > 특정 Data File 및 Tablespace Level 백업본 조회 예제 코드
   - ```
@@ -249,6 +268,7 @@ db_recovery_file_dest_size|big integer|8256M|
    ```
    alter database open resetlogs;
    ```
+   > Incarnation 분리ㄷ
 ---
 
 

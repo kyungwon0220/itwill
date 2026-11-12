@@ -4,6 +4,9 @@
 
 
   select supplemental_log_data_min from v$database;
+
+
+  --alter database drop supplemental log data; /* Default (비활성화) */
   ```
   > Log Miner 사용 前 Setting
 

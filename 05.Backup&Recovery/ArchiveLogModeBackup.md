@@ -155,7 +155,7 @@ alter tablespace data_tbs add datafile '/u01/app/oracle/oradata/ORA19C/data_tbs0
 
 create table hr.emp tablespace data_tbs as select * from hr.employees;
 insert into hr.emp select * from hr.emp;
-select count(*) from hr.emp2;
+select count(*) from hr.emp;
 --54784
 commit;
 
