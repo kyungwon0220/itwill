@@ -39,6 +39,7 @@ drop user hr cascade;
 
 
 select dbid, name, log_mode from v$database;
+    1301250928 ORA19C    ARCHIVELOG
 select file_id, tablespace_name, file_name, bytes/1024/1024 mb from dba_data_files;
 select file_id, tablespace_name, file_name, bytes/1024/1024 mb from dba_temp_files;
 

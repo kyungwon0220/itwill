@@ -194,8 +194,92 @@ db_recovery_file_dest_size|big integer|8256M|
   restore controlfile from autobackup;
   ```
   > Control File 재생성 후에는, Temp File Add 필수 ( ' alter tablespace temp add tempfile '/u01/app/oracle/oradata/ORA19C/temp01.dbf' REUSE autoextend on; ' )
+- ```TEXT
+  l
+  List of Backup Sets
+  ===================
+
+
+  BS Key  Type LV Size       Device Type Elapsed Time Completion Time
+  ------- ---- -- ---------- ----------- ------------ ---------------
+  21      Full    1.29G      DISK        00:00:03     12-NOV-26
+          BP Key: 21   Status: AVAILABLE  Compressed: NO  Tag: TAG20261112T095314
+          Piece Name: /u01/app/oracle/fast_recovery_area/ORA19C/backupset/2026_11_12/o1_mf_nnndf_TAG20261112T095314_ohb3htdm_.bkp
+    List of Datafiles in backup set 21
+    File LV Type Ckp SCN    Ckp Time  Abs Fuz SCN Sparse Name
+    ---- -- ---- ---------- --------- ----------- ------ ----
+    1       Full 4477877    12-NOV-26              NO    /u01/app/oracle/oradata/ORA19C/system01.dbf
+    2       Full 4477877    12-NOV-26              NO    /u01/app/oracle/oradata/ORA19C/data_tbs01.dbf
+    3       Full 4477877    12-NOV-26              NO    /u01/app/oracle/oradata/ORA19C/sysaux01.dbf
+    4       Full 4477877    12-NOV-26              NO    /u01/app/oracle/oradata/ORA19C/data_tbs03.dbf
+    5       Full 4477877    12-NOV-26              NO    /u01/app/oracle/oradata/ORA19C/undo01.dbf
+    7       Full 4477877    12-NOV-26              NO    /u01/app/oracle/oradata/ORA19C/users01.dbf
+
+  BS Key  Type LV Size       Device Type Elapsed Time Completion Time
+  i------- ---- -- ---------- ----------- ------------ ---------------
+  22      Full    10.80M     DISK        00:00:00     12-NOV-26
+          BP Key: 22   Status: AVAILABLE  Compressed: NO  Tag: TAG20261112T095321
+          Piece Name: /u01/app/oracle/fast_recovery_area/ORA19C/autobackup/2026_11_12/o1_mf_s_1249120401_ohb3j1m1_.bkp
+    SPFILE Included: Modification time: 12-NOV-26
+    SPFILE db_unique_name: ORA19C
+    Control File Included: Ckp SCN: 4477887      Ckp time: 12-NOV-26
+  ```
+  > 문제 상황 前 ' list backup; ' 수행하여, spfile 백업본 존재 여부 Check
+  ```
+  restore spfile from '/u01/app/oracle/fast_recovery_area/ORA19C/autobackup/2026_11_12/o1_mf_s_1249120401_ohb3j1m1_.bkp';
+  ```
+  > 성공시, ' /u01/app/oracle/product/19.3.0/dbhome_1/dbs ' 경로에 ( $ORACLE_HOME/dbs ) spfile 생성
 
 </br></br></br>
+
+
+### Image Copy
+- 수동 백업과 같이, Backup 대상 File 1:1 Backup
+- OS 內 복사 ( cp ) 동일하나, ' SET NEWNAME ' OR ' catalog ' 등으로, 백업본 수동 등록 필요
+```
+backup as copy database;
+
+backup as copy database current controlfile;
+
+--backup as copy database format '/backup/clone/%U_%T' current controlfile format '/backup/clone/imgcopy_control_%U';
+
+
+backup as copy datafile 5 format '/home/oracle/backup/clone/data_tbs01.dbf';
+```
+- Image Copy 수동 명령시, ' controlfile format ' 內 ' %F ' 사용 불가
+  - ' current controlfile format ' == ' alter database backup controlfile to '/home/oracle/backup/imgcopy_control_.ctl'; ' 백업과 동일하나, RMAN 관리 가능
+</br>
+
+```
+list copy of tablespace users;
+
+list copy of datafile 7;
+
+list copy of controlfile;
+```
+</br>
+
+```
+switch datafile 5 to copy;
+```
+> Image Copy 백업본을 사용하게끔 Switch 예제 코드
+</br>
+
+```
+catalog datafilecopy '/home/oracle/clone/data_tbs01.dbf';
+
+catalog controlfilecopy '/home/oracle/clone/control01.ctl';
+
+catalog archivelog '/home/oracle/clone/arch_1_10.arc';
+
+
+catalog start with '/home/oracle/clone/';
+```
+> RMAN Image Copy 백업본으로 등록 예제 코드
+
+</br></br></br>
+
+
 #### Data File 손상 時 RMAN 복구 Scenario
 0. Data File 손상 後 RMAN 접속
    ```CMD
