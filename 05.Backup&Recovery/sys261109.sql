@@ -40,7 +40,7 @@ drop user hr cascade;
 
 select dbid, name, log_mode from v$database;
     1301250928 ORA19C    ARCHIVELOG
-select file_id, tablespace_name, file_name, bytes/1024/1024 mb from dba_data_files;
+select file_id, tablespace_name, file_name, bytes/1024/1024 mb, autoextensible from dba_data_files;
 select file_id, tablespace_name, file_name, bytes/1024/1024 mb from dba_temp_files;
 
 --rman target / /* OS 內 OS 인증 방식으로 RMAN 접속 */

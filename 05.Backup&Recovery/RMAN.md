@@ -1,5 +1,5 @@
 ### Archive Backup Log File 생성 경로 초기화
-- Path 초기화시, ' $ORACLE_BASE/fast_recovery_area/{DB 名}/ ' Default 경로로 설정
+- Path 초기화시, ' $ORACLE_BASE/fast_recovery_area/{DB 名}/ ' Default 경로
   - Default 경로 설정이 안되어 있을시, ' /u01/app/oracle/product/19.3.0/dbhome_1/dbs/ ' 경로 ( $ORACLE_HOME/dbs )
 ```SQL
 alter system set log_archive_dest_1='location=use_db_recovery_file_dest' scope=both;
@@ -15,7 +15,8 @@ ALTER SYSTEM RESET log_archive_dest_2 scope=both;
 ```SQL
 show parameter db_recovery_file_dest;
 ```
-> 사용 공간이 85% Waring Alert 발생, 97% 도달하면 Critical Alert 발생 ( Alert Log )
+- 사용 공간이 85% Waring Alert 발생, 97% 도달하면 Critical Alert 발생 ( Alert Log )
+
 |NAME|TYPE|VALUE|
 :---|:---|:---|
 db_recovery_file_dest|string|/u01/app/oracle/fast_recovery_area|
@@ -70,7 +71,7 @@ db_recovery_file_dest_size|big integer|8256M|
     - ```
       CONFIGURE CONTROLFILE AUTOBACKUP FORMAT FOR DEVICE TYPE DISK CLEAR;
       ```
-      > 초기화 예제 코드
+      > Control Auto Bakcup 時 파일명 Format 초기화 예제 코드
   - ' CONFIGURE DEFAULT DEVICE TYPE TO DISK; # default ' == 미설정시 ( /u01/app/oracle/product/19.3.0/dbhome_1/dbs/ 경로에 ( $ORACLE_HOME/dbs ) 생성 )
     - ```
       CONFIGURE CHANNEL DEVICE TYPE DISK CLEAR;
@@ -111,14 +112,24 @@ db_recovery_file_dest_size|big integer|8256M|
   alter session set nls_date_format='yyyy-mm-dd hh24:mi:ss';
   list archivelog until time '2026-11-12 16:05:00';
   ```
-  > 특정 SCN 이후에 생성된 Archive Backup Log File 조회 예제 코드
+  > Archive Backup Log File 조회 예제 코드
 - ```
   list failure;
 
 
   list failure 82 detail;
   ```
-  > 복구 필요 대상
+  > 복구 필요 대상 조회 예제 코드
+  - ```
+    advise failure;
+
+
+    repair failure preview;
+
+
+    repair failure;
+    ```
+    > 복구법 추천, 진행
 
 - ```
   --select a.file#, a.name, a.checkpoint_change#, b.status, b.change#, to_char(b.time, 'yyyy-mm-dd hh24:mi:ss') backup_time
@@ -126,15 +137,11 @@ db_recovery_file_dest_size|big integer|8256M|
   --where a.file# = b.file#;
   list backup;
 
-
   list backup of datafile 4;
-
 
   list backup of tablespace data_tbs;
 
-
   list backup of datafile '/u01/app/oracle/oradata/ORA19C/data_tbs02.dbf';
-
 
   alter session set nls_date_format = 'yyyy-mm-dd hh24:mi:ss';
   list backup completed before '2026-11-12 16:05:00';
@@ -143,15 +150,23 @@ db_recovery_file_dest_size|big integer|8256M|
   alter session set nls_date_format = 'yyyy-mm-dd hh24:mi:ss';
   list backup completed after '2026-11-12 16:05:00';
   ```
-  > 특정 Data File 및 Tablespace Level 백업본 조회 예제 코드
+  > 백업본 조회 예제 코드
   - ```
     report need backup;
     ```
-    > Backup 필요 대상
+    > Backup 필요 대상 조회 예제 코드
+- ```
+  delete backupset 11;
+  ```
+  > ' list backup; ' 실행하여, 불필요한 백업본 ' BS Key ' 지정 삭제 가능
 - ```
   backup database;
+
+
+  backup as compressed backupset database;
   ```
-  > DB Level Backup ( Alert Log 미기재 )
+  - DB Level Backup ( Alert Log 미기재 )
+  - ' backup as compressed backupset database; ' == Backupset 이진 압축 가능
 - ```
   backup tablespace data_tbs;
   ```
@@ -161,34 +176,31 @@ db_recovery_file_dest_size|big integer|8256M|
   ```
   > 하나의 Data File Backup ( Alert Log 미기재 )
 - ```
-  delete backupset 11;
-  ```
-  > ' list backup; ' 실행하여, 불필요한 백업본 ' BS Key ' 지정 삭제 가능
-- ```
   report obsolete;
 
 
   --DELETE OBSOLETE;
   ```
-  > 오라클은 보존 정책(Retention Policy)을 기준으로, 필요 없는 파일들 조회
-  - 실제 OS 上 물리적인 File 없어도, Control 파일에 기록된 백업본이 출력된다면 Cross Check 필요
+  > 오라클 보존 정책(Retention Policy)을 기준으로, 불필요한 백업본 조회 예제 코드
+  - 실제 OS 上 물리적인 File 없어도, Control 파일에 기록된 백업본이 보인다면, Cross Check 필요
     ```
     crosscheck backup;
 
     
     crosscheck archivelog all;
     ```
-    > 물리적으로 존재하지 않는 파일들은, 내부적으로 ' EXPIRED ' 처리
-    - ' EXPIRED ' 처리된 목록 삭제 가능
-      ```
+    > 실제 OS 上 존재하는 백업본인지 확인하여, 부재시 ' EXPIRED ' 처리
+    - ```
       --list expired backupset;
+
       --list expired archivelog all;
-      
+
 
       delete expired backupset;
+
       delete expired archivelog all;
       ```
-      > ' EXPIRED ' 처리된 목록 삭제
+      > ' EXPIRED ' 처리된 List 삭제
 - ```
   --restore controlfile from ''/
   restore controlfile from autobackup;
@@ -235,7 +247,7 @@ db_recovery_file_dest_size|big integer|8256M|
 
 ### Image Copy
 - 수동 백업과 같이, Backup 대상 File 1:1 Backup
-- OS 內 복사 ( cp ) 동일하나, ' SET NEWNAME ' OR ' catalog ' 등으로, 백업본 수동 등록 필요
+- Close Backup ( cp ) 동일하나, 이들은 ' SET NEWNAME ' OR ' catalog ' 등으로 백업본을 RMAN 수동 등록 필요
 ```
 backup as copy database;
 
@@ -248,7 +260,7 @@ backup as copy datafile 5 format '/home/oracle/backup/clone/data_tbs01.dbf';
 ```
 - Image Copy 수동 명령시, ' controlfile format ' 內 ' %F ' 사용 불가
   - ' current controlfile format ' == ' alter database backup controlfile to '/home/oracle/backup/imgcopy_control_.ctl'; ' 백업과 동일하나, RMAN 관리 가능
-</br>
+</br></br></br>
 
 ```
 list copy of tablespace users;
@@ -257,13 +269,14 @@ list copy of datafile 7;
 
 list copy of controlfile;
 ```
-</br>
+</br></br></br>
 
 ```
 switch datafile 5 to copy;
 ```
-> Image Copy 백업본을 사용하게끔 Switch 예제 코드
-</br>
+> DB 上 Image Copy 백업본을 사용하게끔 Switch 예제 코드
+
+</br></br></br>
 
 ```
 catalog datafilecopy '/home/oracle/clone/data_tbs01.dbf';
@@ -277,6 +290,72 @@ catalog start with '/home/oracle/clone/';
 ```
 > RMAN Image Copy 백업본으로 등록 예제 코드
 
+</br></br></br>
+
+
+### Incremental Backup
+```
+backup incremental level 0 database;
+```
+> Full Backup 개념과 동일
+
+</br></br></br>
+
+```
+backup incremental level 1 database;
+
+
+backup incremental level 1 cumulative database;
+```
+- ' backup incremental level 1 database; ' == 최근 Incremental Backup 이후에 변경된 Block Backup ( Default )
+- ' backup incremental level 1 cumulative database; ' == 최근 Incremental level 0 Backup 이후에, 변경된 모든 Block 누적 Backup
+</br></br></br>
+
+
+#### Block Change Tracking
+- CTWR(Change Tracking Writer) 프로세스가, Block 변경 사항 추적 File ( 변경 사항이 존재하는 블록들의 주소(Data Block Address(#file, #block)) 기록 )
+- 활성화시, RMAN Auto 사용 ( 사용시, Incremental levl backup 시간 최적화 )
+  - ```
+    --alter database disable block change tracking;
+    alter database enable block change tracking using file '/home/oracle/backup/rman/ora19c_block_tracking.txt';
+
+    
+    select filename, bytes, status from v$block_change_tracking;
+
+    ! ps -ef | grep ctwr | grep -v grep
+    ```
+    |FILENAME|BYTES|STATUS|
+    :---|---:|:---|
+    /home/oracle/backup/rman/clone_block_tracking.txt|11599872|ENABLED|
+- ```
+  select file#, incremental_level, blocks, datafile_blocks, used_change_tracking from v$backup_datafile;
+  ```
+  ```TEXT
+  ```
+  - ' FILE# ' == ' 0 ' == Control File ( Incremental Backup 아닌, Full Backup )
+  - ' BLOCKS ' == Incremental 백업한 Block 수
+  - ' USE ' == Block Change Tracking 사용 여부
+---
+</br></br></br>
+
+
+### Catalog
+- Target DB 內 ' tnsnames.ora ', Catalog DB 內 ' listener.ora ' 구성 필수
+1. 복제 DB 생성
+2. 복제 DB 內 Tablespace 생성
+3. 복제 DB 內 User 생성
+4. Roll Grant
+5. 복제 DB, RMAN 접속
+   ```  
+   create catalog;
+   ```
+6. Target DB Instance Session 上 Catalog DB 접속
+   ```
+   rman target / catalog rc_user/oracle@rcdb;
+
+   register database;
+   ```
+---
 </br></br></br>
 
 

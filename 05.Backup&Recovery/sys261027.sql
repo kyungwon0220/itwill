@@ -6,10 +6,10 @@ SELECT TABLESPACE_NAME FROM DBA_TABLESPACES;
     USERS
 
 select file#, name, status, checkpoint_change#, scn_to_timestamp(checkpoint_change#) from v$datafile; /* Control File 내용이며, Data File 헤더에도 ' checkpoint_change# ' 존재 ( ' scn_to_timestamp ' == DB Open 시점부터 조회 가능 ) */
-    /u01/app/oracle/oradata/ORA19C/system01.dbf	    2236840
-    /u01/app/oracle/oradata/ORA19C/sysaux01.dbf	    2236840
-    /u01/app/oracle/oradata/ORA19C/undotbs01.dbf	2236840
-    /u01/app/oracle/oradata/ORA19C/users01.dbf	    2236840
+--/u01/app/oracle/oradata/ORA19C/system01.dbf	    2236840
+--/u01/app/oracle/oradata/ORA19C/sysaux01.dbf	    2236840
+--/u01/app/oracle/oradata/ORA19C/undotbs01.dbf	2236840
+--/u01/app/oracle/oradata/ORA19C/users01.dbf	    2236840
 1	/u01/app/oracle/oradata/ORA19C/system01.dbf	    SYSTEM	2288916	26/10/31 22:52:30.000000000
 3	/u01/app/oracle/oradata/ORA19C/sysaux01.dbf	    ONLINE	2288916	26/10/31 22:52:30.000000000
 4	/u01/app/oracle/oradata/ORA19C/undotbs01.dbf	ONLINE	2288916	26/10/31 22:52:30.000000000
