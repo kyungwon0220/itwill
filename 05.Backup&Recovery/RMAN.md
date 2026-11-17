@@ -85,9 +85,20 @@ db_recovery_file_dest_size|big integer|8256M|
         - ' %p ' == Backupset 내부상 Backup Piece 번째 수
         - ' %c ' == 중복 Backup 時 백업본 Number ( ' 1 ' Default )
       - ' %T ' == Backup Date ( 예를 들면, 20261112 )
+  - ' CONFIGURE COMPRESSION ALGORITHM 'BASIC' AS OF RELEASE 'DEFAULT' OPTIMIZE FOR LOAD TRUE ; # default ' == 압축시, 알고리즘
+    - ```
+      select * from v$rman_compression_algorithm;
+      ```
+      > 압축 알고리즘 종류 조회 예제 코드
+      - ' ALGORITHM_NAME ' == ' BASIC ' == ' MEDIUM ' 유사, 이만 무료 ( 이외 모두 유료 )
+      - ' ALGORITHM_NAME ' == ' LOW ' == ' MEDIUM ' 보다는 적은 압축, CPU 최소 사용으로 속도가 가장 빠ㄹ
+      - ' ALGORITHM_NAME ' == ' HIGH ' == 최상 압축률, CPU 사용량 가장 많ㄷ
+    - ```
+      configure compression algorithm 'high';
+      ```
 - ```
   report schema;
-  --select file_id, tablespace_name, file_name, bytes/1024/1024 mb from dba_data_files;
+  --select file_id, tablespace_name, file_name, bytes/1024/1024 mb, autoextensible from dba_data_files;
   --select file_id, tablespace_name, file_name, bytes/1024/1024 mb from dba_temp_files;
   ```
   > RMAN 재접속시, 손상 File 재감지
@@ -160,13 +171,20 @@ db_recovery_file_dest_size|big integer|8256M|
   ```
   > ' list backup; ' 실행하여, 불필요한 백업본 ' BS Key ' 지정 삭제 가능
 - ```
+  set encryption on identified by oracle only;
+
+
+  set decryption identified by oracle;
+  ```
+  > 백업본 암호화 ( Password Encrypted Bakcup ) 예제 코드
+- ```
   backup database;
 
 
   backup as compressed backupset database;
   ```
   - DB Level Backup ( Alert Log 미기재 )
-  - ' backup as compressed backupset database; ' == Backupset 이진 압축 가능
+  - ' backup as compressed backupset database; ' == 이진 (Binary) 압축 Backup
 - ```
   backup tablespace data_tbs;
   ```
@@ -294,6 +312,8 @@ catalog start with '/home/oracle/clone/';
 
 
 ### Incremental Backup
+- Redo 적용보다 빠르다 ( 장점 )
+</br></br></br>
 ```
 backup incremental level 0 database;
 ```
@@ -327,10 +347,9 @@ backup incremental level 1 cumulative database;
     |FILENAME|BYTES|STATUS|
     :---|---:|:---|
     /home/oracle/backup/rman/clone_block_tracking.txt|11599872|ENABLED|
+    - 비활성화시, 활성화시 생성했던 ' ora19c_block_tracking.txt ' File Auto 삭제
 - ```
   select file#, incremental_level, blocks, datafile_blocks, used_change_tracking from v$backup_datafile;
-  ```
-  ```TEXT
   ```
   - ' FILE# ' == ' 0 ' == Control File ( Incremental Backup 아닌, Full Backup )
   - ' BLOCKS ' == Incremental 백업한 Block 수

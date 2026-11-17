@@ -1,3 +1,8 @@
+ALTER SYSTEM FLUSH BUFFER_CACHE;
+
+
+
+
 alter database disable block change tracking;
 alter database enable block change tracking using file '/home/oracle/backup/rman/ora19c_block_tracking.txt';
 
@@ -38,9 +43,11 @@ run {
 
 
 
-backup format '/home/oracle/backup/rman/rcdb/%U_%T' database include current controlfile;
-
-alter system archive log current;
+run {
+    backup format '/home/oracle/backup/rman/rcdb/%U_%T' database include current controlfile;
+    
+    alter system archive log current;
+}
 
 --rman auxiliary /
 
