@@ -19,6 +19,14 @@
         - 다양한 유형의 프로그램 데이터를 캐시 해두는 영역
           - Data Dicionary Cache (Row Cache) == Semantic Check ( 의미 분석 체크 ) 할때마다, 디스크 I/O 발생 부담으로, ' Data Dictionary ' 정보를 메모리에 Row 단위로 올려놓은 메모리 공간 <a id="data-dictionary-cache"></a>
             - ```SQL
+              select cache#, parameter from v$rowcache;
+              ```
+              > Dicionary Cache 內 Dicionary 정보들 ( 상세 내용은 Oracle 미공개 )
+            - ```SQL
+              select table_name from dba_tables where tablespace_name = 'SYSTEM';
+              ```
+              > System Tablespace 內 Dicionary 테이블들 (이런 정보들로, Oracle 관리)
+            - ```SQL
               SELECT * FROM dba_segments WHERE tablespace_name = 'SYSTEM';
               ```
               > 내부적으로 ' HEADER_BLOCK ' 다음이, Root Block
@@ -27,9 +35,9 @@
               - ' handle + LCO(Library Cache Object) ' 형식
                 - handle == SQL 문장
                 - LCO == Dependency(종속 정보), Data Block(실행 계획), p_code, child Table(Cursor)
-            - Library Cache 탐색시, Library Cache Latch(mutex) 획득  필수
-              - ' latch : library cache (9i) ' == latch 못잡는 경우 발생하는 대기 Event
-              - ' library cache : mutex x (10g) ' == latch 대신, mutex 형태 등장시, 발생하는 대기 Event
+            - Library Cache 탐색시, Library Cache Latch OR Mutex 획득 필수
+              - ' Latch : Library Cache Event ' == Latch 획득 실패시 대기 ( 9i Version )
+              - ' Library Cache : Mutex x Event ' == Latch 대신, Mutex 형태 時 ( 10g Version )
             - ```SQL
               SELECT SQL_ID, SQL_TEXT, PARSE_CALLS, LOADS, EXECUTIONS, PLAN_HASH_VALUE, HASH_VALUE, INVALIDATIONS
               FROM v$sql
@@ -39,6 +47,8 @@
               - ' EXCUTIONS ' == 실행 계획을 통해, Block I/O 발생 ( 실행 횟수 ( ' PARSE_CALLS ' 같이 증가 ) )
               - ' LOADS ' == Library Cache 요청 했으나, 없을시 HARD PARSING 발생하며 증가하는 횟수 ( 실행 계획 생성 )
               - ' PLAN_HASH_VALUE ' == 실행 계획 고유값 ( 이가 같다는 뜻은, 실행 계획이 같다는 의미 ) <a id="plan_hash_value"></a>
+              - ' INVALIDATIONS ' == 기존 실행 계획을 사용할수 없는 ' 무효화 ' 時 == ' 1 '
+                - 무효화된 실행 계획은, 새로 생성해야 하기에, PK 제약 조건 추가 등의 작업은 주의 ( 관련된 모든 Table LCO 실행 계획을 무효화, 새로 Hard 파싱해야 하기에 )
     - Large Pool
       - ' large_pool_size ' 파라미터로, 동적 크기 조정 가능 ( ISSYS_MODIFIABLE == IMMEDIATE (Dynamic Parameter) )
         - ```SQL
