@@ -22,14 +22,21 @@
               SELECT * FROM dba_segments WHERE tablespace_name = 'SYSTEM';
               ```
               > 내부적으로 ' HEADER_BLOCK ' 다음이, Root Block
-          - Library Cache ( 가칭 ) == 클라이언트가 수행한 SQL, PL / SQL 대한 정보, 실행 계획을 갖고있는 메모리 <a id="library-cache"></a>
+          - Library Cache == 클라이언트가 수행한 SQL, PL / SQL 대한 정보, 실행 계획을 갖고있는 메모리 <a id="library-cache"></a>
+            - Shared SQL Area : SQL, PL / SQL 문장 정보, 실행 계획
+              - ' handle + LCO(Library Cache Object) ' 형식
+                - handle == SQL 문장
+                - LCO == Dependency(종속 정보), Data Block(실행 계획), p_code, child Table(Cursor)
+            - Library Cache 탐색시, Library Cache Latch(mutex) 획득  필수
+              - ' latch : library cache (9i) ' == latch 못잡는 경우 발생하는 대기 Event
+              - ' library cache : mutex x (10g) ' == latch 대신, mutex 형태 등장시, 발생하는 대기 Event
             - ```SQL
-              SELECT SQL_ID, SQL_TEXT, PARSE_CALLS, LOADS, EXECUTIONS, PLAN_HASH_VALUE, HASH_VALUE
+              SELECT SQL_ID, SQL_TEXT, PARSE_CALLS, LOADS, EXECUTIONS, PLAN_HASH_VALUE, HASH_VALUE, INVALIDATIONS
               FROM v$sql
               ```
               > Shared Pool 內 Library Cache 內 ' SQL 문장 '
               - ' PARSE_CALLS ' == Library Cache 요청한 횟수 ( ' EXCUTIONS ' 같이 증가 )
-              - ' EXCUTIONS ' == 실행 횟수 ( ' PARSE_CALLS ' 같이 증가 )
+              - ' EXCUTIONS ' == 실행 계획을 통해, Block I/O 발생 ( 실행 횟수 ( ' PARSE_CALLS ' 같이 증가 ) )
               - ' LOADS ' == Library Cache 요청 했으나, 없을시 HARD PARSING 발생하며 증가하는 횟수 ( 실행 계획 생성 )
               - ' PLAN_HASH_VALUE ' == 실행 계획 고유값 ( 이가 같다는 뜻은, 실행 계획이 같다는 의미 ) <a id="plan_hash_value"></a>
     - Large Pool
