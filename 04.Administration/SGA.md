@@ -14,6 +14,34 @@
           SHOW PARAMETER shared_pool_size;
           ```
           > VLAUE == ' 0 ' 의미는, 크기를 오라클이 자동 관리하겠다는 의미
+      - Shared Pool 內 ' Shared Reserved Pool ( 예약 영역 ) ' == Shared Pool 5% 크기를 ORA-04031 ERR 방지 목적으로 예비 메모리로 사용
+        - ```SQL
+          select a.ksppinm parameter, b.ksppstvl value
+          from x$ksppi a, x$ksppcv b
+          where a.indx = b.indx and a.ksppinm in ('shared_pool_reserved_size', '_shared_pool_reserved_pct', '_shared_pool_reserved_min_alloc');
+          --shared_pool_reserved_size	15099494 /* Shared Pool 5% */
+          --_shared_pool_reserved_pct	5
+          --_shared_pool_reserved_min_alloc	4400
+          ```
+          - Free Chunk 못찾고, 이가 4400byte 이상일시 Reserved Pool 사용
+      - Shared Pool 內 Free Chunk 찾기 위해서는, Shared Pool Latch 잡아야 한다 ( 기본적으로, 하나의 인스턴스당 하나의 Latch 존재 )
+        - 9i Version 부터는, CPU 4개 이상이면서 Shared Pool 크기가 250MB 이상일시, 최대 6개의 Sub Pool 생성하여 관리 가능
+          - ```SQL
+            select a.ksppinm parameter, b.ksppstvl value
+            from x$ksppi a, x$ksppcv b
+            where a.indx = b.indx and a.ksppinm = '_kghdsidx_count'; /* Hidden Parameter 조회 */
+            --_kghdsidx_count	1
+
+
+            select name, gets from v$latch_children where name = 'shared pool';
+            --shared pool	8
+            --shared pool	8
+            --shared pool	8
+            --shared pool	8
+            --shared pool	8
+            --shared pool	8
+            --shared pool	679398 /* 최대 7개중, 현재 사용중인 1개의 Shared Pool Latch */
+            ```
       - <img src="./mdIMG/SharedPool.jpg" width="50%">
 
         - 다양한 유형의 프로그램 데이터를 캐시 해두는 영역
@@ -30,12 +58,12 @@
               SELECT * FROM dba_segments WHERE tablespace_name = 'SYSTEM';
               ```
               > 내부적으로 ' HEADER_BLOCK ' 다음이, Root Block
-          - Library Cache == 클라이언트가 수행한 SQL, PL / SQL 대한 정보, 실행 계획을 갖고있는 메모리 <a id="library-cache"></a>
+          - Library Cache == 클라이언트가 수행한 SQL, PL / SQL 대한 정보, 실행 계획을 갖고있는 메모리로, Semantic Check, LCO 종속 정보 생성, 실행 계획 생성시 등에 활용 <a id="library-cache"></a>
             - Shared SQL Area : SQL, PL / SQL 문장 정보, 실행 계획
               - ' handle + LCO(Library Cache Object) ' 형식
                 - handle == SQL 문장
                 - LCO == Dependency(종속 정보), Data Block(실행 계획), p_code, child Table(Cursor)
-            - Library Cache 탐색시, Library Cache Latch OR Mutex 획득 필수
+            - Library Cache 탐색시, 9i Version 까지는 Library Cache Latch, 10g Versioin 부터는 Mutex 획득 필수
               - ' Latch : Library Cache Event ' == Latch 획득 실패시 대기 ( 9i Version )
               - ' Library Cache : Mutex x Event ' == Latch 대신, Mutex 형태 時 ( 10g Version )
             - ```SQL
