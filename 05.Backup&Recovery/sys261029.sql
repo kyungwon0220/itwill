@@ -60,7 +60,7 @@ WHERE n.usn = s.usn; /* Undo */
     19	_SYSSMU19_2435865630$	2	122880	0	ONLINE
     20	_SYSSMU20_2067323191$	2	122880	0	ONLINE
 
-select s.username, s.sid, s.serial#, t.xidusn, t.ubafil, t.ubablk, t.used_ublk
+select s.username, s.sid, s.serial#, t.xidusn, t.xidslot, t.xidsqn, t.xid, t.ubafil, t.ubablk, t.used_ublk
 from v$session s, v$transaction t
 where s.saddr = t.ses_addr; /* 현재 종료되지 않은, Transaction 정보 조회 */
 --SYS	273	818	3	4	5009	1

@@ -24,7 +24,7 @@ SELECT n.usn, n.name, s.extents, s.rssize, s.xacts, s.status
 FROM v$rollname n, v$rollstat s
 WHERE n.usn = s.usn; /* Undo */
 
-select s.username, s.sid, s.serial#, t.xidusn, t.ubafil, t.ubablk, t.used_ublk
+select s.username, s.sid, s.serial#, t.xidusn, t.xidslot, t.xidsqn, t.xid, t.ubafil, t.ubablk, t.used_ublk
 from v$session s, v$transaction t
 where s.saddr = t.ses_addr; /* 현재 종료되지 않은, 트랜잭션 정보 조회 */
 

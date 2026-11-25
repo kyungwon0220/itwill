@@ -45,7 +45,9 @@
       - <img src="./mdIMG/SharedPool.jpg" width="50%">
 
         - 다양한 유형의 프로그램 데이터를 캐시 해두는 영역
-          - Data Dicionary Cache (Row Cache) == Semantic Check ( 의미 분석 체크 ) 할때마다, 디스크 I/O 발생 부담으로, ' Data Dictionary ' 정보를 메모리에 Row 단위로 올려놓은 메모리 공간 <a id="data-dictionary-cache"></a>
+          - Data Dicionary Cache (Row Cache) == Semantic Check ( 의미 분석 체크 ) 할때마다, 디스크 I/O 발생 부담으로, ' Data Dictionary ' 정보를 메모리에 Row 단위로 올려놓은 메모리 공간 (Hard Parsing 時 실행 계획 생성시에도 접근) <a id="data-dictionary-cache"></a>
+            - DDL, DCL 작업을 수행하면 Dictionary 정보에 입력, 수정, 삭제
+            - User, Object, Table, Segment, Column, Index, Sequence, View, Function, Procedure, Package, Trigger, 등
             - ```SQL
               select cache#, parameter from v$rowcache;
               ```
@@ -55,17 +57,17 @@
               ```
               > System Tablespace 內 Dicionary 테이블들 (이런 정보들로, Oracle 관리)
             - ```SQL
-              SELECT * FROM dba_segments WHERE tablespace_name = 'SYSTEM';
+              SELECT header_file, header_block, header_block + 1 root_block FROM dba_segments WHERE segment_name = 'SYSTEM';
               ```
-              > 내부적으로 ' HEADER_BLOCK ' 다음이, Root Block
+              > Segment ' HEADER_BLOCK ' 다음 Number Block == Root Block Number
           - Library Cache == 클라이언트가 수행한 SQL, PL / SQL 대한 정보, 실행 계획을 갖고있는 메모리로, Semantic Check, LCO 종속 정보 생성, 실행 계획 생성시 등에 활용 <a id="library-cache"></a>
+            - Library Cache 탐색시, 9i Version 까지는 ' Library Cache Latch ', 10g Versioin 부터는 ' Mutex ' 획득 필수
+              - ' Latch : Library Cache Event ' == Latch 획득 실패시 대기 ( 9i Version )
+              - ' Library Cache : Mutex x Event ' == Latch 대신, Mutex 형태 時 ( 10g Version )
             - Shared SQL Area : SQL, PL / SQL 문장 정보, 실행 계획
               - ' handle + LCO(Library Cache Object) ' 형식
                 - handle == SQL 문장
                 - LCO == Dependency(종속 정보), Data Block(실행 계획), p_code, child Table(Cursor)
-            - Library Cache 탐색시, 9i Version 까지는 Library Cache Latch, 10g Versioin 부터는 Mutex 획득 필수
-              - ' Latch : Library Cache Event ' == Latch 획득 실패시 대기 ( 9i Version )
-              - ' Library Cache : Mutex x Event ' == Latch 대신, Mutex 형태 時 ( 10g Version )
             - ```SQL
               SELECT SQL_ID, SQL_TEXT, PARSE_CALLS, LOADS, EXECUTIONS, PLAN_HASH_VALUE, HASH_VALUE, INVALIDATIONS
               FROM v$sql
@@ -90,16 +92,16 @@
     <!--StreamsPool? ![](https://www.oracle.com/kr/integration/goldengate/features/) -->
 </br></br></br>
 - Database Buffer Cache ( Data Buffer Cache ) <a id="database-buffer-cache"></a>
-  -  Semantic 체크시 ( 의미 분석 체크 ) 사용하는, ' Data Files ' 內 ' Data Dictionary ' Data Block 복사본을 저장하는 메모리 영역 ( 디스크와의 물리적 I/O 부담 저감 )
-  -  모든 유저가, Sever 프로세스를 통해 Access 가능
-  -  동적 크기 조정 가능
+  - Semantic 체크시 ( 의미 분석 체크 ) 사용하는, ' Data Files ' 內 ' Data Dictionary ' Data Block 복사본을 저장하는 메모리 영역 ( 디스크와의 물리적 I/O 부담 저감 )
+  - 모든 유저가, Sever 프로세스를 통해 Access 가능
+  - 동적 크기 조정 가능
   - <img src="./mdIMG/DatabaseBufferCache.png" width="50%">
 </br></br></br>
 - Redo Buffers
   - Redo Log Buffer
     - DB Data Block 모든 변경 사항을 기록한, 복구 목적으로 구성된 메모리
     - Redo Entry ( 변경 사항 )
-      - 변경 사항을 재구성하거나, 재실행 정보 포함
+      - 복구 목적으로서, 변경 사항을 재구성하거나, 재실행할 정보 ( Undo 세그먼트의 Header Block, Undo Block, 실제 변경할 Data Block )
       - DML(INSERT, UPDATE, DELETE, MERGE), DDL(CREATE, ALTER, DROP, ' SELECT * FOR UPDATE ') 사용시 자동 생성
     - ' log_buffer ' Parameter (Static Parameter) 이용하여, 크기 조정 가능
 ---
